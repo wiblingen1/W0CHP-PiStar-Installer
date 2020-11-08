@@ -27,3 +27,6 @@
 (...to install the dashboard only).
 5. Enjoy! :-)
 
+## Screenshot:
+![alt text](http://techdocs.cuccio.us/W0CHP-Dash.png "Screenshot")
+
