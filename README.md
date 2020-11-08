@@ -1,17 +1,24 @@
 # To install the W0CHP Pi-Star Dashboard:
 
-1. Run
-    rpi-rw
+1. Run:
 
-2. Run
-    curl http://repo.cucc.io:3000/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar -o W0CHP-pistar
+        rpi-rw
 
-3: Run...
-    bash ./W0CHP-pistar -h
+2. Run:
+
+        curl http://repo.cucc.io:3000/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar -o W0CHP-pistar
+
+3: Run:
+
+        bash ./W0CHP-pistar -h
+
 ...to familiarize yourself with the available options/arguments.
 
 4: When ready to install, run the above command again with the option/argument you wish...e.g:
-    bash ./W0CHP-pistar -id
+
+        bash ./W0CHP-pistar -id
+
 (...to install the dashboard only).
 
 5. Enjoy! :-)
+
