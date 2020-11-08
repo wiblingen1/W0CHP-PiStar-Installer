@@ -1,12 +1,19 @@
+# ABOUT:
+This is my personal dashboard, and related binaries, forked from F1RMB, which was forked from MW0MWZ's original code.
+I offer ZERO support. This is here for your hacking and enjoyment.
+
+## If you ask me for support, I will ignore you!
+
 # To install the `W0CHP` Pi-Star Dashboard
+1. Open an SSH session to your Pi-Star instance.
 
-1. Run: 
-
-        rpi-rw
 2. Run: 
 
-        curl http://repo.cucc.io:3000/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar -o W0CHP-pistar
+        rpi-rw
 3. Run: 
+
+        curl http://repo.cucc.io:3000/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar -o W0CHP-pistar
+4. Run: 
 
         sudo bash ./W0CHP-pistar -h
 ...to familiarize yourself with the available options/arguments:
@@ -21,12 +28,12 @@
         -is, --install-sbinaries        Install W0CHP system binaries.
         -rs, --restore-sbinaries        Restore original system binaries.
         -s,  --status                   Display current install, original or personal installations.
-4. When ready to install, run the above command again with the option/argument you wish...e.g:
+5. When ready to install, run the above command again with the option/argument you wish...e.g:
 
         sudo bash ./W0CHP-pistar -id
 (...to install the dashboard only).
-5. Enjoy! :-)
+
+6. Enjoy! :-)
 
 ## Screenshot:
 ![alt text](http://techdocs.cuccio.us/W0CHP-Dash.png "Screenshot")
-
