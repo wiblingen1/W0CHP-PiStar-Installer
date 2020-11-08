@@ -49,11 +49,11 @@ CURL_OPTIONS="${CURL_OPTIONS} -L"
 OFFICIAL_SBINARIES_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
 W0CHP_SBINARIES_REPO="${W0CHP_SBIN_REPO}"
 
-## Binaries (v3 and v4 are using different repositories
+## Only pistar v4 supported!
 if [ ${PISTAR_VERSION_INFO[0]} -eq 4 ]; then
     OFFICIAL_BINARIES_REPO="https://github.com/AndyTaylorTweet/Pi-Star_v4_Binaries_Bin.git"
     W0CHP_BINARIES_REPO="${W0CHP_BIN_REPO}"
-    OFFICIAL_RELEASE_VERSION="3.4.17"
+    OFFICIAL_RELEASE_VERSION="4.1.2"
     #OFFICIAL_RELEASE_VERSION="4.1.3"
 else
     echo "Unsupported PiStar version, bailing out."
@@ -227,50 +227,7 @@ function RestoreDataAndDowngrade() {
     _rw
     
     # Downgrade version
-    if [ ${PISTAR_VERSION_INFO[0]} -eq 3 ]; then
-	# Remove APRSGateway service
-	systemctl stop aprsgateway.timer
-	systemctl disable aprsgateway.timer
-	systemctl stop aprsgateway.service
-	systemctl disable aprsgateway.service
-	rm -f /lib/systemd/system/aprsgateway.timer
-	rm -f /lib/systemd/system/aprsgateway.service
-	
-	# Remove pistar-service bash completion
-	rm -f /usr/share/bash-completion/completions/pistar-services
-	
-	# Revert shellinabox localhost-only
-	rm -f /etc/nginx/default.d/shellinabox.conf
-	grep -q 'SHELLINABOX_ARGS' /etc/default/shellinabox && (grep -q '^SHELLINABOX_ARGS=.*\-\-localhost\-only' /etc/default/shellinabox && (sed -i 's/\-\-localhost\-only\ //g' /etc/default/shellinabox))
-	grep -q 'font-family' /etc/shellinabox/options-available/00_White\ On\ Black.css && (sed -i '/#vt100 #console, #vt100 #alt_console, #vt100 #cursor, #vt100 #lineheight {/,/}/d' /etc/shellinabox/options-available/00_White\ On\ Black.css)
-	systemctl reload nginx.service
-	
-	# Enable SAMBA
-	systemctl unmask smbd
-	systemctl unmask nmbd
-	LC_ALL=C systemctl enable smbd > /dev/null 2<&1
-	LC_ALL=C systemctl enable nmbd > /dev/null 2<&1
-	systemctl start smbd
-	systemctl start nmbd
-
-	# Enable agetty on tty1
-	systemctl enable getty@tty1.service
-	systemctl start getty@tty1.service
-
-	# Delete MobileGPS service
-	systemctl disable mobilegps.timer
-	rm -f /lib/systemd/system/mobilegps.timer
-	rm -f /lib/systemd/system/mobilegps.service	
-	
-	systemctl daemon-reload
-	
-	sed -i "s/$PISTAR_VERSION/$OFFICIAL_RELEASE_VERSION/g" /etc/pistar-release
-
-	/usr/local/sbin/pistar-motdgen
-
-	echo "Downgraded from ${PISTAR_VERSION} to $OFFICIAL_RELEASE_VERSION..."
-	
-    elif [ ${PISTAR_VERSION_INFO[0]} -eq 4 ]; then
+    if [ ${PISTAR_VERSION_INFO[0]} -eq 4 ]; then
 	# Remove APRSGateway service
 	systemctl stop aprsgateway.timer
 	systemctl disable aprsgateway.timer
