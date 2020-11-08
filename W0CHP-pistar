@@ -179,8 +179,8 @@ function InstallDashboard() {
     # check for user's css (if any, back it up, and install W0CHP version)
     if [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/pistar-css.ini.dist
-        mv /var/www/dashboard/pistar-css.ini /etc/
-    fi  
+    fi
+    mv /var/www/dashboard/pistar-css.ini /etc/
     _ro
 }
 
