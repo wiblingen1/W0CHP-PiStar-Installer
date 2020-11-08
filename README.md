@@ -4,7 +4,7 @@ I offer ZERO support. This is here for your hacking and enjoyment.
 
 ## If you ask me for support, I will ignore you!
 
-# To install the `W0CHP` Pi-Star Dashboard
+# To install the `W0CHP` Pi-Star Dashboard:
 1. Open an SSH session to your Pi-Star instance.
 
 2. Run: 
