@@ -11,18 +11,16 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-W0CHP_INSTALL_SCRIPT_REPO=""
+W0CHP_INSTALL_SCRIPT_REPO="http://freebsd-arm7-rpi2.internal.cuccio.us:3000/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar"
 W0CHP_DASH_REPO="http://FreeBSD-ARM7-RPi2.internal.cuccio.us:3000/Chipster/PiStar-Dash_Chipster.git"
 W0CHP_BIN_REPO="ihttp://FreeBSD-ARM7-RPi2.internal.cuccio.us:3000/Chipster/Pi-Star_v4_F1RMB_Binaries_Bin-Mirror.git"
 W0CHP_SBIN_REPO="http://FreeBSD-ARM7-RPi2.internal.cuccio.us:3000/Chipster/Pi-Star_F1RMB_Binaries_sbin-mirror.git"
 
 UPDATE_SELF=${UPDATE_SELF:-1}
-UPDATE_REPO_URI="${W0CHP_INSTALL_SCRIPT_REPO}"
-UPDATE_REPO_CONTENT_URI=${UPDATE_REPO_URI/github.com/raw.githubusercontent.com}
-UPDATE_URI="${UPDATE_REPO_CONTENT_URI}/master/f1rmb-pistar"
+UPDATE_URI="${W0CHP_INSTALL_SCRIPT_REPO}"
 ROOT_PATH=${ROOT_PATH:-"/"}
 WORK_PATH=${WORK_PATH:-"${ROOT_PATH}/root"}
-SELFUPDATE_SCRIPT="${WORK_PATH}/.updateScript-f1rmb-pistar.sh"
+SELFUPDATE_SCRIPT="${WORK_PATH}/.updateScript-W0CHP-pistar.sh"
 CURL_OPTIONS=${CURL_OPTIONS:-""}
 ALL_ARGS="$@"
 
