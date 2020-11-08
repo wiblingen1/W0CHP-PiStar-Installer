@@ -9,9 +9,21 @@
 3. Run: 
 
         sudo bash ./W0CHP-pistar -h
-...to familiarize yourself with the available options/arguments.
+...to familiarize yourself with the available options/arguments:
+
+        -h, --help                      Display this help text.
+        -ia, --install-all              Install personal dashboard, binaries and system binaries
+        -ra, --restore-all              Restore original dashboard, binaries and system binaries
+        -id, --install-dashboard        Install personal dashboard.
+        -rd, --restore-dashboard        Restore original dashboard.
+        -ib, --install-binaries         Install personal binaries.
+        -rb, --restore-binaries         Restore original binaries.
+        -is, --install-sbinaries        Install personal system binaries.
+        -rs, --restore-sbinaries        Restore original system binaries.
+        -s, --status                    Display current install, original or personal installations.
 4. When ready to install, run the above command again with the option/argument you wish...e.g:
 
         sudo bash ./W0CHP-pistar -id
 (...to install the dashboard only).
 5. Enjoy! :-)
+
