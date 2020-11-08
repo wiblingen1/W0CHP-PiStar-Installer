@@ -1,5 +1,4 @@
 # To install the W0CHP Pi-Star Dashboard:
-
 1. Run:
 
         rpi-rw
