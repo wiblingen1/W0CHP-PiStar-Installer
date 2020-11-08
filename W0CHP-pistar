@@ -332,7 +332,7 @@ function UpdateSelf() {
     local _tempFileName="$0.tmp"
     _rw
 
-    if ! eval curl -fs ${CURL_OPTIONS} --output "${_tempFileName}" "${UPDATE_URI}"; then
+    if ! eval curl -s ${CURL_OPTIONS} --output "${_tempFileName}" "${UPDATE_URI}"; then
         echo "ERROR: Failed to download update for installation script!"
         echo "ERROR: Make sure you have ca-certificates installed and that the time is set correctly"
 	_ro
@@ -402,15 +402,15 @@ function DisplayHelp() {
     echo "`basename $0` usage:"
     echo ""
     echo "  -h, --help                      Display this help text."
-    echo "  -ia, --install-all              Install personnal dashboard, binariess and system binaries"
-    echo "  -ra, --restore-all              Restore original dashboard, binariess and system binaries"
-    echo "  -id, --install-dashboard        Install personnal dashboard."
+    echo "  -ia, --install-all              Install personal dashboard, binaries and system binaries"
+    echo "  -ra, --restore-all              Restore original dashboard, binaries and system binaries"
+    echo "  -id, --install-dashboard        Install personal dashboard."
     echo "  -rd, --restore-dashboard        Restore original dashboard."
-    echo "  -ib, --install-binaries         Install personnal binaries."
+    echo "  -ib, --install-binaries         Install personal binaries."
     echo "  -rb, --restore-binaries         Restore original binaries."
-    echo "  -is, --install-sbinaries        Install personnal system binaries."
+    echo "  -is, --install-sbinaries        Install personal system binaries."
     echo "  -rs, --restore-sbinaries        Restore original system binaries."
-    echo "  -s, --status                    Display current install, original or personnal installations."
+    echo "  -s, --status                    Display current install, original or personal installations."
     echo ""
 }
 
