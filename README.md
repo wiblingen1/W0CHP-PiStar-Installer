@@ -12,7 +12,7 @@ I offer ZERO support. This is here for your hacking and enjoyment.
         rpi-rw
 3. Run: 
 
-        curl http://repo.cucc.io:3000/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar -o W0CHP-pistar
+        curl https://repo.cucc.io/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar -o W0CHP-pistar
 4. Run: 
 
         sudo bash ./W0CHP-pistar -h
