@@ -1,3 +1,6 @@
 [submodule "PiStar-Dash_Chipster"]
 	path = PiStar-Dash_Chipster
 	url = https://repo.cucc.io/Chipster/PiStar-Dash_Chipster
+[submodule "W0CHP-PiStar-Dash"]
+	path = W0CHP-PiStar-Dash
+	url = https://repo.cucc.io/Chipster/W0CHP-PiStar-Dash
