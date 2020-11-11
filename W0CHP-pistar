@@ -369,7 +369,7 @@ function DisplayStatus() {
 function DisplayHelp() {
     echo "`basename $0` usage:"
     echo ""
-    echo "  -h, --help                      Display this help text."
+    echo "  -h,  --help                     Display this help text."
     echo "  -ia, --install-all              Install W0CHP dashboard, binaries and system binaries"
     echo "  -ra, --restore-all              Restore original dashboard, binaries and system binaries"
     echo "  -id, --install-dashboard        Install W0CHP dashboard."
@@ -378,7 +378,7 @@ function DisplayHelp() {
     echo "  -rb, --restore-binaries         Restore original binaries."
     echo "  -is, --install-sbinaries        Install W0CHP system binaries."
     echo "  -rs, --restore-sbinaries        Restore original system binaries."
-    echo "  -s, --status                    Display current install, original or W0CHP installations."
+    echo "  -s,  --status                   Display current install, original or W0CHP installations."
     echo ""
 }
 
