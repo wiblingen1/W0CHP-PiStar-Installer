@@ -11,10 +11,10 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-W0CHP_INSTALL_SCRIPT_REPO="https://repo.cucc.io/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar"
-W0CHP_DASH_REPO="https://repo.cucc.io/Chipster/W0CHP-PiStar-Dash.git"
-W0CHP_BIN_REPO="https://repo.cucc.io/Chipster/Pi-Star_v4_F1RMB_Binaries_Bin-Mirror.git"
-W0CHP_SBIN_REPO="https://repo.cucc.io/Chipster/Pi-Star_F1RMB_Binaries_sbin-mirror.git"
+W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar"
+W0CHP_DASH_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash.git"
+W0CHP_BIN_REPO="https://repo.w0chp.net/Chipster/Pi-Star_v4_F1RMB_Binaries_Bin-Mirror.git"
+W0CHP_SBIN_REPO="https://repo.w0chp.net/Chipster/Pi-Star_F1RMB_Binaries_sbin-mirror.git"
 
 UPDATE_SELF=${UPDATE_SELF:-1}
 UPDATE_URI="${W0CHP_INSTALL_SCRIPT_REPO}"
