@@ -5,7 +5,6 @@
 # Setting envvar NO_UPDATE_SELF=1 will disable auto update of this script #
 #                                                                         #
 # ####################################################################### #
-NO_UPDATE_SELF=1
 if [ "$(id -u)" != "0" ]; then
   echo -e "You need to be root to run this command...\n"
   exit 1
