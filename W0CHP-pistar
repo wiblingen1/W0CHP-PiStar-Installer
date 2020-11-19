@@ -364,11 +364,11 @@ EOF
 }
 
 function DisplayConfigUpdate() {
-    echo " ****************************************** NOTICE ******************************************"
-    echo " *                                                                                           *"
-    echo " * Now you need to open the Pi-Star's Configuration page, and click \"Apply Changes\" button  *"
-    echo " *                                                                                           *"
-    echo " *********************************************************************************************"
+    echo " ****************************************** NOTICE ********************************************"
+    echo " *                                                                                            *"
+    echo " * Now you need to open the Pi-Star's Configuration page, and click \"Apply Changes\" button    *"
+    echo " *                                                                                            *"
+    echo " **********************************************************************************************"
 }
 
 # $1 directory
