@@ -36,6 +36,10 @@ else
     exit 1
 fi
 
+# check if already running W0CHP and set result in var.
+if grep -q W0CHP /var/www/dashboard/config/version.php ; then
+    RUNNING_W0CHP=1
+fi
 
 ## Dashboard
 OFFICIAL_DASHBOARD_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
@@ -183,8 +187,8 @@ function InstallCSS() {
     WaitForUnattendedUpgrade
     _rw
     # Are we already running W0CHP Dash with user CSS? If so, leave all CSS alone...
-    if grep -q W0CHP /var/www/dashboard/config/version.php && [ -f "/etc/pistar-css.ini" ]; then
-        echo -e "\n\nInstallation of CSS requested, however, W0CHP Dash and user CSS detected... Leaving user CSS alone.\n\n"
+    if [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
+        echo -e "\n\nInstallation of CSS requested, however, W0CHP Dash and custom  CSS detected... Leaving CSS alone.\n\n"
     # check for user's css (if any, back it up, and install W0CHP version)
     elif [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
@@ -199,13 +203,18 @@ function InstallCSS() {
 function MapCSS() {
     WaitForUnattendedUpgrade
     _rw
-    # ensure no custom css exists and install stock color mapping to new selectors 
-    if [ ! -f "/etc/pistar-css.ini" ]; then
+    # ensure no user W0CHP css exists and install stock color mapping to new selectors
+    if [[ ! $RUNNING_W0CHP ]] && [ ! -f "/etc/pistar-css.ini" ]; then
         mv /var/www/dashboard/pistar-css-dist.ini /etc/pistar-css.ini
-    # otherwise, make a backup of user's css and map stock css
-    elif [ -f "/etc/pistar-css.ini" ]; then
+    # are we running W0CHP with user css? if so, bail
+    elif [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
+        echo -e "\n\nW0CHP Dash and custom CSS detected... Not mapping stock CSS. Leaving custom  CSS alone.\n\n"
+    # otherwise, not running W0CHP dash, but user has css: make a backup of user's css and map stock css
+    elif [[ ! $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
         mv /var/www/dashboard/pistar-css-dist.ini /etc/pistar-css.ini
+        echo -e "\n\nCustom CSS detected. Making backup and mapping stock Pi-Star colors. To re-map/re-customize"
+        echo -e "your CSS manually, please see the README: <https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash#file-content>\n\n"
     fi
     _ro
 }
