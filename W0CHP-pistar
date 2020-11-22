@@ -480,7 +480,6 @@ while [[ $# -gt 0 ]]; do
 
 	"-rd" | "--restore-dashboard")
 	    RestoreDashboard
-	    RestoreDataAndDowngrade
 	    DisplayConfigUpdate
 	    RestoreSanityCheck
 	    shift
