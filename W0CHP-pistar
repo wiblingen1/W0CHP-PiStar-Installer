@@ -180,6 +180,7 @@ function InstallDashboard() {
     _rw
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASHBOARD_REPO"
     chown -R www-data:www-data /var/www/dashboard
+    mv /var/www/dashboard/BM_TGs.json /usr/local/etc/
     _ro
 }
 
