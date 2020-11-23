@@ -180,7 +180,9 @@ function InstallDashboard() {
     _rw
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASHBOARD_REPO"
     chown -R www-data:www-data /var/www/dashboard
-    mv /var/www/dashboard/BM_TGs.json /usr/local/etc/
+    mv /usr/local/sbin/HostFilesUpdate.sh /usr/local/sbin/.HostFilesUpdate.sh.user
+    mv /var/www/dashboard/HostFilesUpdate.sh /usr/local/sbin/
+    /bin/bash /usr/local/sbin/HostFilesUpdate.sh
     _ro
 }
 
@@ -232,6 +234,8 @@ function RestoreDashboard() {
     fi
     ChangeAndCheckoutRepo "/var/www/dashboard" "$OFFICIAL_DASHBOARD_REPO"
     chown -R www-data:www-data /var/www/dashboard  
+    mv /usr/local/sbin/.HostFilesUpdate.sh.user /usr/local/sbin/HostFilesUpdate.sh
+    rm -r BM_TGs.json
     _ro
 }
 
