@@ -181,7 +181,7 @@ function InstallDashboard() {
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASHBOARD_REPO"
     chown -R www-data:www-data /var/www/dashboard
     # update host file updater for BM TG names in admin page:
-    if [ ! $RUNNING_W0CHP ]
+    if [ ! "${RUNNING_W0CHP}" ]; then
         mv /usr/local/sbin/HostFilesUpdate.sh /usr/local/sbin/.HostFilesUpdate.sh.user
         mv /var/www/dashboard/HostFilesUpdate.sh /usr/local/sbin/
         echo -e "\nUpdating host files and BM TG names...\n"
