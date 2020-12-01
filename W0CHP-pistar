@@ -4,6 +4,8 @@
 #                                                                         #
 # Setting envvar NO_UPDATE_SELF=1 will disable auto update of this script #
 #                                                                         #
+# Setting envvar INSTALL_BETA=1 will install the unstable version.        # 
+#                                                                         #
 # ####################################################################### #
 
 if [ "$(id -u)" != "0" ]; then
@@ -13,6 +15,7 @@ fi
 
 W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar"
 W0CHP_DASH_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash.git"
+W0CHP_BETA_BRANCH="TalkerAlias"
 
 UPDATE_SELF=${UPDATE_SELF:-1}
 UPDATE_URI="${W0CHP_INSTALL_SCRIPT_REPO}"
@@ -76,13 +79,17 @@ function WaitForUnattendedUpgrade() {
 function ChangeAndCheckoutRepo() {
     dir="$1"
     repo="$2"
-
     cd "$1"
     git remote add newrepo "$repo"
     git fetch newrepo
     git remote remove origin
     git remote rename newrepo origin
-    git reset --hard origin/master
+    if [[ ${INSTALL_BETA} = 1 ]]; then
+	git checkout "$W0CHP_BETA_BRANCH"
+        git reset --hard origin/"$W0CHP_BETA_BRANCH"
+    else
+        git reset --hard origin/master
+    fi
 }
 
 function InstallDashboard() {
@@ -108,7 +115,7 @@ function InstallCSS() {
     _rw
     # Are we already running W0CHP Dash with user CSS? If so, leave all CSS alone...
     if [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
-        echo -e "\n\nInstallation of CSS requested, however, W0CHP Dash and custom  CSS detected... Leaving CSS alone.\n\n"
+        echo -e "\n\nInstallation of CSS requested, however, W0CHP Dash and custom CSS detected... Leaving CSS alone.\n\n"
     # check for user's css (if any, back it up, and install W0CHP version)
     elif [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
@@ -265,7 +272,7 @@ while [[ $# -gt 0 ]]; do
     key="$1"
 
     case $key in
-	"-id" | "--install-dashboard")
+	"-id" | "--install-dashboard" )
 	    echo "INFO: Installing the dashboard, this may take some time..."
 	    InstallDashboard
 	    InstallCSS
