@@ -79,13 +79,14 @@ function WaitForUnattendedUpgrade() {
 function ChangeAndCheckoutRepo() {
     dir="$1"
     repo="$2"
+
     cd "$1"
     git remote add newrepo "$repo"
     git fetch newrepo
     git remote remove origin
     git remote rename newrepo origin
     if [[ ${INSTALL_BETA} = 1 ]]; then
-	git checkout "$W0CHP_BETA_BRANCH"
+        git checkout "$W0CHP_BETA_BRANCH"
         git reset --hard origin/"$W0CHP_BETA_BRANCH"
     else
         git reset --hard origin/master
@@ -272,7 +273,7 @@ while [[ $# -gt 0 ]]; do
     key="$1"
 
     case $key in
-	"-id" | "--install-dashboard" )
+	"-id" | "--install-dashboard")
 	    echo "INFO: Installing the dashboard, this may take some time..."
 	    InstallDashboard
 	    InstallCSS
