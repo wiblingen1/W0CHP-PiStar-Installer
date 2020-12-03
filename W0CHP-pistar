@@ -96,18 +96,31 @@ function ChangeAndCheckoutRepo() {
 function InstallDashboard() {
     WaitForUnattendedUpgrade
     _rw
+    echo -e "Checking for required program...\n"
+    if ! [ -x "$(command -v jq)" ]; then
+    #if [ ! $( which jq > /dev/null ) ]; then
+        echo -e "'jq' package not found. Installing prerequsite, 'jq', which helps to mass-manage your static Brandmeister Talkgroups\n"
+	echo -e "This will take some time...\n"
+        apt-get update
+        apt-get install -y jq
+    else
+	echo -e "'jq' package found! Not intalling.\n"
+    fi
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASHBOARD_REPO"
     chown -R www-data:www-data /var/www/dashboard
-    # update host file updater for BM TG names in admin page:
     if [ ! "${RUNNING_W0CHP}" ]; then
         mv /usr/local/sbin/HostFilesUpdate.sh /usr/local/sbin/.HostFilesUpdate.sh.user
         cp /var/www/dashboard/supporting-files/HostFilesUpdate.sh /usr/local/sbin/
-        cp /var/www/dashboard/supporting-files/pistar-services /usr/local/sbin/
-	chmod +x /usr/local/sbin/HostFilesUpdate.sh
-	chmod +x /usr/local/sbin/pistar-services
-        echo -e "\nUpdating host files and BM TG names...\n"
-        /bin/bash /usr/local/sbin/HostFilesUpdate.sh
     fi
+    cp /var/www/dashboard/supporting-files/pistar-services /usr/local/sbin/
+    cp /var/www/dashboard/supporting-files/pistar-bm_static_tgs_addall /usr/local/sbin/
+    cp /var/www/dashboard/supporting-files/pistar-bm_static_tgs_dropall /usr/local/sbin/
+    chmod +x /usr/local/sbin/HostFilesUpdate.sh
+    chmod +x /usr/local/sbin/pistar-services
+    chmod +x /usr/local/sbin/pistar-bm_static_tgs_addall
+    chmod +x /usr/local/sbin/pistar-bm_static_tgs_dropall
+    echo -e "\nUpdating host files and BM TG names. This will take some time...\n"
+    /bin/bash /usr/local/sbin/HostFilesUpdate.sh
     _ro
 }
 
@@ -163,6 +176,15 @@ function RestoreDashboard() {
     rm -r /usr/local/sbin/.HostFilesUpdate.sh.user
     rm -r /usr/local/etc/BM_TGs.json*
     rm -r /usr/local/sbin/pistar-services
+    rm -r /usr/local/sbin/pistar-bm_static_tgs_addall
+    rm -r /usr/local/sbin/pistar-bm_static_tgs_dropall
+    if compgen -G "/var/www/dashboard/.bm_tgs.json*" > /dev/null; then
+        rm -r /var/www/dashboard/.bm_tgs.json*
+    fi
+    if  [ -x "$(command -v jq)" ]; then
+        apt-get remove -y jq
+        apt-get autoremove -y
+    fi
     _ro
 }
 
@@ -274,7 +296,7 @@ while [[ $# -gt 0 ]]; do
 
     case $key in
 	"-id" | "--install-dashboard")
-	    echo "INFO: Installing the dashboard, this may take some time..."
+	    echo -e "INFO: Installing the dashboard, this may take some time...\n\n"
 	    InstallDashboard
 	    InstallCSS
 	    CleanSupportingFiles
@@ -283,7 +305,7 @@ while [[ $# -gt 0 ]]; do
 	    ;;
 
 	"-idn" | "--install-dashboard-nocss")
-	    echo "INFO: Installing the dashboard, this may take some time..."
+	    echo -e "INFO: Installing the dashboard, this may take some time...\n\n"
 	    InstallDashboard
 	    MapCSS
 	    DisplayConfigUpdate
