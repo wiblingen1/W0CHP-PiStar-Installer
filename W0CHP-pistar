@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-# ############################## NOTE ################################### #
-#                                                                         #
-# Setting envvar NO_UPDATE_SELF=1 will disable auto update of this script #
-#                                                                         #
-# Setting envvar INSTALL_BETA=1 will install the unstable version.        # 
-#                                                                         #
-# ####################################################################### #
+# ############################## NOTE ################################ #
+#                                                                      #
+# Setting var NO_UPDATE_SELF=1 will disable auto update of this script #
+#                                                                      #
+# Setting var INSTALL_BETA=1 will install the unstable version.        # 
+#                                                                      #
+# #################################################################### #
 
 if [ "$(id -u)" != "0" ]; then
   echo -e "You need to be root to run this command...\n"
@@ -52,7 +52,7 @@ CURL_OPTIONS="${CURL_OPTIONS} -L"
 
 ## Only pistar v4 supported!
 if [ ! ${PISTAR_VERSION_INFO[0]} -eq 4 ]; then
-    echo "Unsupported PiStar version, bailing out."
+    echo "Unsupported PiStar version."
     exit 1
 fi
 
