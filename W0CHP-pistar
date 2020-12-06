@@ -60,12 +60,10 @@ function _rw() {
     # Prevent the FS to be remounted as RO
     systemctl stop cron.service > /dev/null 2<&1
     mount -o remount,rw /
-    mount -o remount,rw /boot
 }
 
 function _ro() {
     sync
-    mount -o remount,ro /boot
     mount -o remount,ro /
     systemctl start cron.service > /dev/null 2<&1
 }
@@ -85,7 +83,7 @@ function ChangeAndCheckoutRepo() {
     git fetch newrepo
     git remote remove origin
     git remote rename newrepo origin
-    if [[ ${INSTALL_BETA} = 1 ]]; then
+    if [[ ${INSTALL_BETA} = 1 ]] && [[ ${key} =~ ^(-id|-idn|--install-dashboard|--install-dashboard-nocss)$ ]]; then # check if user wants beta, AND, that it's an install, not a restore...
         git checkout "$W0CHP_BETA_BRANCH"
         git reset --hard origin/"$W0CHP_BETA_BRANCH"
     else
@@ -166,6 +164,7 @@ function MapCSS() {
 }
 
 function RestoreDashboard() {
+    WaitForUnattendedUpgrade
     _rw
     # remove W0CHP css if any and restore user css (if any)
     if [ -f "/etc/.pistar-css.ini.user" ]; then
