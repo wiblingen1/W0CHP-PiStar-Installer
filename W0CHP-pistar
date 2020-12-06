@@ -115,12 +115,10 @@ function InstallDashboard() {
         cp /var/www/dashboard/supporting-files/HostFilesUpdate.sh /usr/local/sbin/
     fi
     cp /var/www/dashboard/supporting-files/pistar-services /usr/local/sbin/
-    cp /var/www/dashboard/supporting-files/pistar-bm_static_tgs_addall /usr/local/sbin/
-    cp /var/www/dashboard/supporting-files/pistar-bm_static_tgs_dropall /usr/local/sbin/
+    cp /var/www/dashboard/supporting-files/pistar-bm_static_tgs_* /usr/local/sbin/
     chmod +x /usr/local/sbin/HostFilesUpdate.sh
     chmod +x /usr/local/sbin/pistar-services
-    chmod +x /usr/local/sbin/pistar-bm_static_tgs_addall
-    chmod +x /usr/local/sbin/pistar-bm_static_tgs_dropall
+    chmod +x /usr/local/sbin/pistar-bm_static_tgs_*
     echo -e "\nUpdating host files and BM TG names. This will take some time...\n"
         /bin/bash /usr/local/sbin/HostFilesUpdate.sh
     _ro
@@ -178,8 +176,7 @@ function RestoreDashboard() {
     rm -r /usr/local/sbin/.HostFilesUpdate.sh.user
     rm -r /usr/local/etc/BM_TGs.json*
     rm -r /usr/local/sbin/pistar-services
-    rm -r /usr/local/sbin/pistar-bm_static_tgs_addall
-    rm -r /usr/local/sbin/pistar-bm_static_tgs_dropall
+    rm -r /usr/local/sbin/pistar-bm_static_tgs_*
     if compgen -G "/var/www/dashboard/.bm_tgs.json*" > /dev/null; then
         rm -r /var/www/dashboard/.bm_tgs.json*
     fi
