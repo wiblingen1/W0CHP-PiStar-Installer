@@ -112,12 +112,15 @@ function InstallDashboard() {
     if [ ! "${RUNNING_W0CHP}" ]; then
         mv /usr/local/sbin/HostFilesUpdate.sh /usr/local/sbin/.HostFilesUpdate.sh.user
         cp /var/www/dashboard/supporting-files/HostFilesUpdate.sh /usr/local/sbin/
+    	chmod +x /usr/local/sbin/HostFilesUpdate.sh
+        mv /usr/local/sbin/pistar-update /usr/local/sbin/.pistar-update.user
+        cp /var/www/dashboard/supporting-files/HostFilesUpdate.sh /usr/local/sbin/
+    	chmod +x /usr/local/sbin/pistar-update
     else
         cp /var/www/dashboard/supporting-files/HostFilesUpdate.sh /usr/local/sbin/
     fi
     cp /var/www/dashboard/supporting-files/pistar-services /usr/local/sbin/
     cp /var/www/dashboard/supporting-files/pistar-bm_static_tgs_* /usr/local/sbin/
-    chmod +x /usr/local/sbin/HostFilesUpdate.sh
     chmod +x /usr/local/sbin/pistar-services
     chmod +x /usr/local/sbin/pistar-bm_static_tgs_*
     echo -e "\nUpdating host files and BM TG names. This will take some time...\n"
@@ -175,6 +178,8 @@ function RestoreDashboard() {
     chown -R www-data:www-data /var/www/dashboard  
     cp /usr/local/sbin/.HostFilesUpdate.sh.user /usr/local/sbin/HostFilesUpdate.sh
     rm -r /usr/local/sbin/.HostFilesUpdate.sh.user
+    cp /usr/local/sbin/.pistar-update.user /usr/local/sbin/pistar-update
+    rm -r /usr/local/sbin/.pistar-update.user
     rm -r /usr/local/etc/BM_TGs.json*
     rm -r /usr/local/sbin/pistar-services
     rm -r /usr/local/sbin/pistar-bm_static_tgs_*
