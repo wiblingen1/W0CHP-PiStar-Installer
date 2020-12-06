@@ -175,11 +175,17 @@ function RestoreDashboard() {
 	    rm -f /etc/pistar-css.ini
     fi
     ChangeAndCheckoutRepo "/var/www/dashboard" "$OFFICIAL_DASHBOARD_REPO"
-    chown -R www-data:www-data /var/www/dashboard  
-    cp /usr/local/sbin/.HostFilesUpdate.sh.user /usr/local/sbin/HostFilesUpdate.sh
-    rm -r /usr/local/sbin/.HostFilesUpdate.sh.user
-    cp /usr/local/sbin/.pistar-update.user /usr/local/sbin/pistar-update
-    rm -r /usr/local/sbin/.pistar-update.user
+    chown -R www-data:www-data /var/www/dashboard
+    # restore uptream sbin files
+    if [ -f "/usr/local/sbin/.HostFilesUpdate.sh.user" ]; then
+        cp /usr/local/sbin/.HostFilesUpdate.sh.user /usr/local/sbin/HostFilesUpdate.sh
+        rm -r /usr/local/sbin/.HostFilesUpdate.sh.user
+    fi
+    if [ -f "/usr/local/sbin/.pistar-update.user" ]; then
+        cp /usr/local/sbin/.pistar-update.user /usr/local/sbin/pistar-update
+        rm -r /usr/local/sbin/.pistar-update.user
+    fi
+    # clean up the rest
     rm -r /usr/local/etc/BM_TGs.json*
     rm -r /usr/local/sbin/pistar-services
     rm -r /usr/local/sbin/pistar-bm_static_tgs_*
