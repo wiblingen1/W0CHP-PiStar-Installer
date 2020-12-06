@@ -89,6 +89,7 @@ function ChangeAndCheckoutRepo() {
         git checkout "$W0CHP_BETA_BRANCH"
         git reset --hard origin/"$W0CHP_BETA_BRANCH"
     else
+        git checkout master
         git reset --hard origin/master
     fi
 }
