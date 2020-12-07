@@ -2,9 +2,9 @@
 
 # ############################## NOTE ################################ #
 #                                                                      #
-# Setting var NO_UPDATE_SELF=1 will disable auto update of this script #
+# NO_UPDATE_SELF=1 will disable auto update of this script             #
 #                                                                      #
-# Setting var INSTALL_BETA=1 will install the unstable version.        # 
+# INSTALL_BETA=1 will install the unstable version.                    # 
 #                                                                      #
 # #################################################################### #
 
@@ -15,6 +15,10 @@ fi
 
 W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar"
 W0CHP_DASH_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash.git"
+W0CHP_SBIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin.git"
+OFFICIAL_DASH_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
+OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
+
 W0CHP_BETA_BRANCH="TalkerAlias"
 
 UPDATE_SELF=${UPDATE_SELF:-1}
@@ -42,10 +46,6 @@ fi
 if grep -q W0CHP /var/www/dashboard/config/version.php ; then
     RUNNING_W0CHP=1
 fi
-
-## Dashboard
-OFFICIAL_DASHBOARD_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
-W0CHP_DASHBOARD_REPO="${W0CHP_DASH_REPO}"
 
 # Always follow redirects
 CURL_OPTIONS="${CURL_OPTIONS} -L"
@@ -83,11 +83,10 @@ function ChangeAndCheckoutRepo() {
     git fetch newrepo
     git remote remove origin
     git remote rename newrepo origin
-    if [[ ${INSTALL_BETA} = 1 ]] && [[ ${key} =~ ^(-id|-idn|--install-dashboard|--install-dashboard-nocss)$ ]]; then # check if user wants beta, AND, that it's an install, not a restore...
+    if [[ ${INSTALL_BETA} = 1 ]] && [[ $dir == "/var/www/dashboard" ]] && [[ ${key} =~ ^(-id|-idn|--install-dashboard|--install-dashboard-nocss)$ ]]; then # check if user wants beta, AND, that it's an install, not a restore...
         git checkout "$W0CHP_BETA_BRANCH"
         git reset --hard origin/"$W0CHP_BETA_BRANCH"
     else
-        git checkout master
         git reset --hard origin/master
     fi
 }
@@ -97,7 +96,6 @@ function InstallDashboard() {
     _rw
     echo -e "Checking for required program...\n"
     if ! [ -x "$(command -v jq)" ]; then
-    #if [ ! $( which jq > /dev/null ) ]; then
         echo -e "'jq' package not found. Installing prerequsite, 'jq', which helps to mass-manage your static Brandmeister Talkgroups\n"
 	echo -e "This will take some time...\n"
         apt-get update
@@ -105,22 +103,8 @@ function InstallDashboard() {
     else
 	echo -e "'jq' package found! Not intalling.\n"
     fi
-    ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASHBOARD_REPO"
-    if [ ! "${RUNNING_W0CHP}" ]; then # backup official upstream sbin files being replaced
-        mv /usr/local/sbin/HostFilesUpdate.sh /usr/local/sbin/.HostFilesUpdate.sh.user
-        cp /var/www/dashboard/supporting-files/HostFilesUpdate.sh /usr/local/sbin/
-        mv /usr/local/sbin/pistar-update /usr/local/sbin/.pistar-update.user
-        cp /var/www/dashboard/supporting-files/pistar-update /usr/local/sbin/
-    else # need to keep these updated all the time - they *do* change.
-        cp /var/www/dashboard/supporting-files/HostFilesUpdate.sh /usr/local/sbin/
-        cp /var/www/dashboard/supporting-files/pistar-update /usr/local/sbin/
-    fi
-    cp /var/www/dashboard/supporting-files/pistar-services /usr/local/sbin/
-    cp /var/www/dashboard/supporting-files/pistar-bm_static_tgs_* /usr/local/sbin/
-    chmod +x /usr/local/sbin/HostFilesUpdate.sh
-    chmod +x /usr/local/sbin/pistar-update
-    chmod +x /usr/local/sbin/pistar-services
-    chmod +x /usr/local/sbin/pistar-bm_static_tgs_*
+    ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
+    ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     chown -R www-data:www-data /var/www/dashboard
     echo -e "\nUpdating host files and BM TG names. This will take some time...\n"
         /bin/bash /usr/local/sbin/HostFilesUpdate.sh
@@ -164,6 +148,7 @@ function MapCSS() {
 }
 
 function RestoreDashboard() {
+    echo -e "\nRestoring official Pi-Star Dashboard and files...\n"
     WaitForUnattendedUpgrade
     _rw
     # remove W0CHP css if any and restore user css (if any)
@@ -174,21 +159,12 @@ function RestoreDashboard() {
     elif [ -f "/etc/pistar-css.ini" ]; then
 	    rm -f /etc/pistar-css.ini
     fi
-    ChangeAndCheckoutRepo "/var/www/dashboard" "$OFFICIAL_DASHBOARD_REPO"
-    chown -R www-data:www-data /var/www/dashboard
-    # restore uptream sbin files
-    if [ -f "/usr/local/sbin/.HostFilesUpdate.sh.user" ]; then
-        cp /usr/local/sbin/.HostFilesUpdate.sh.user /usr/local/sbin/HostFilesUpdate.sh
-        rm -r /usr/local/sbin/.HostFilesUpdate.sh.user
-    fi
-    if [ -f "/usr/local/sbin/.pistar-update.user" ]; then
-        cp /usr/local/sbin/.pistar-update.user /usr/local/sbin/pistar-update
-        rm -r /usr/local/sbin/.pistar-update.user
-    fi
+    ChangeAndCheckoutRepo "/var/www/dashboard" "$OFFICIAL_DASH_REPO"
+    ChangeAndCheckoutRepo "/usr/local/sbin" "$OFFICIAL_SBIN_REPO"
     # clean up the rest
-    rm -r /usr/local/etc/BM_TGs.json*
-    rm -r /usr/local/sbin/pistar-services
-    rm -r /usr/local/sbin/pistar-bm_static_tgs_*
+    if compgen -G "/usr/local/etc/BM_TGs.json*" > /dev/null; then
+        rm -r /usr/local/etc/BM_TGs.json*
+    fi
     if compgen -G "/var/www/dashboard/.bm_tgs.json*" > /dev/null; then
         rm -r /var/www/dashboard/.bm_tgs.json*
     fi
@@ -197,13 +173,7 @@ function RestoreDashboard() {
         apt-get autoremove -y
     fi
     _ro
-}
-
-function CleanSupportingFiles() {
-    WaitForUnattendedUpgrade
-    _rw
-    rm -rf /var/www/dashboard/supporting-files
-    _ro
+    echo -e "\nOfficial Pi-Star Dashboard and files restoration complete.\n"
 }
 
 function UpdateSelf() {
@@ -259,20 +229,21 @@ function DisplayConfigUpdate() {
 }
 
 # $1 directory
-# $1 original repo
+# $2 original repo
 function DisplayRepoStatus() {
     dir="$1"
     repo=$(git --work-tree=${dir} --git-dir=${dir}/.git config --get remote.origin.url)
 
     if [ "$repo" == "$2" ]; then
-	echo "$1 uses *ORIGINAL* Pi-Star Repository."
+	echo "$1 uses *OFFICIAL* Pi-Star Repository."
     else
 	echo "$1 uses *W0CHP* Repository."
     fi
 }
 
 function DisplayStatus() {
-    DisplayRepoStatus "/var/www/dashboard" "$OFFICIAL_DASHBOARD_REPO"
+    DisplayRepoStatus "/var/www/dashboard" "$OFFICIAL_DASH_REPO"
+    DisplayRepoStatus "/usr/local/sbin" "$OFFICIAL_SBIN_REPO"
 }
 
 function DisplayHelp() {
@@ -310,7 +281,6 @@ while [[ $# -gt 0 ]]; do
 	    echo -e "INFO: Installing the dashboard, this may take some time...\n\n"
 	    InstallDashboard
 	    InstallCSS
-	    CleanSupportingFiles
 	    DisplayConfigUpdate
 	    shift
 	    ;;
