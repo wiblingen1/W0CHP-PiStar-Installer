@@ -8,19 +8,24 @@
 #                                                                      #
 # #################################################################### #
 
+# privelege check
 if [ "$(id -u)" != "0" ]; then
   echo -e "You need to be root to run this command...\n"
   exit 1
 fi
 
+
+# common vars
 W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar"
 W0CHP_DASH_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash.git"
 W0CHP_SBIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin.git"
 OFFICIAL_DASH_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
 OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
 
+# don't fuck with this unless you're brave and adept at troubleshooting
 W0CHP_BETA_BRANCH="TalkerAlias"
 
+# internal vars. no need to fuck with these
 UPDATE_SELF=${UPDATE_SELF:-1}
 UPDATE_URI="${W0CHP_INSTALL_SCRIPT_REPO}"
 ROOT_PATH=${ROOT_PATH:-"/"}
@@ -29,8 +34,8 @@ SELFUPDATE_SCRIPT="${WORK_PATH}/.updateScript-W0CHP-pistar.sh"
 CURL_OPTIONS=${CURL_OPTIONS:-""}
 ALL_ARGS="$@"
 
+# pi-star version check. only 4.x is supported.
 RELEASE_FILE="/etc/pistar-release"
-
 if [ -f ${RELEASE_FILE} ]; then
     PISTAR_VERSION=$(grep 'Version' /etc/pistar-release | cut -f 2 -d '=' | tr -d ' ')
     PISTAR_VERSION_INFO=( ${PISTAR_VERSION//./ })
@@ -94,15 +99,15 @@ function ChangeAndCheckoutRepo() {
 function InstallDashboard() {
     WaitForUnattendedUpgrade
     _rw
-    echo -e "Checking for required program...\n"
+    echo -e "Checking for required program(s)...\n"
     if ! [ -x "$(command -v jq)" ]; then
-        echo -e "'jq' package not found. Installing prerequsite, 'jq' and it's\n"
-	echo -e"associated libraries; which helps to mass-manage your static Brandmeister Talkgroups\n"
+        echo -e "'The jq' package was not found. Installing prerequsite, 'jq' and its\n"
+	echo -e "associated libraries; which helps to mass-manage your static Brandmeister Talkgroups.\n"
 	echo -e "\nThis will take some time...\n"
         apt-get update
         apt-get install -y jq
     else
-	echo -e "'jq' package found! Not intalling.\n"
+	echo -e "\n The required 'jq' package was found! NOT intalling.\n"
     fi
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
