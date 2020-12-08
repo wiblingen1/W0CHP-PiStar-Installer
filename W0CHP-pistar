@@ -101,7 +101,7 @@ function InstallDashboard() {
     _rw
     echo -e "Checking for required program(s)...\n"
     if ! [ -x "$(command -v jq)" ]; then
-        echo -e "'The jq' package was not found. Installing prerequsite, 'jq' and its\n"
+        echo -e "'The jq' package was not found. Installing prerequsite, 'jq' and its"
 	echo -e "associated libraries; which helps to mass-manage your static Brandmeister Talkgroups.\n"
 	echo -e "\nThis will take some time...\n"
         apt-get update
