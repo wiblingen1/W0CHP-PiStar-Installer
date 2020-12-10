@@ -16,18 +16,6 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-# confirm with the (l)user that they REALLY want to intall this.
-echo -e "\nThis program will install the W0CHP-Pistar-Dash.\n\nIMPORTANT!!!"
-echo -e "\nBy typing 'Y', you are accpeting any risks, and you also accept"
-echo -e "that NO SUPPORT IS OFFERED, and that you are on your own!\n"
-while true; do
-    read -p "Are you certain you wish to install this program? (Y/N) -->  " yn
-    case $yn in
-        [Yy]* ) break;;
-        * ) echo -e "\n'Y' not selected. Bailing out...\n"; exit;;
-    esac
-done
-
 # common vars
 W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar"
 W0CHP_DASH_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash.git"
