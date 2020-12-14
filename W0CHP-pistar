@@ -100,15 +100,15 @@ function ChangeAndCheckoutRepo() {
 function InstallDashboard() {
     WaitForUnattendedUpgrade
     _rw
-    echo -e "Checking for required program(s)...\n"
+    echo -e "Checking for required program(s)..."
     if ! [ -x "$(command -v jq)" ]; then
-        echo -e "'The jq' package was not found. Installing prerequsite, 'jq' and its"
+        echo -e "The jq' package was not found. Installing prerequsite, 'jq' and its"
 	echo -e "associated libraries; which helps to mass-manage your static Brandmeister Talkgroups.\n"
 	echo -e "\nThis will take some time...\n"
         apt-get update
         apt-get install -y jq
     else
-	echo -e "\n The required 'jq' package was found! NOT intalling.\n"
+	echo -e "\nThe required 'jq' package was already found! NOT intalling.\n"
     fi
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
