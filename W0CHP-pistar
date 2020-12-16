@@ -2,9 +2,9 @@
 
 # ############################## NOTE ################################ #
 #                                                                      #
-# NO_UPDATE_SELF=1 #will disable auto update of this script            #
+# NO_UPDATE_SELF=1 # will disable auto update of this script           #
 #                                                                      #
-# INSTALL_BETA=1 will install the (very) unstable version.             # 
+# INSTALL_BETA=1 # will install the (very) unstable version.           # 
 #                                                                      #
 # Don't fuck with these unless you want to break shit.                 #
 #                                                                      #
