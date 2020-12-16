@@ -115,7 +115,7 @@ function InstallDashboard() {
         echo -e "The 'php-xml' package was not found. Installing prerequsite, 'php-xml',"
 	echo -e "which helps to manage your static TGIF Talkgroups.\n"
 	echo -e "\nThis will take some time...\n"
-	if php | grep -q '7.3' ; then  # pistar ships with very old php packages. check user's version first...
+	if php -m | grep -q '7.3' ; then  # pistar ships with very old php packages. check user's version first...
             apt-get update
             apt-get install -y php-xml
 	else # damn - need to install an old version :-/
@@ -197,7 +197,7 @@ function RestoreDashboard() {
         apt-get autoremove -y
     fi
     if php -m | grep -q dom; then
-	if php | grep -q '7.3' ; then
+	if php -m | grep -q '7.3' ; then
 	    apt-get purge -y php-xml
         else
 	    apt-get purge -y php7.0-xml
