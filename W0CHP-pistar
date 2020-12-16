@@ -22,7 +22,7 @@ W0CHP_DASH_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash.git"
 W0CHP_SBIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin.git"
 OFFICIAL_DASH_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
 OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
-REQD_PACKS=""
+REQD_PACKS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/reqd-packs"
 
 # don't fuck with this unless you're brave and adept at troubleshooting
 W0CHP_BETA_BRANCH="TalkerAlias"
@@ -115,8 +115,14 @@ function InstallDashboard() {
         echo -e "The 'php-xml' package was not found. Installing prerequsite, 'php-xml',"
 	echo -e "which helps to manage your static TGIF Talkgroups.\n"
 	echo -e "\nThis will take some time...\n"
-        apt-get update
-        apt-get install -y php-xml
+	if php | grep -w '7.3' ; then  # pistar ships with very old php packages. check user's version first...
+            apt-get update
+            apt-get install -y php-xml
+	else # damn - need to install an old version :-/
+	    curl $REQD_PACKS_REPO/php7.0-xml_7.0.33-0+deb9u10_armhf.deb -o /tmp/php7.0-xml_7.0.33-0+deb9u10_armhf.deb
+            dpkg -i /tmp/php7.0-xml_7.0.33-0+deb9u10_armhf.deb
+	    apt-get install -f
+	fi
     else
 	echo -e "\nThe required 'php-xml' package was already found! NOT intalling.\n"
     fi
@@ -187,11 +193,15 @@ function RestoreDashboard() {
         rm -r /var/www/dashboard/.bm_tgs.json*
     fi
     if  [ -x "$(command -v jq)" ]; then
-        apt-get remove -y jq
+        apt-get purge -y jq
         apt-get autoremove -y
     fi
     if php -m | grep dom; then
-	apt-get remove -y php-xml
+	if php | grep -w '7.3' ; then
+	    apt-get purge -y php-xml
+        else
+	    apt-get purge -y php7.0-xml
+        fi
         apt-get autoremove -y
     fi
     _ro
