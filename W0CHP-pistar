@@ -116,7 +116,7 @@ function InstallDashboard() {
 	echo -e "which helps to manage your static TGIF Talkgroups.\n"
 	echo -e "\nThis will take some time...\n"
 	if php -v | grep -q '7.3' ; then  # pistar ships with very old php packages. check user's version first...
-            apt-get update
+            #apt-get update # already done above. Not necessary?
             apt-get install -y php7.3-xml
 	else # damn - need to install an old version :-/
 	    curl $REQD_PACKS_REPO/php7.0-xml_7.0.33-0+deb9u10_armhf.deb -o /tmp/php7.0-xml_7.0.33-0+deb9u10_armhf.deb
