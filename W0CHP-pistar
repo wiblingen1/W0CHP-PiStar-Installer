@@ -103,7 +103,7 @@ function InstallDashboard() {
     _rw
     echo -e "Checking for required program(s)..."
     if ! [ -x "$(command -v jq)" ]; then
-        echo -e "The 'jq' package was not found. Installing prerequsite, 'jq' and its"
+        echo -e "\nThe 'jq' package was not found. Installing prerequsite, 'jq' and its"
 	echo -e "associated libraries; which helps to mass-manage your static Brandmeister Talkgroups.\n"
 	echo -e "\nThis will take some time...\n"
         apt-get update
@@ -112,7 +112,7 @@ function InstallDashboard() {
 	echo -e "\nThe required 'jq' package was already found! NOT intalling.\n"
     fi
     if ! php -m | grep -q dom ; then
-        echo -e "The 'php-xml' package was not found. Installing prerequsite, 'php-xml',"
+        echo -e "\nThe 'php-xml' package was not found. Installing prerequsite, 'php-xml',"
 	echo -e "which helps to manage your static TGIF Talkgroups.\n"
 	echo -e "\nThis will take some time...\n"
 	if php -v | grep -q '7.3' ; then  # pistar ships with very old php packages. check user's version first...
@@ -192,6 +192,10 @@ function RestoreDashboard() {
     if compgen -G "/var/www/dashboard/.bm_tgs.json*" > /dev/null; then
         rm -r /var/www/dashboard/.bm_tgs.json*
     fi
+    if compgen -G "/usr/local/etc/tgif-talkgroups*" > /dev/null; then
+        rm -r /usr/local/etc/tgif-talkgroups**
+    fi
+    echo -e "\nRemoving packages installed for W0CHP-PiStar-Dash...\n"
     if  [ -x "$(command -v jq)" ]; then
         apt-get purge -y jq
         apt-get autoremove -y
