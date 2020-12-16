@@ -2,7 +2,7 @@
 
 # ############################## NOTE ################################ #
 #                                                                      #
-# NO_UPDATE_SELF=1 will disable auto update of this script             #
+# NO_UPDATE_SELF=1 #will disable auto update of this script            #
 #                                                                      #
 # INSTALL_BETA=1 will install the (very) unstable version.             # 
 #                                                                      #
@@ -102,7 +102,7 @@ function InstallDashboard() {
     _rw
     echo -e "Checking for required program(s)..."
     if ! [ -x "$(command -v jq)" ]; then
-        echo -e "The jq' package was not found. Installing prerequsite, 'jq' and its"
+        echo -e "The 'jq' package was not found. Installing prerequsite, 'jq' and its"
 	echo -e "associated libraries; which helps to mass-manage your static Brandmeister Talkgroups.\n"
 	echo -e "\nThis will take some time...\n"
         apt-get update
@@ -110,6 +110,16 @@ function InstallDashboard() {
     else
 	echo -e "\nThe required 'jq' package was already found! NOT intalling.\n"
     fi
+    if ! php -m | grep dom ; then
+        echo -e "The 'php-xml' package was not found. Installing prerequsite, 'php-xml',"
+	echo -e "which helps to manage your static TGIF Talkgroups.\n"
+	echo -e "\nThis will take some time...\n"
+        apt-get update
+        apt-get install -y php-xml
+    else
+	echo -e "\nThe required 'php-xml' package was already found! NOT intalling.\n"
+    fi
+
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     chown -R www-data:www-data /var/www/dashboard
@@ -177,6 +187,10 @@ function RestoreDashboard() {
     fi
     if  [ -x "$(command -v jq)" ]; then
         apt-get remove -y jq
+        apt-get autoremove -y
+    fi
+    if php -m | grep dom; then
+	apt-get remove -y php-xml
         apt-get autoremove -y
     fi
     _ro
