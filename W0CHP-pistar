@@ -117,7 +117,7 @@ function InstallDashboard() {
 	echo -e "\nThis will take some time...\n"
 	if php -m | grep -q '7.3' ; then  # pistar ships with very old php packages. check user's version first...
             apt-get update
-            apt-get install -y php-xml
+            apt-get install -y php7.3-xml
 	else # damn - need to install an old version :-/
 	    curl $REQD_PACKS_REPO/php7.0-xml_7.0.33-0+deb9u10_armhf.deb -o /tmp/php7.0-xml_7.0.33-0+deb9u10_armhf.deb
             dpkg -i /tmp/php7.0-xml_7.0.33-0+deb9u10_armhf.deb
@@ -198,7 +198,7 @@ function RestoreDashboard() {
     fi
     if php -m | grep -q dom; then
 	if php -m | grep -q '7.3' ; then
-	    apt-get purge -y php-xml
+	    apt-get purge -y php7.3-xml
         else
 	    apt-get purge -y php7.0-xml
         fi
