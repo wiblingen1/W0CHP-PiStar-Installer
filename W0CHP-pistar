@@ -133,7 +133,7 @@ function InstallCSS() {
     _rw
     # Are we already running W0CHP Dash with user CSS? If so, leave all CSS alone...
     if [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
-        echo -e "\n\nInstallation of CSS requested, however, W0CHP Dash and custom CSS detected... Leaving CSS alone.\n\n"
+        echo -e "\n\nInstallation of CSS requested; however, W0CHP-PiStar Dash installation and custom CSS detected... Leaving CSS alone.\n\n"
     # check for user's css (if any, back it up, and install W0CHP version)
     elif [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
@@ -153,7 +153,7 @@ function MapCSS() {
         cp /var/www/dashboard/supporting-files/pistar-css-dist.ini /etc/pistar-css.ini
     # are we running W0CHP with user css? if so, bail
     elif [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
-        echo -e "\n\nW0CHP Dash and custom CSS detected... Not mapping stock CSS. Leaving custom  CSS alone.\n\n"
+        echo -e "\n\nW0CHP-PiStar-Dash installation and custom CSS detected... Not mapping stock CSS. Leaving custom  CSS alone.\n\n"
     # otherwise, not running W0CHP dash, but user has css: make a backup of user's css and map stock css
     elif [[ ! $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
