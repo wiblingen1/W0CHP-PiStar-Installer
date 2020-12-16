@@ -110,7 +110,7 @@ function InstallDashboard() {
     else
 	echo -e "\nThe required 'jq' package was already found! NOT intalling.\n"
     fi
-    if ! php -m | grep dom ; then
+    if ! php -m | grep -q dom ; then
         echo -e "The 'php-xml' package was not found. Installing prerequsite, 'php-xml',"
 	echo -e "which helps to manage your static TGIF Talkgroups.\n"
 	echo -e "\nThis will take some time...\n"
