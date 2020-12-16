@@ -119,9 +119,10 @@ function InstallDashboard() {
             #apt-get update # already done above. Not necessary?
             apt-get install -y php7.3-xml
 	else # damn - need to install an old version :-/
-	    curl $REQD_PACKS_REPO/php7.0-xml_7.0.33-0+deb9u10_armhf.deb -o /tmp/php7.0-xml_7.0.33-0+deb9u10_armhf.deb
-            dpkg -i /tmp/php7.0-xml_7.0.33-0+deb9u10_armhf.deb
+	    curl $REQD_PACKS_REPO/php7.0-xml_7.0.33-0+deb9u3_armhf.deb -o /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb
+            dpkg -i /tmp//php7.0-xml_7.0.33-0+deb9u3_armhf.deb
 	    apt-get install -f
+	    rm /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb
 	fi
     else
 	echo -e "\nThe required 'php-xml' package was already found! NOT intalling.\n"
