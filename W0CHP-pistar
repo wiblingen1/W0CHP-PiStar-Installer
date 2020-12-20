@@ -227,7 +227,7 @@ function UpdateSelf() {
     
     if [[ "$(head -1 ${_tempFileName})" != '#!/usr/bin/env bash' ]]; then
         echo "ERROR: Failed to download update for installation script!"
-        echo "ERROR: Contents of file is not as expected - github may be down"
+        echo "ERROR: Contents of file is not as expected - repo may be down"
 	_ro
         exit 1
     fi
