@@ -120,7 +120,7 @@ function InstallDashboard() {
             apt-get install -y php7.3-xml
 	else # damn - need to install an old version :-/
 	    curl $REQD_PACKS_REPO/php7.0-xml_7.0.33-0+deb9u3_armhf.deb -o /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb
-            dpkg -i /tmp//php7.0-xml_7.0.33-0+deb9u3_armhf.deb
+            dpkg -i /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb
 	    apt-get install -f
 	    rm /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb
 	fi
