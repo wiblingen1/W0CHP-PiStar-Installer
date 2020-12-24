@@ -131,7 +131,7 @@ function InstallDashboard() {
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     chown -R www-data:www-data /var/www/dashboard
-    echo -e "\nUpdating host files and BM TG names. This will take some time...\n"
+    echo -e "\nUpdating host files, BrandMeister and TGIF Talkgroup lists. This will take some time...\n"
         /bin/bash /usr/local/sbin/HostFilesUpdate.sh
     _ro
 }
