@@ -116,20 +116,19 @@ function InstallDashboard() {
 	echo -e "which helps to manage your static TGIF Talkgroups.\n"
 	echo -e "\nThis will take some time...\n"
 	if php -v | grep -q '7.3' ; then  # pistar ships with very old php packages. check user's version first...
-            #apt-get update # already done above. Not necessary?
             apt-get install -y php7.3-xml
 	else # damn - need to install an old version :-/
 	    curl $REQD_PACKS_REPO/php7.0-xml_7.0.33-0+deb9u3_armhf.deb -o /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb
 	    curl $REQD_PACKS_REPO/php7.0-xml_7.0.33-0+deb9u3_armhf.deb.md5sum -o /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb.md5sum
-            PACK_MD5=`cat /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb.md5sum | cut -d' ' -f1`
-            GET_DL_MD5=`md5sum /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb.md5sum | cut -d' ' -f1`
-            if  [ "${PACK_MD5}" == "${GET_DL_MD5}" ]; then
+            PACK_MD5=`cat /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb.md5sum`
+            GET_DL_MD5=`md5sum /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb | cut -d' ' -f1`
+            if  [ "${PACK_MD5}" = "${GET_DL_MD5}" ]; then
                 dpkg -i /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb
 	        apt-get install -f
 	        rm -rf /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf*
             else
-                echo -e "MD5 integrty check for php7.0-xml_7.0.33-0+deb9u3_armhf.deb failed!\n"
-                echo -e "You can try re-running this script to re-download the package.\n"
+                echo -e "\n\nMD5 integrity check for package 'php7.0-xml_7.0.33-0+deb9u3_armhf.deb' failed..."
+                echo -e "You can try re-running this script to re-download the package.\n\n"
                 exit 1
             fi
 	fi
