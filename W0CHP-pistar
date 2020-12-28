@@ -4,10 +4,6 @@
 #                                                                      #
 # NO_UPDATE_SELF=1 # will disable auto update of this script           #
 #                                                                      #
-# INSTALL_BETA=1 # will install the (very) unstable version.           # 
-#                                                                      #
-# Don't fuck with these unless you want to break shit.                 #
-#                                                                      #
 # #################################################################### #
 
 # privilege check
@@ -25,7 +21,7 @@ OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git
 REQD_PACKS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/reqd-packs"
 
 # don't fuck with this unless you're brave and adept at troubleshooting
-W0CHP_BETA_BRANCH="TalkerAlias"
+W0CHP_DASH_BRANCH="master"
 
 # internal vars. no need to fuck with these
 UPDATE_SELF=${UPDATE_SELF:-1}
@@ -90,9 +86,9 @@ function ChangeAndCheckoutRepo() {
     git fetch newrepo
     git remote remove origin
     git remote rename newrepo origin
-    if [[ ${INSTALL_BETA} = 1 ]] && [[ $dir == "/var/www/dashboard" ]] && [[ ${key} =~ ^(-id|-idn|--install-dashboard|--install-dashboard-nocss)$ ]]; then # check if user wants beta, AND, that it's an install, not a restore...
-        git checkout "$W0CHP_BETA_BRANCH"
-        git reset --hard origin/"$W0CHP_BETA_BRANCH"
+    if [[ $dir == "/var/www/dashboard" ]] && [[ ${key} =~ ^(-id|-idn|--install-dashboard|--install-dashboard-nocss)$ ]]; then # do (specified) branch checkout on dashboard, AND, that it's an install, not a restore...
+        git checkout "$W0CHP_DASH_BRANCH"
+        git reset --hard origin/"$W0CHP_DASH_BRANCH"
     else
         git reset --hard origin/master
     fi
@@ -122,7 +118,7 @@ function InstallDashboard() {
 	    curl $REQD_PACKS_REPO/php7.0-xml_7.0.33-0+deb9u3_armhf.deb.md5sum -o /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb.md5sum
             PACK_MD5=`cat /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb.md5sum`
             GET_DL_MD5=`md5sum /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb | cut -d' ' -f1`
-            if  [ "${PACK_MD5}" = "${GET_DL_MD5}" ]; then
+            if  [ "${PACK_MD5}" = "${GET_DL_MD5}" ]; then # md5 integrity check
                 dpkg -i /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb
 	        apt-get install -f
 	        rm -rf /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf*
