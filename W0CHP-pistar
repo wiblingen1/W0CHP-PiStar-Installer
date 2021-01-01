@@ -82,6 +82,7 @@ function ChangeAndCheckoutRepo() {
     repo="$2"
 
     cd "$1"
+    git reset --hard # need this for initial install, since two php config files are over-written when user applies config
     git remote add newrepo "$repo"
     git fetch newrepo
     git remote remove origin
