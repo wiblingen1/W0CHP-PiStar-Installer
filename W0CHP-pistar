@@ -55,7 +55,7 @@ fi
 # Always follow redirects
 CURL_OPTIONS="${CURL_OPTIONS} -L"
 
-## Only pistar v4 supported!
+# Only pistar v4 supported!
 if [ ! ${PISTAR_VERSION_INFO[0]} -eq 4 ]; then
     echo "Unsupported PiStar version."
     exit 1
@@ -78,7 +78,7 @@ function WaitForUnattendedUpgrade() {
 }
 
 # $1 directory
-# $2 repository
+# $2 repo
 function ChangeAndCheckoutRepo() {
     dir="$1"
     repo="$2"
@@ -128,7 +128,7 @@ function InstallDashboard() {
             else
                 echo -e "\n\nMD5 integrity check for package 'php7.0-xml_7.0.33-0+deb9u3_armhf.deb' failed..."
                 echo -e "You can try re-running this script to re-download the package.\n\n"
-                exit 1
+                exit 1 # bail status 1
             fi
 	fi
     else
@@ -260,7 +260,7 @@ function UpdateSelf() {
 EOF
 
     _ro
-    echo "Relaunching after update"
+    echo "Relaunching after update..."
     exec /usr/bin/env bash "${SELFUPDATE_SCRIPT}"
 }
 
@@ -314,7 +314,6 @@ if [ -z "$NO_SELF_UPDATE" -a x"$NO_UPDATE_SELF" != "x1" ]; then
         rm -f "${SELFUPDATE_SCRIPT}"
     fi
 fi
-
 
 ## Parse command line
 while [[ $# -gt 0 ]]; do
