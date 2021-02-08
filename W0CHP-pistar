@@ -99,11 +99,12 @@ function InstallDashboard() {
     WaitForUnattendedUpgrade
     _rw
     echo -e "Checking for required program(s)..."
+    FuckOffMS
     if ! [ -x "$(command -v jq)" ]; then
         echo -e "\nThe 'jq' package was not found. Installing prerequsite, 'jq' and its"
 	echo -e "associated libraries; which helps to mass-manage your static Brandmeister Talkgroups.\n"
 	echo -e "\nThis will take some time...\n"
-        apt-get update
+        #apt-get update
         apt-get install -y jq
     else
 	echo -e "\nThe required 'jq' package was already found! NOT intalling.\n"
@@ -214,8 +215,27 @@ function RestoreDashboard() {
         fi
         apt-get autoremove -y
     fi
+    EnableShittyMS
     _ro
     echo -e "\nOfficial Pi-Star Dashboard and files restoration complete.\n"
+}
+
+function FuckOffMS()
+{
+    ## Remove damn Microsoft repo
+    if [ -e /etc/apt/sources.list.d/vscode.list ]; then
+	mv /etc/apt/sources.list.d/vscode.list /etc/apt/sources.list.d/.vscode.disabled
+	apt-get update
+    fi
+}
+
+function EnableShittyMS()
+{
+    ## Remove damn Microsoft repo
+    if [ -e /etc/apt/sources.list.d/.vscode.disabled ]; then
+    mv /etc/apt/sources.list.d/.vscode.disabled /etc/apt/sources.list.d/vscode.list
+    apt-get update
+    fi
 }
 
 function UpdateSelf() {
