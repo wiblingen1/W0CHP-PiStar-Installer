@@ -346,16 +346,16 @@ while [[ $# -gt 0 ]]; do
     case $key in
 	"-id" | "--install-dashboard")
 	    echo -e "INFO: Installing the dashboard, this may take some time...\n\n"
-	    InstallDashboard
 	    InstallCSS
+	    InstallDashboard
 	    DisplayConfigUpdate
 	    shift
 	    ;;
 
 	"-idn" | "--install-dashboard-nocss")
 	    echo -e "INFO: Installing the dashboard, this may take some time...\n\n"
-	    InstallDashboard
 	    MapCSS
+	    InstallDashboard
 	    DisplayConfigUpdate
 	    shift
 	    ;;
