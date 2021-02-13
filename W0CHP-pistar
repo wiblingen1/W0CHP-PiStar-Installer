@@ -19,6 +19,7 @@ W0CHP_SBIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin.git"
 OFFICIAL_DASH_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
 OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
 REQD_PACKS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/reqd-packs"
+SUPPORTING_FILES_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/supporting-files"
 
 # don't fuck with this unless you're brave and adept at troubleshooting
 W0CHP_DASH_BRANCH="master"
@@ -138,7 +139,7 @@ function InstallDashboard() {
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     # check for mobilegps else install skel if not exist...
     if [ ! -f "/etc/mobilegps" ]; then
-        mv /var/www/dashboard/supporting-files/mobilegps /etc/
+        curl $SUPPORTING_FILES_REPO/mobilegps -o /etc/mobilegps
         chown -R www-data:www-data /etc/mobilegps
     fi
     chown -R www-data:www-data /var/www/dashboard
@@ -156,10 +157,10 @@ function InstallCSS() {
     # check for user's css (if any, back it up, and install W0CHP version)
     elif [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
-        cp /var/www/dashboard/supporting-files/pistar-css-W0CHP.ini /etc/pistar-css.ini
+        curl $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini
     # otherwise, simply install W0CHP css
     else
-        cp /var/www/dashboard/supporting-files/pistar-css-W0CHP.ini /etc/pistar-css.ini
+        curl $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini
     fi
     _ro
 }
@@ -169,14 +170,14 @@ function MapCSS() {
     _rw
     # ensure no user W0CHP css exists and install stock color mapping to new selectors
     if [[ ! $RUNNING_W0CHP ]] && [ ! -f "/etc/pistar-css.ini" ]; then
-        cp /var/www/dashboard/supporting-files/pistar-css-dist.ini /etc/pistar-css.ini
+        curl $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini
     # are we running W0CHP with user css? if so, bail
     elif [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         echo -e "\n\nW0CHP-PiStar-Dash installation and custom CSS detected... Not mapping stock CSS. Leaving custom  CSS alone.\n\n"
     # otherwise, not running W0CHP dash, but user has css: make a backup of user's css and map stock css
     elif [[ ! $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
-        cp /var/www/dashboard/supporting-files/pistar-css-dist.ini /etc/pistar-css.ini
+        curl $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini
         echo -e "\n\nCustom CSS detected. Making backup and mapping stock Pi-Star colors. To re-map/re-customize"
         echo -e "your CSS manually, please see the README: <https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash#file-content>\n\n"
     fi
@@ -190,8 +191,8 @@ function RestoreDashboard() {
     # remove W0CHP css if any and restore user css (if any)
     if [ -f "/etc/.pistar-css.ini.user" ]; then
         rm -f /etc/pistar-css.ini
-	mv /etc/.pistar-css.ini.user /etc/pistar-css.ini
-    # otherwise, remove straggler and really go back to stock
+	    mv /etc/.pistar-css.ini.user /etc/pistar-css.ini
+        # otherwise, remove straggler and really go back to stock
     elif [ -f "/etc/pistar-css.ini" ]; then
 	    rm -f /etc/pistar-css.ini
     fi
