@@ -179,7 +179,7 @@ function MapCSS() {
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
         curl $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini
         echo -e "\n\nCustom CSS detected. Making backup and mapping stock Pi-Star colors. To re-map/re-customize"
-        echo -e "your CSS manually, please see the README: <https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash#file-content>\n\n"
+        echo -e "your CSS manually, please see <https://w0chp.net/w0chp-pistar-dash/#notes-about-css-and-custom-css-you-may-have-previously-applied>\n\n"
     fi
     _ro
 }
@@ -319,7 +319,7 @@ function DisplayHelp() {
     echo ""
     echo "  -h,   --help                     Display this help text."
     echo "  -id,  --install-dashboard        Install W0CHP dashboard."
-    echo "  -idn  --install-dashboard-nocss  Install W0CHP dashboard WITHOUT stylesheet."
+    echo "  -idc  --install-dashboard-css    Install W0CHP dashboard WITH custom stylesheet."
     echo "  -rd,  --restore-dashboard        Restore original dashboard."
     echo "  -s,   --status                   Display current install, original or W0CHP installations."
     echo ""
@@ -346,15 +346,15 @@ while [[ $# -gt 0 ]]; do
     case $key in
 	"-id" | "--install-dashboard")
 	    echo -e "INFO: Installing the dashboard, this may take some time...\n\n"
-	    InstallCSS
+	    MapCSS
 	    InstallDashboard
 	    DisplayConfigUpdate
 	    shift
 	    ;;
 
-	"-idn" | "--install-dashboard-nocss")
-	    echo -e "INFO: Installing the dashboard, this may take some time...\n\n"
-	    MapCSS
+	"-idc" | "--install-dashboard-css")
+	    echo -e "INFO: Installing the dashboard with custom stylesheet, this may take some time...\n\n"
+	    InstallCSS
 	    InstallDashboard
 	    DisplayConfigUpdate
 	    shift
