@@ -32,14 +32,19 @@ WORK_PATH=${WORK_PATH:-"${ROOT_PATH}/root"}
 SELFUPDATE_SCRIPT="${WORK_PATH}/.updateScript-W0CHP-pistar.sh"
 CURL_OPTIONS=${CURL_OPTIONS:-""}
 ALL_ARGS="$@"
+SUPPORTED_MAJOR="4"
 
 # pi-star version check. only 4.x is supported.
 RELEASE_FILE="/etc/pistar-release"
 if [ -f ${RELEASE_FILE} ]; then
     PISTAR_VERSION=$(grep 'Version' /etc/pistar-release | cut -f 2 -d '=' | tr -d ' ')
     PISTAR_VERSION_INFO=( ${PISTAR_VERSION//./ })
+    if [[ ${PISTAR_VERSION_INFO[0]} -ne ${SUPPORTED_MAJOR} ]]; then
+        echo "ERROR: Only Pi-Star 4.x.x is supported."
+        exit 1
+    fi
     if [[ ${UPDATE_SELF} -eq 0 ]]; then
-	echo "Detected Pi-Star version: $PISTAR_VERSION (major: ${PISTAR_VERSION_INFO[0]})"
+        echo "Detected Pi-Star version: $PISTAR_VERSION (major: ${PISTAR_VERSION_INFO[0]})"
     fi
 else
     echo "ERROR: you're not running a PiStar."
@@ -53,12 +58,6 @@ fi
 
 # Always follow redirects
 CURL_OPTIONS="${CURL_OPTIONS} -L"
-
-# Only pistar v4 supported!
-if [ ! ${PISTAR_VERSION_INFO[0]} -eq 4 ]; then
-    echo "Unsupported PiStar version."
-    exit 1
-fi
 
 function _rw() {
     # Prevent the FS to be remounted as RO
