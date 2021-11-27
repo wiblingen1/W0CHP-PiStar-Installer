@@ -107,7 +107,7 @@ function InstallDashboard() {
         #apt-get update
         apt-get install -y jq
     else
-	echo -e "\nThe required 'jq' package was already found! NOT intalling.\n"
+        echo -e "\nThe required 'jq' package was already found! NOT intalling.\n"
     fi
     # lines 113 to 137 disabled due to TGIF API and server changes. Will update this and the dash code once TGIF API is documented
     #if ! php -m | grep -q dom ; then
@@ -132,7 +132,7 @@ function InstallDashboard() {
     #        fi
 	#fi
     #else
-	#echo -e "\nThe required 'php-xml' package was already found! NOT intalling.\n"
+	#   echo -e "\nThe required 'php-xml' package was already found! NOT intalling.\n"
     #fi
 
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
@@ -230,8 +230,8 @@ function FuckOffMS()
 {
     ## Remove damn Microsoft repo
     if [ -e /etc/apt/sources.list.d/vscode.list ]; then
-	mv /etc/apt/sources.list.d/vscode.list /etc/apt/sources.list.d/.vscode.disabled
-	apt-get update
+        mv /etc/apt/sources.list.d/vscode.list /etc/apt/sources.list.d/.vscode.disabled
+        apt-get update
     fi
 }
 
@@ -239,8 +239,8 @@ function EnableShittyMS()
 {
     ## Remove damn Microsoft repo
     if [ -e /etc/apt/sources.list.d/.vscode.disabled ]; then
-    mv /etc/apt/sources.list.d/.vscode.disabled /etc/apt/sources.list.d/vscode.list
-    apt-get update
+        mv /etc/apt/sources.list.d/.vscode.disabled /etc/apt/sources.list.d/vscode.list
+        apt-get update
     fi
 }
 
@@ -296,16 +296,26 @@ function DisplayConfigUpdate() {
     echo " **********************************************************************************************"
 }
 
-function DisableFirewall() {
-    rm /usr/local/sbin/pistar-firewall
-    ln -s /usr/local/sbin/pistar-firewall.disabled /usr/local/sbin/pistar-firewall
-    bash /usr/local/sbin/pistar-firewall
+function DisbleFirewall() {
+    if [[ $RUNNING_W0CHP ]]; then
+        rm /usr/local/sbin/pistar-firewall
+        ln -s /usr/local/sbin/pistar-firewall.disabled /usr/local/sbin/pistar-firewall
+        bash /usr/local/sbin/pistar-firewall
+    else
+        echo "ERROR: You must perform the full W0CHP-PiStar-Dash installation before disabling the firewall!"
+        exit 1
+    fi
 }
 
 function EnableFirewall() {
-    rm /usr/local/sbin/pistar-firewall
-    ln -s /usr/local/sbin/pistar-firewall.enabled /usr/local/sbin/pistar-firewall
-    bash /usr/local/sbin/pistar-firewall
+    if [[ $RUNNING_W0CHP ]]; then
+        rm /usr/local/sbin/pistar-firewall
+        ln -s /usr/local/sbin/pistar-firewall.enabled /usr/local/sbin/pistar-firewall
+        bash /usr/local/sbin/pistar-firewall
+    else
+        echo "ERROR: You must perform the full W0CHP-PiStar-Dash installation before (re-)enabling the firewall!"
+        exit 1
+    fi
 }
 
 # $1 directory
@@ -315,9 +325,9 @@ function DisplayRepoStatus() {
     repo=$(git --work-tree=${dir} --git-dir=${dir}/.git config --get remote.origin.url)
 
     if [ "$repo" == "$2" ]; then
-	echo "$1 uses *OFFICIAL* Pi-Star Repository."
+        echo "$1 uses *OFFICIAL* Pi-Star Repository."
     else
-	echo "$1 uses *W0CHP* Repository."
+        echo "$1 uses *W0CHP* Repository."
     fi
 }
 
