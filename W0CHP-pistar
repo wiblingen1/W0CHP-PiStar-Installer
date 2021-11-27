@@ -222,6 +222,8 @@ function RestoreDashboard() {
         apt-get autoremove -y
     fi
     EnableShittyMS
+    # re-init stock Pi-Star FW:
+    /usr/local/sbin/pistar-firewall > /dev/null;
     _ro
     echo -e "\nOfficial Pi-Star Dashboard and files restoration complete.\n"
 }
