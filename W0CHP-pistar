@@ -298,7 +298,7 @@ function DisplayConfigUpdate() {
     echo " **********************************************************************************************"
 }
 
-function DisbleFirewall() {
+function DisableFirewall() {
     if [[ $RUNNING_W0CHP ]]; then
         rm /usr/local/sbin/pistar-firewall
         ln -s /usr/local/sbin/pistar-firewall.disabled /usr/local/sbin/pistar-firewall
