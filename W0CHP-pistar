@@ -296,6 +296,18 @@ function DisplayConfigUpdate() {
     echo " **********************************************************************************************"
 }
 
+function DisableFirewall() {
+    rm /usr/local/sbin/pistar-firewall
+    ln -s /usr/local/sbin/pistar-firewall.disabled /usr/local/sbin/pistar-firewall
+    bash /usr/local/sbin/pistar-firewall
+}
+
+function EnableFirewall() {
+    rm /usr/local/sbin/pistar-firewall
+    ln -s /usr/local/sbin/pistar-firewall.enabled /usr/local/sbin/pistar-firewall
+    bash /usr/local/sbin/pistar-firewall
+}
+
 # $1 directory
 # $2 original repo
 function DisplayRepoStatus() {
@@ -321,6 +333,8 @@ function DisplayHelp() {
     echo "  -id,  --install-dashboard        Install W0CHP dashboard."
     echo "  -idc  --install-dashboard-css    Install W0CHP dashboard WITH custom stylesheet."
     echo "  -rd,  --restore-dashboard        Restore original dashboard."
+    echo "  -dfw  --disable-firewall         Disable Pi-Star firewall rules and allow all traffic"
+    echo "  -efw  --enable-firewall          Enable Pi-Star firewall rules to defaults and only allow required traffic"
     echo "  -s,   --status                   Display current install, original or W0CHP installations."
     echo ""
 }
@@ -363,6 +377,16 @@ while [[ $# -gt 0 ]]; do
 	"-rd" | "--restore-dashboard")
 	    RestoreDashboard
 	    DisplayConfigUpdate
+	    shift
+	    ;;
+
+	"-dfw" | "--disable-firewall")
+	    DisableFirewall
+	    shift
+	    ;;
+
+	"-efw" | "--enable-firewall")
+	    EnableFirewall
 	    shift
 	    ;;
 
