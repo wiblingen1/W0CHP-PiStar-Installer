@@ -300,9 +300,11 @@ function DisplayConfigUpdate() {
 
 function DisableFirewall() {
     if [[ $RUNNING_W0CHP ]]; then
+        _rw
         rm /usr/local/sbin/pistar-firewall
         ln -s /usr/local/sbin/pistar-firewall.disabled /usr/local/sbin/pistar-firewall
         bash /usr/local/sbin/pistar-firewall
+        _ro
     else
         echo "ERROR: You must perform the full W0CHP-PiStar-Dash installation before disabling the firewall!"
         exit 1
@@ -311,9 +313,11 @@ function DisableFirewall() {
 
 function EnableFirewall() {
     if [[ $RUNNING_W0CHP ]]; then
+        _rw
         rm /usr/local/sbin/pistar-firewall
         ln -s /usr/local/sbin/pistar-firewall.enabled /usr/local/sbin/pistar-firewall
         bash /usr/local/sbin/pistar-firewall
+        _ro
     else
         echo "ERROR: You must perform the full W0CHP-PiStar-Dash installation before (re-)enabling the firewall!"
         exit 1
