@@ -87,7 +87,7 @@ function ChangeAndCheckoutRepo() {
     git fetch newrepo
     git remote remove origin
     git remote rename newrepo origin
-    if [[ $dir == "/var/www/dashboard" ]] && [[ ${key} =~ ^(-id|-idn|--install-dashboard|--install-dashboard-nocss)$ ]]; then # do (specified) branch checkout on dashboard, AND, that it's an install, not a restore...
+    if [[ $dir == "/var/www/dashboard" ]] && [[ ${key} =~ ^(-id|-idc|--install-dashboard|--install-dashboard-css)$ ]]; then # do (specified) branch checkout on dashboard, AND, that it's an install, not a restore...
         git checkout "$W0CHP_DASH_BRANCH"
         git reset --hard origin/"$W0CHP_DASH_BRANCH"
     else
