@@ -56,6 +56,11 @@ if grep -q W0CHP /var/www/dashboard/config/version.php ; then
     RUNNING_W0CHP=1
 fi
 
+# check if user already has firewall disabled, and if so, ensure it's kept that way.
+if ! grep -q LOGNDROP /etc/iptables.rules ; then
+    FW_DISABLED=1
+fi
+
 # Always follow redirects
 CURL_OPTIONS="${CURL_OPTIONS} -L"
 
@@ -277,7 +282,11 @@ function UpdateSelf() {
     	mount -o remount,rw /boot
         if mv "${_tempFileName}" "$0"; then
            rm -- "\$0"
-           exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS"
+           if ${FW_DISABLED}="1" ; then
+               exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS -dfw"
+           else
+               exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS"
+           fi
         else
            echo "ERROR: Failed!"
         fi
@@ -331,9 +340,10 @@ function DisplayRepoStatus() {
     repo=$(git --work-tree=${dir} --git-dir=${dir}/.git config --get remote.origin.url)
 
     if [ "$repo" == "$2" ]; then
-        echo "$1 uses *OFFICIAL* Pi-Star Repository."
+        echo "'$1' uses *OFFICIAL* Pi-Star Repository."
     else
-        echo "$1 uses *W0CHP* Repository."
+        branch=$(git --work-tree=${dir} --git-dir=${dir}/.git branch | grep '*' | cut -f2 -d ' ')
+        echo -e "'$1':\t uses *W0CHP* Repository, on the '$branch' branch."
     fi
 }
 
