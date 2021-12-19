@@ -253,6 +253,7 @@ function EnableShittyMS()
 }
 
 function UpdateSelf() {
+    _rw
     echo "Performing self-update..."
     local _tempFileName="$0.tmp"
 
@@ -293,6 +294,7 @@ EOF
 
     echo "Relaunching after update..."
     exec /usr/bin/env bash "${SELFUPDATE_SCRIPT}"
+    _ro
 }
 
 function DisplayConfigUpdate() {
