@@ -280,11 +280,11 @@ function UpdateSelf() {
     	mount -o remount,rw /boot
         if mv "${_tempFileName}" "$0"; then
            rm -- "\$0"
-           if [[ $FW_DISABLED -eq "1" ]] ; then
-               exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS" "-dfw"
-           else
+           #if [[ $FW_DISABLED -eq "1" ]] ; then
+           #    exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS" "-dfw"
+           #else
                exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS"
-           fi
+           #fi
         else
            echo "ERROR: Failed!"
         fi
