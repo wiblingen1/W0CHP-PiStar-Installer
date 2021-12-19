@@ -81,8 +81,8 @@ function WaitForUnattendedUpgrade() {
 }
 
 function CheckFWstate () {
-    SCRIPT_SELF=`realpath $0`
-    SCRIPT_PATH=`dirname $SCRIPT_SELF`
+    #SCRIPT_SELF=`realpath $0`
+    #SCRIPT_PATH=`dirname $SCRIPT_SELF`
     if [[ $FW_DISABLED  -eq "1" ]] ; then
         #exec env UPDATE_SELF=0 /usr/bin/env bash "$SCRIPT_PATH" "-dfw"
         DisableFirewall
@@ -281,7 +281,7 @@ function UpdateSelf() {
         if mv "${_tempFileName}" "$0"; then
            rm -- "\$0"
            if [[ $FW_DISABLED -eq "1" ]] ; then
-               exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS -dfw"
+               exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS" "-dfw"
            else
                exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS"
            fi
