@@ -80,6 +80,15 @@ function WaitForUnattendedUpgrade() {
     /usr/bin/systemd-run --property="After=apt-daily.service apt-daily-upgrade.service" --wait /bin/true > /dev/null 2<&1
 }
 
+function CheckFWstate () {
+    SCRIPT_SELF=`realpath $0`
+    SCRIPT_PATH=`dirname $SCRIPT_SELF`
+    if [[ $FW_DISABLED  -eq "1" ]] ; then
+        #exec env UPDATE_SELF=0 /usr/bin/env bash "$SCRIPT_PATH" "-dfw"
+        DisableFirewall
+    fi
+}
+
 # $1 directory
 # $2 repo
 function ChangeAndCheckoutRepo() {
@@ -102,7 +111,6 @@ function ChangeAndCheckoutRepo() {
 
 function InstallDashboard() {
     WaitForUnattendedUpgrade
-    _rw
     echo -e "Checking for required program(s)..."
     FuckOffMS
     if ! [ -x "$(command -v jq)" ]; then
@@ -150,12 +158,10 @@ function InstallDashboard() {
     chown -R www-data:www-data /var/www/dashboard
     echo -e "\nUpdating host files, BrandMeister and TGIF Talkgroup lists. This will take some time...\n"
         /bin/bash /usr/local/sbin/HostFilesUpdate.sh
-    _ro
 }
 
 function InstallCSS() {
     WaitForUnattendedUpgrade
-    _rw
     # Are we already running W0CHP Dash with user CSS? If so, leave all CSS alone...
     if [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         echo -e "\n\nInstallation of CSS requested; however, W0CHP-PiStar Dash installation and custom CSS detected... Leaving CSS alone.\n\n"
@@ -167,12 +173,10 @@ function InstallCSS() {
     else
         curl $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini
     fi
-    _ro
 }
 
 function MapCSS() {
     WaitForUnattendedUpgrade
-    _rw
     # ensure no user W0CHP css exists and install stock color mapping to new selectors
     if [[ ! $RUNNING_W0CHP ]] && [ ! -f "/etc/pistar-css.ini" ]; then
         curl $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini
@@ -186,13 +190,11 @@ function MapCSS() {
         echo -e "\n\nCustom CSS detected. Making backup and mapping stock Pi-Star colors. To re-map/re-customize"
         echo -e "your CSS manually, please see <https://w0chp.net/w0chp-pistar-dash/#notes-about-css-and-custom-css-you-may-have-previously-applied>\n\n"
     fi
-    _ro
 }
 
 function RestoreDashboard() {
     echo -e "\nRestoring official Pi-Star Dashboard and files...\n"
     WaitForUnattendedUpgrade
-    _rw
     # remove W0CHP css if any and restore user css (if any)
     if [ -f "/etc/.pistar-css.ini.user" ]; then
         rm -f /etc/pistar-css.ini
@@ -228,8 +230,7 @@ function RestoreDashboard() {
     fi
     EnableShittyMS
     # re-init stock Pi-Star FW:
-    /usr/local/sbin/pistar-firewall > /dev/null;
-    _ro
+    /usr/local/sbin/pistar-firewall > /dev/null 2<&1;
     echo -e "\nOfficial Pi-Star Dashboard and files restoration complete.\n"
 }
 
@@ -254,26 +255,22 @@ function EnableShittyMS()
 function UpdateSelf() {
     echo "Performing self-update..."
     local _tempFileName="$0.tmp"
-    _rw
 
     if ! eval curl -s ${CURL_OPTIONS} --output "${_tempFileName}" "${UPDATE_URI}"; then
         echo "ERROR: Failed to download update for installation script!"
         echo "ERROR: Make sure you have ca-certificates installed and that the time is set correctly"
-	_ro
         exit 1
     fi
     
     if [[ "$(head -1 ${_tempFileName})" != '#!/usr/bin/env bash' ]]; then
         echo "ERROR: Failed to download update for installation script!"
         echo "ERROR: Contents of file is not as expected - repo may be down"
-	_ro
         exit 1
     fi
     
     local OCTAL_MODE=$(stat -c '%a' "$0")
     if ! chmod ${OCTAL_MODE} "${_tempFileName}" ; then
         echo "ERROR: Error while trying to set mode on ${_tempFileName}"
-	_ro
         exit 1
     fi
     
@@ -282,7 +279,7 @@ function UpdateSelf() {
     	mount -o remount,rw /boot
         if mv "${_tempFileName}" "$0"; then
            rm -- "\$0"
-           if ${FW_DISABLED}="1" ; then
+           if [[ $FW_DISABLED -eq "1" ]] ; then
                exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS -dfw"
            else
                exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS"
@@ -294,7 +291,6 @@ function UpdateSelf() {
         mount -o remount,ro /boot
 EOF
 
-    _ro
     echo "Relaunching after update..."
     exec /usr/bin/env bash "${SELFUPDATE_SCRIPT}"
 }
@@ -309,11 +305,9 @@ function DisplayConfigUpdate() {
 
 function DisableFirewall() {
     if [[ $RUNNING_W0CHP ]]; then
-        _rw
         rm /usr/local/sbin/pistar-firewall
         ln -s /usr/local/sbin/pistar-firewall.disabled /usr/local/sbin/pistar-firewall
-        bash /usr/local/sbin/pistar-firewall
-        _ro
+        bash /usr/local/sbin/pistar-firewall > /dev/null 2<&1
     else
         echo "ERROR: You must perform the full W0CHP-PiStar-Dash installation before disabling the firewall!"
         exit 1
@@ -322,11 +316,9 @@ function DisableFirewall() {
 
 function EnableFirewall() {
     if [[ $RUNNING_W0CHP ]]; then
-        _rw
         rm /usr/local/sbin/pistar-firewall
         ln -s /usr/local/sbin/pistar-firewall.enabled /usr/local/sbin/pistar-firewall
-        bash /usr/local/sbin/pistar-firewall
-        _ro
+        bash /usr/local/sbin/pistar-firewall > /dev/null 2<&1
     else
         echo "ERROR: You must perform the full W0CHP-PiStar-Dash installation before (re-)enabling the firewall!"
         exit 1
@@ -386,33 +378,45 @@ while [[ $# -gt 0 ]]; do
     case $key in
 	"-id" | "--install-dashboard")
 	    echo -e "INFO: Installing the dashboard, this may take some time...\n\n"
+        _rw
 	    MapCSS
 	    InstallDashboard
+        CheckFWstate
 	    DisplayConfigUpdate
+        _ro
 	    shift
 	    ;;
 
 	"-idc" | "--install-dashboard-css")
 	    echo -e "INFO: Installing the dashboard with custom stylesheet, this may take some time...\n\n"
+        _rw
 	    InstallCSS
 	    InstallDashboard
+        CheckFWstate
 	    DisplayConfigUpdate
+        _ro
 	    shift
 	    ;;
 
 	"-rd" | "--restore-dashboard")
+        _rw
 	    RestoreDashboard
 	    DisplayConfigUpdate
+        _ro
 	    shift
 	    ;;
 
 	"-dfw" | "--disable-firewall")
+        _rw
 	    DisableFirewall
+        _ro
 	    shift
 	    ;;
 
 	"-efw" | "--enable-firewall")
+        _rw
 	    EnableFirewall
+        _ro
 	    shift
 	    ;;
 
