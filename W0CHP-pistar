@@ -96,6 +96,7 @@ function ChangeAndCheckoutRepo() {
     repo="$2"
 
     cd "$1"
+    cp -a  /var/www/dashboard/config/{config.php,ircddblocal.php,language.php} /tmp/ # save user config files.
     git reset --hard # need this for initial install, since two php config files are over-written when user applies config
     git remote add newrepo "$repo"
     git fetch newrepo
@@ -104,8 +105,16 @@ function ChangeAndCheckoutRepo() {
     if [[ $dir == "/var/www/dashboard" ]] && [[ ${key} =~ ^(-id|-idc|--install-dashboard|--install-dashboard-css)$ ]]; then # do (specified) branch checkout on dashboard, AND, that it's an install, not a restore...
         git checkout "$W0CHP_DASH_BRANCH"
         git reset --hard origin/"$W0CHP_DASH_BRANCH"
+        mv /tmp/{config.php,ircddblocal.php,language.php} /var/www/dashboard/config/ # move back the user config files
+        git stash > /dev/null 2<&1 # stash user config files in local repo
+        git checkout stash@{0} -- config/config.php config/ircddblocal.php > /dev/null 2<&1 #restore config  from stash
+        git stash clear > /dev/null 2<&1 # housekeeping
     else
         git reset --hard origin/master
+        mv /tmp/{config.php,ircddblocal.php,language.php} /var/www/dashboard/config/ # move back the user config files
+        git stash > /dev/null 2<&1 # stash user config files in local repo
+        git checkout stash@{0} -- config/config.php config/ircddblocal.php config/language.php > /dev/null 2<&1 #restore config  from stash
+        git stash clear > /dev/null 2<&1 # housekeeping
     fi
 }
 
@@ -122,7 +131,7 @@ function InstallDashboard() {
     else
         echo -e "\nThe required 'jq' package was already found! NOT intalling.\n"
     fi
-    # lines 113 to 137 disabled due to TGIF API and server changes. Will update this and the dash code once TGIF API is documented
+    #### Folling lines disabled, due to TGIF API and server changes. Will update this and the dash code once TGIF API is documented
     #if ! php -m | grep -q dom ; then
     #    echo -e "\nThe 'php-xml' package was not found. Installing prerequsite, 'php-xml',"
 	#echo -e "which helps to manage your static TGIF Talkgroups.\n"
@@ -156,7 +165,7 @@ function InstallDashboard() {
         chown -R www-data:www-data /etc/mobilegps
     fi
     chown -R www-data:www-data /var/www/dashboard
-    echo -e "\nUpdating host files, BrandMeister and TGIF Talkgroup lists. This will take some time...\n"
+    echo -e "\nUpdating Hostfiles, User ID DB's and DMR Talkgroup Lists.... This will take some time..."
         /bin/bash /usr/local/sbin/HostFilesUpdate.sh
 }
 
@@ -213,7 +222,10 @@ function RestoreDashboard() {
         rm -r /var/www/dashboard/.bm_tgs.json*
     fi
     if compgen -G "/usr/local/etc/tgif-talkgroups*" > /dev/null; then
-        rm -r /usr/local/etc/tgif-talkgroups**
+        rm -r /usr/local/etc/tgif-talkgroups*
+    fi
+    if compgen -G "/etc/.GETNAMES*" > /dev/null; then
+        rm -r /etc/.GETNAMES*
     fi
     echo -e "\nRemoving packages installed for W0CHP-PiStar-Dash...\n"
     if  [ -x "$(command -v jq)" ]; then
