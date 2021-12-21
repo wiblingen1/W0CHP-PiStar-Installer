@@ -288,6 +288,9 @@ function UpdateSelf() {
     fi
     
     cat > "${SELFUPDATE_SCRIPT}" << EOF
+        if ! grep -q LOGNDROP /etc/iptables.rules ; then
+    	    FW_DISABLED=1
+        fi
       	mount -o remount,rw /
     	mount -o remount,rw /boot
         if mv "${_tempFileName}" "$0"; then
