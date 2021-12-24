@@ -204,12 +204,7 @@ function MapCSS() {
 function RestoreDashboard() {
     echo -e "\nRestoring official Pi-Star Dashboard and files...\n"
     WaitForUnattendedUpgrade
-    # remove W0CHP css if any and restore user css (if any)
-    if [ -f "/etc/.pistar-css.ini.user" ]; then
-        rm -f /etc/pistar-css.ini
-	    mv /etc/.pistar-css.ini.user /etc/pistar-css.ini
-        # otherwise, remove straggler and really go back to stock
-    elif [ -f "/etc/pistar-css.ini" ]; then
+    if [ -f "/etc/pistar-css.ini" ]; then
 	    rm -f /etc/pistar-css.ini
     fi
     ChangeAndCheckoutRepo "/var/www/dashboard" "$OFFICIAL_DASH_REPO"
