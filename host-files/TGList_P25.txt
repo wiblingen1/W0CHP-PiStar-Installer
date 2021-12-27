@@ -1,7 +1,7 @@
 # TGList_P25.txt downloaded from http://www.pistar.uk/downloads/TGList_P25.txt
 # sourced from https://raw.githubusercontent.com/g4klx/P25Clients/master/P25Gateway/P25Hosts.txt
 # Please report issues at https://www.facebook.com/groups/pistarusergroup/
-# File updated on Friday 24th of December 2021
+# File updated on Monday 27th of December 2021
 #
 # Dest ID;Name;Description
 #
@@ -91,6 +91,7 @@
 10444;P25-PACIFIC-TAC44;P25-PACIFIC-TAC44
 10472;P25-PACIFIC-TAC72;P25-PACIFIC-TAC72
 10473;P25-PACIFIC-TAC73;P25-PACIFIC-TAC73
+10666;P25-REF-10666;P25-REF-10666
 10700;P25-10700-VK;P25-10700-VK
 10888;P25-REF-10888;P25-REF-10888
 10945;P25-REF-10945;P25-REF-10945

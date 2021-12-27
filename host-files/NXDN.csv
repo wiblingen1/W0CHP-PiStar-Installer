@@ -2962,7 +2962,7 @@ RADIO_ID,CALLSIGN,FIRST_NAME,LAST_NAME,CITY,STATE,COUNTRY
 7171,KM9K,Kevin M,KENNEDY,Bradenton,Florida,United States
 7172,EA4HAV,Valentin,,MAJADAHONDA,None,Spain
 7244,KF4TIM,Timothy,Bernard,peoria,Arizona,United States
-7245,F4FEM,Camille341,,Creissels,None,France
+7245,F4FEM,Camille,Sabatier,Creissels,,France
 7265,AA6KA,Kevin W,Amey,North Highlands,California,United States
 7266,KB8SXK,Jeff,Oberg,Eagle,Michigan,United States
 7267,N8OBU,Mike,Bayard,Dansville,Michigan,United States
@@ -3328,7 +3328,7 @@ RADIO_ID,CALLSIGN,FIRST_NAME,LAST_NAME,CITY,STATE,COUNTRY
 12388,K4CBN,Gregory,George,Lakeland,Florida,United States
 12389,KC3IGM,Theodore H,Zarcone,Holmes,Pennsylvania,United States
 12390,KR3MCP,Richard D,Briggs,Longs,South Carolina,United States
-12391,SP2EG,Przemek,,Gdansk,None,Poland
+12391,SP2EG,Przemek,,Gdansk,pomorskie,Poland
 12478,KM4ECQ,Ryan J,Haynie,Avon Park,Florida,United States
 12479,UB0AEW,Artem,,,None,Russia
 12502,W8OJ,Danny R,Hurst,Punta Gorda,Florida,United States
@@ -3387,7 +3387,7 @@ RADIO_ID,CALLSIGN,FIRST_NAME,LAST_NAME,CITY,STATE,COUNTRY
 12743,SV1OBT,Dsap,,Athens,None,Greece
 12751,KD1EH,Tom,Mogavero,Boynton Beach,Florida,United States
 12752,N0DSB,Dylan S,Bogle,Murfreesboro,Tennessee,United States
-12753,IK4FNC,ik4fnc,,Ravenna,None,Italy
+12753,IK4FNC,Davide,Spada,Ravenna,,Italy
 12767,KM9Q,Scott,Bernard,Saint Petersburg,Florida,United States
 12768,WB8AM,Brian,Garber,Beavercreek,Ohio,United States
 12769,IS0HHA,Tony,,Elmas,None,Italy
