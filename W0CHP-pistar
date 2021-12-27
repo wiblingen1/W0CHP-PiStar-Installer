@@ -161,7 +161,7 @@ function InstallDashboard() {
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     # check for mobilegps else install skel if not exist...
     if [ ! -f "/etc/mobilegps" ]; then
-        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/mobilegps -o /etc/mobilegps --user-agent="W0CHP-PiStar-Dash Installer"
+        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/mobilegps -o /etc/mobilegps --user-agent "W0CHP-PiStar-Dash Installer"
         chown -R www-data:www-data /etc/mobilegps
     fi
     chown -R www-data:www-data /var/www/dashboard
@@ -177,10 +177,10 @@ function InstallCSS() {
     # check for user's css (if any, back it up, and install W0CHP version)
     elif [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
-        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini --user-agent="W0CHP-PiStar-Dash Installer"
+        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini --user-agent "W0CHP-PiStar-Dash Installer"
     # otherwise, simply install W0CHP css
     else
-        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini --user-agent="W0CHP-PiStar-Dash Installer"
+        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini --user-agent "W0CHP-PiStar-Dash Installer"
     fi
 }
 
@@ -188,14 +188,14 @@ function MapCSS() {
     WaitForUnattendedUpgrade
     # ensure no user W0CHP css exists and install stock color mapping to new selectors
     if [[ ! $RUNNING_W0CHP ]] && [ ! -f "/etc/pistar-css.ini" ]; then
-        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent="W0CHP-PiStar-Dash Installer"
+        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent "W0CHP-PiStar-Dash Installer"
     # are we running W0CHP with user css? if so, bail
     elif [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         echo -e "\n\nW0CHP-PiStar-Dash installation and custom CSS detected... Not mapping stock CSS. Leaving custom  CSS alone.\n\n"
     # otherwise, not running W0CHP dash, but user has css: make a backup of user's css and map stock css
     elif [[ ! $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
-        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent="W0CHP-PiStar-Dash Installer"
+        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent "W0CHP-PiStar-Dash Installer"
         echo -e "\n\nCustom CSS detected. Making backup and mapping stock Pi-Star colors. To re-map/re-customize"
         echo -e "your CSS manually, please see <https://w0chp.net/w0chp-pistar-dash/#notes-about-css-and-custom-css-you-may-have-previously-applied>\n\n"
     fi
@@ -267,7 +267,7 @@ function UpdateSelf() {
     echo "Performing self-update..."
     local _tempFileName="$0.tmp"
 
-    if ! eval curl -s ${CURL_OPTIONS} --output "${_tempFileName}" "${UPDATE_URI}" --user-agent="W0CHP-PiStar-Dash Installer"; then
+    if ! eval curl -s ${CURL_OPTIONS} --output "${_tempFileName}" "${UPDATE_URI}" --user-agent "W0CHP-PiStar-Dash Installer"; then
         echo "ERROR: Failed to download update for installation script!"
         echo "ERROR: Make sure you have ca-certificates installed and that the time is set correctly"
         exit 1
