@@ -2,7 +2,7 @@
 # DCS Hosts resolved from xreflector.net DNS, with additional hosts
 # sourced from http://xlxapi.rlx.lu/api.php?do=GetReflectorHostname
 # Please report issues at https://www.facebook.com/groups/pistarusergroup/
-# File updated on Sunday 26th of December 2021
+# File updated on Monday 27th of December 2021
 DCS000	45.62.230.56
 DCS001	5.252.227.231
 DCS002	185.228.139.209
@@ -552,7 +552,7 @@ DCS928	182.150.186.184
 DCS930	80.211.133.104
 DCS933	152.228.170.6
 DCS934	79.6.136.177
-DCS935	80.182.177.226
+DCS935	80.180.205.183
 DCS936	140.238.198.28
 DCS937	81.25.49.85
 DCS938	46.32.62.49
@@ -1173,7 +1173,7 @@ XLX928	182.150.186.184
 XLX930	80.211.133.104
 XLX933	152.228.170.6
 XLX934	79.6.136.177
-XLX935	80.182.177.226
+XLX935	80.180.205.183
 XLX936	140.238.198.28
 XLX937	81.25.49.85
 XLX938	46.32.62.49
