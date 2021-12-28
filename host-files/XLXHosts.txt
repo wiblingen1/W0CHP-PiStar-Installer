@@ -3,7 +3,7 @@
 #       Written for Pi-Star Digital Voice Node by Andy Taylor (MW0MWZ)
 #       Origional idea from Jonathan Naylor (G4KLX)
 #
-#       Updated on Monday 27th of December 2021
+#       Updated on Tuesday 28th of December 2021
 #
 #	The format of this file is:
 #	XLX Number;host;default
@@ -349,7 +349,7 @@ ZZZ;142.47.216.96;4004
 412;61.195.107.113;4004
 414;66.42.113.132;4004
 416;70.50.218.37;4004
-417;45.72.253.139;4004
+417;69.165.137.151;4004
 418;138.197.136.190;4004
 419;44.70.25.173;4004
 420;149.28.54.17;4004
