@@ -159,7 +159,7 @@ XLX_144				0000	54.188.28.93				passw0rd	62030
 XLX_147				0000	124.123.68.50				passw0rd	62030
 XLX_149				0000	122.154.140.136				passw0rd	62030
 XLX_150				0000	192.241.158.197				passw0rd	62030
-XLX_151				0000	122.154.140.154				passw0rd	62030
+XLX_151				0000	122.154.141.53				passw0rd	62030
 XLX_153				0000	70.93.81.183				passw0rd	62030
 XLX_154				0000	114.153.3.72				passw0rd	62030
 XLX_155				0000	217.182.156.151				passw0rd	62030
@@ -205,6 +205,7 @@ XLX_224				0000	203.137.99.97				passw0rd	62030
 XLX_225				0000	61.195.108.252				passw0rd	62030
 XLX_226				0000	91.212.192.86				passw0rd	62030
 XLX_227				0000	89.33.44.100				passw0rd	62030
+XLX_228				0000	92.106.204.96				passw0rd	62030
 XLX_229				0000	195.49.75.204				passw0rd	62030
 XLX_231				0000	217.133.7.72				passw0rd	62030
 XLX_232				0000	89.185.97.35				passw0rd	62030
@@ -321,7 +322,7 @@ XLX_411				0000	45.19.176.12				passw0rd	62030
 XLX_412				0000	61.195.107.113				passw0rd	62030
 XLX_414				0000	66.42.113.132				passw0rd	62030
 XLX_416				0000	70.50.218.37				passw0rd	62030
-XLX_417				0000	69.165.137.151				passw0rd	62030
+XLX_417				0000	104.247.231.214				passw0rd	62030
 XLX_418				0000	138.197.136.190				passw0rd	62030
 XLX_419				0000	44.70.25.173				passw0rd	62030
 XLX_420				0000	149.28.54.17				passw0rd	62030
@@ -838,7 +839,6 @@ FreeDMR_Thailand-XLX822		0000	freedmr.xlx822.com			passw0rd	62031
 FreeDMR_UnitedKingdom		0000	hotspot.uk.freedmr.link			passw0rd	62031
 FreeDMR_UnitedKingdom-CYMRU	0000	cy.freedmr.cymru			passw0rd	62031
 FreeDMR_UnitedKingdom-OZ-DMR	0000	dmr.oz-dmr.uk				passw0rd	62031
-FreeDMR_UKOZ-DMRTestServer	0000	development.oz-dmr.uk			passw0rd	62031
 FreeDMR_UnitedKingdom-London	0000	london.freedmr.online			passw0rd	62031
 FreeDMR_Uruguay			0000	179.27.97.125				passw0rd	62031
 FreeDMR_USA-EAST		0000	hsnj.freedmr.network			passw0rd	62031
