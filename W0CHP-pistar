@@ -110,6 +110,9 @@ function ChangeAndCheckoutRepo() {
         git stash > /dev/null 2<&1 # stash user config files in local repo
         git checkout stash@{0} -- config/config.php config/ircddblocal.php > /dev/null 2<&1 #restore config  from stash
         git stash clear > /dev/null 2<&1 # housekeeping
+        if [ -f /usr/local/bin/platformDetect.sh ]; then # remove platformDetect.sh since we have a custom version in /usr/local/sbin
+            git --work-tree=/usr/local/bin --git-dir=/usr/local/bin/.git rm platformDetect.sh > /dev/null 2>&1
+        fi
         # cache W0CHP-PiStar-Dash git version:
         ver_cmd=$( git --work-tree=/usr/local/sbin --git-dir=/usr/local/sbin/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
         gitRemoteURL=$(git --work-tree=${dir} --git-dir=${dir}/.git config --get remote.origin.url)
@@ -253,6 +256,8 @@ function RestoreDashboard() {
     # re-init stock Pi-Star FW:
     /usr/local/sbin/pistar-firewall > /dev/null 2<&1;
     echo -e "\nOfficial Pi-Star Dashboard and files restoration complete.\n"
+    # Put platformDetect.sh back..
+    git --work-tree=/usr/local/bin --git-dir=/usr/local/bin/.git reset --hard > /dev/null 2>&1
 }
 
 function FuckOffMS()
