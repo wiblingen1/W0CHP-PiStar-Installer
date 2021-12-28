@@ -2,7 +2,7 @@
 
 # ############################## NOTE ################################ #
 #                                                                      #
-# NO_UPDATE_SELF=1 # will disable auto update of this script           #
+# NO_SELF_UPDATE=1 # will disable auto update of this script           #
 #                                                                      #
 # #################################################################### #
 
