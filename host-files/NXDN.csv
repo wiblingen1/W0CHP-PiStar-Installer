@@ -711,7 +711,7 @@ RADIO_ID,CALLSIGN,FIRST_NAME,LAST_NAME,CITY,STATE,COUNTRY
 711,PU2KAB,Fabio,Pedro,Presidente Prudente,Sao Paulo,Brazil
 712,M0IQF,Marcin,,,,United Kingdom
 713,SV4FFB,Giannis,Giannakosian,Velestino,Thessalia,Greece
-714,M6DQB,Pablo,,Scarborough,England,United Kingdom
+714,M6DQB,Pablo, , ,England,United Kingdom
 715,TA5AYA,Yavuz,ALTINDIS,Akdeniz,Mersin,Turkey
 716,TA5AYA,Yavuz,ALTINDIS,Akdeniz,Mersin,Turkey
 717,K9QA,Michael,Blocker,Joliet,Illinois,United States
@@ -2181,7 +2181,7 @@ RADIO_ID,CALLSIGN,FIRST_NAME,LAST_NAME,CITY,STATE,COUNTRY
 2197,HS1XSA,Prakob,Thepphan,Udon Thani,Udon Thani,Thailand
 2198,PT7LG,Francisco,Gomes,Juazeiro do Norte,Ceara,Brazil
 2199,AI7HP,Michael G,Hesley,BELLEVUE,Washington,United States
-2200,SP8PG,Grzegorz,,Zamosc,lubelskie,Poland
+2200,SP8PG,Grzegorz,,Zamosc,,Poland
 2201,DY3FDO,Fred,Villanueva,Meycauayan,Central Luzon,Philippines
 2202,BG2CPU,Wang,Du,Harbin,Hei Long Jiang  Ji Lin  Liao Ning,China
 2203,BG2FCD,Lei,wang,Haerbin,Hei Long Jiang  Ji Lin  Liao Ning,China
@@ -2359,7 +2359,7 @@ RADIO_ID,CALLSIGN,FIRST_NAME,LAST_NAME,CITY,STATE,COUNTRY
 2377,E23LCR,Sarawud,Boriboonnakom,Thailand,Bangkok,Thailand
 2378,KF7NN,Laszlo G,Vagner,Goochland,Virginia,United States
 2379,HS2OTO,Tanee,Changmai,Leamchabang,Chon Buri,Thailand
-2380,TA1ADI,Deniz,Guler,Istanbul,Istanbul,Turkey
+2380,TA1DG,Deniz,Guler,Istanbul,Istanbul,Turkey
 2381,PU2KZA,Salvador,campos,ibiuna,Sao Paulo,Brazil
 2382,4H1DAW,Andrew Claive,SOLERO,Caloocan City,National Capital Region,Philippines
 2383,PU1LHP,Levi Henrique Ouverney,Pedrosa,P.O.BOX 93357 ZIP CODE 25953-971 BRAZIL,Rio de Janeiro,Brazil
@@ -2589,6 +2589,9 @@ RADIO_ID,CALLSIGN,FIRST_NAME,LAST_NAME,CITY,STATE,COUNTRY
 2614,6K2KUD,Sunhwan,Park,Seogu,InChon Si,Korea Republic of
 2615,BG0DLQ,Lv Tiejiang,Lv Tiejiang,Korla,XinJiang,China
 2616,KG7VIQ,Mark,Whitmer,Kingston,Washington,United States
+2617,E24XWX,Chamnan,Boonyapakorn,Chumpung,Nakhon Ratchasima,Thailand
+2618,KO4VNC,Daniel,Espinosa,Hialeah,Florida,United States
+2619,KI5MGQ,Justin,O'Brien,DALLAS,Texas,United States
 2648,BH4QBO,Shi,Hualiang,Shanghai City,Shan Dong  Jiang Su,China
 2649,BG8FZ,Tu,Lan,Chengdu Wuhou Zongsh,Hei Long Jiang  Ji Lin  Liao Ning,China
 2650,IK5SRQ,Dino,Solari,Porto Santo Stefano,Tuscany,Italy
@@ -4789,7 +4792,7 @@ RADIO_ID,CALLSIGN,FIRST_NAME,LAST_NAME,CITY,STATE,COUNTRY
 41146,EA1CIU,TOMAS,,Pontevedra,None,Spain
 41152,EA1GLE,Roberto,,VILLARIEZO,None,Spain
 41158,AC0WN,Julie A,Mcgrew,Florence,Oregon,United States
-41159,IS0GQX,Bruno,,Sinnai,None,Italy
+41159,IS0GQX,Bruno,,Sinnai,,Italy
 41173,XE1ODN,Edgar,Duran,Mexico City,Mexico City,Mexico
 41174,IW9DNI,Gian Maria,,Mascalucia,None,Italy
 41186,KB7VIS,Kirk H,Johnson,Springfield,Oregon,United States
