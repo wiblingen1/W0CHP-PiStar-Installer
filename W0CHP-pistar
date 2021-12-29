@@ -190,6 +190,8 @@ function MapCSS() {
 
 function RestoreDashboard() {
     echo -e "\nRestoring official Pi-Star Dashboard and files...\n"
+    cp /usr/local/sbin/pistar-services /tmp/
+    bash /tmp/pistar-services fullstop
     WaitForUnattendedUpgrade
     if [ -f "/etc/pistar-css.ini" ]; then
 	    rm -f /etc/pistar-css.ini
@@ -231,6 +233,8 @@ function RestoreDashboard() {
     echo -e "\nOfficial Pi-Star Dashboard and files restoration complete.\n"
     # Put platformDetect.sh back..
     git --work-tree=/usr/local/bin --git-dir=/usr/local/bin/.git reset --hard > /dev/null 2>&1
+    bash /tmp/pistar-services start
+    rm /tmp/pistar-services
 }
 
 function FuckOffMS()
