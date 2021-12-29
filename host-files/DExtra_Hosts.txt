@@ -2,7 +2,7 @@
 # DExtra Hosts resolved from the XReflector Directory (http://xrefl.net),
 # additional host information sourced from http://xlxapi.rlx.lu/api.php?do=GetReflectorHostname
 # Please report issues at https://www.facebook.com/groups/pistarusergroup/
-# File updated on Tuesday 28th of December 2021
+# File updated on Wednesday 29th of December 2021
 XRF000	45.62.230.56
 XRF001	80.211.62.178
 XRF002	52.36.45.107
@@ -198,7 +198,7 @@ XRF238	95.154.31.11
 XRF239	149.28.115.164
 XRF240	107.141.52.226
 XRF241	51.83.98.154
-XRF242	15.197.142.173
+XRF242	3.33.152.147
 XRF244	72.14.187.79
 XRF245	54.85.206.3
 XRF246	172.93.48.159
