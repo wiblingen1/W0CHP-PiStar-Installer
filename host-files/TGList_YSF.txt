@@ -1,7 +1,7 @@
 # TGList_YSF.txt downloaded from http://www.pistar.uk/downloads/TGList_YSF.txt
 # Sourced from PiStar.UK Update Server
 # Please report issues at https://www.facebook.com/groups/pistarusergroup/
-# File updated on Tuesday 28th of December 2021
+# File updated on Wednesday 29th of December 2021
 00007;00007
 00008;00008
 00012;00012
@@ -94,6 +94,7 @@
 06595;06595
 06647;06647
 06864;06864
+06877;06877
 06901;06901
 06988;06988
 06989;06989
@@ -537,7 +538,6 @@
 38481;38481
 38532;38532
 38635;38635
-38758;38758
 38762;38762
 39006;39006
 39114;39114
@@ -891,7 +891,6 @@
 69494;69494
 69508;69508
 69614;69614
-69767;69767
 70037;70037
 70191;70191
 70338;70338
@@ -944,7 +943,6 @@
 73993;73993
 74000;74000
 74037;74037
-74078;74078
 74096;74096
 74154;74154
 74158;74158
