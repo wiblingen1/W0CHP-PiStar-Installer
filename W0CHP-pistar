@@ -82,10 +82,8 @@ function WaitForUnattendedUpgrade() {
 }
 
 function CheckFWstate () {
-    #SCRIPT_SELF=`realpath $0`
     #SCRIPT_PATH=`dirname $SCRIPT_SELF`
     if [[ $FW_DISABLED  -eq "1" ]] ; then
-        #exec env UPDATE_SELF=0 /usr/bin/env bash "$SCRIPT_PATH" "-dfw"
         DisableFirewall
     fi
 }
@@ -143,31 +141,6 @@ function InstallDashboard() {
     else
         echo -e "\nThe required 'jq' package was already found! NOT intalling.\n"
     fi
-    #### Folling lines disabled, due to TGIF API and server changes. Will update this and the dash code once TGIF API is documented
-    #if ! php -m | grep -q dom ; then
-    #    echo -e "\nThe 'php-xml' package was not found. Installing prerequsite, 'php-xml',"
-	#echo -e "which helps to manage your static TGIF Talkgroups.\n"
-	#echo -e "\nThis will take some time...\n"
-	#if php -v | grep -q '7.3' ; then  # pistar ships with very old php packages. check user's version first...
-    #        apt-get install -y php7.3-xml
-	#else # damn - need to install an old version :-/
-	#    curl $REQD_PACKS_REPO/php7.0-xml_7.0.33-0+deb9u3_armhf.deb -o /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb
-	#    curl $REQD_PACKS_REPO/php7.0-xml_7.0.33-0+deb9u3_armhf.deb.md5sum -o /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb.md5sum
-    #        PACK_MD5=`cat /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb.md5sum`
-    #        GET_DL_MD5=`md5sum /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb | cut -d' ' -f1`
-    #        if  [ "${PACK_MD5}" = "${GET_DL_MD5}" ]; then # md5 integrity check
-    #            dpkg -i /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf.deb
-	#        apt-get install -f
-	#        rm -rf /tmp/php7.0-xml_7.0.33-0+deb9u3_armhf*
-    #        else
-    #            echo -e "\n\nMD5 integrity check for package 'php7.0-xml_7.0.33-0+deb9u3_armhf.deb' failed..."
-    #            echo -e "You can try re-running this script to re-download the package.\n\n"
-    #            exit 1 # bail status 1
-    #        fi
-	#fi
-    #else
-	#   echo -e "\nThe required 'php-xml' package was already found! NOT intalling.\n"
-    #fi
 
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
