@@ -3,7 +3,7 @@
 #	Written for Pi-Star Digital Voice Node by Andy Taylor (MW0MWZ)
 #	Origional idea from Adrian Craig (M0GLJ)
 #
-#	Updated 29-Dec-2021
+#	Updated 30-Dec-2021
 #
 #	The format of this file is the name of the reflector followed by its
 #	IP address / Hotname / Password. NO SPACES!!
@@ -462,7 +462,7 @@ XLX_708				0000	150.66.20.222				passw0rd	62030
 XLX_709				0000	212.237.34.32				passw0rd	62030
 XLX_710				0000	209.126.0.55				passw0rd	62030
 XLX_711				0000	192.243.108.150				passw0rd	62030
-XLX_712				0000	112.228.191.127				passw0rd	62030
+XLX_712				0000	122.118.172.134				passw0rd	62030
 XLX_713				0000	218.251.63.99				passw0rd	62030
 XLX_714				0000	81.169.158.155				passw0rd	62030
 XLX_715				0000	85.214.239.189				passw0rd	62030
