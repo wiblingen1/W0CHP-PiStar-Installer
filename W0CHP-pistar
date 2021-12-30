@@ -23,7 +23,9 @@ SUPPORTING_FILES_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/
 PS_SERVICES_SCRIPT="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin/raw/master/pistar-services"
 
 # don't fuck with this unless you're brave and adept at troubleshooting
-W0CHP_DASH_BRANCH="master"
+if [ -z ${W0CHP_DASH_BRANCH} ]; then
+    W0CHP_DASH_BRANCH="master"
+fi
 
 # internal vars. no need to fuck with these
 UPDATE_SELF=${UPDATE_SELF:-1}
