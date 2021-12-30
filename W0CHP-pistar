@@ -345,7 +345,7 @@ function DisplayRepoStatus() {
     dir="$1"
     repo=$(git --work-tree=${dir} --git-dir=${dir}/.git config --get remote.origin.url)
     if [ "$repo" == "$2" ]; then
-        echo "'$1':\t uses *OFFICIAL* Pi-Star Repository"
+        echo -e "'$1':\t uses *OFFICIAL* Pi-Star Repository"
     else
         branch=$(git --work-tree=${dir} --git-dir=${dir}/.git branch | grep '*' | cut -f2 -d ' ')
         ver_cmd=$( git --work-tree=${dir} --git-dir=${dir}/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
