@@ -26,7 +26,6 @@ PS_SERVICES_SCRIPT="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin/raw/master
 if [ -z ${W0CHP_DASH_BRANCH} ]; then
     W0CHP_DASH_BRANCH="master"
 fi
-
 # internal vars. no need to fuck with these
 UPDATE_SELF=${UPDATE_SELF:-1}
 UPDATE_URI="${W0CHP_INSTALL_SCRIPT_REPO}"
@@ -136,8 +135,8 @@ function InstallDashboard() {
     FuckOffMS
     if ! [ -x "$(command -v jq)" ]; then
         echo -e "\nThe 'jq' package was not found. Installing prerequsite, 'jq' and its"
-	echo -e "associated libraries; which helps to mass-manage your static Brandmeister Talkgroups.\n"
-	echo -e "\nThis will take some time...\n"
+        echo -e "associated libraries from the official Rasperry Pi OS Repository, \nwhich helps to mass-manage your static Brandmeister Talkgroups.\n"
+	    echo -e "\nThis will take some time...\n"
         #apt-get update
         apt-get install -y jq
     else
@@ -177,14 +176,15 @@ function MapCSS() {
     WaitForUnattendedUpgrade
     # ensure no user W0CHP css exists and install stock color mapping to new selectors
     if [[ ! $RUNNING_W0CHP ]] && [ ! -f "/etc/pistar-css.ini" ]; then
-        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent "WPSD-Installer"
+        #curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent "WPSD-Installer"
+        echo ""
     # are we running W0CHP with user css? if so, bail
     elif [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         echo -e "\n\nW0CHP-PiStar-Dash installation and custom CSS detected... Not mapping stock CSS. Leaving custom  CSS alone.\n\n"
     # otherwise, not running W0CHP dash, but user has css: make a backup of user's css and map stock css
     elif [[ ! $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
-        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent "WPSD-Installer"
+        #curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent "WPSD-Installer"
         echo -e "\n\nCustom CSS detected. Making backup and mapping stock Pi-Star colors. To re-map/re-customize"
         echo -e "your CSS manually, please see <https://w0chp.net/w0chp-pistar-dash/#notes-about-css-and-custom-css-you-may-have-previously-applied>\n\n"
     fi
@@ -257,7 +257,7 @@ function EnableShittyMS()
     ## Remove damn Microsoft repo
     if [ -e /etc/apt/sources.list.d/.vscode.disabled ]; then
         mv /etc/apt/sources.list.d/.vscode.disabled /etc/apt/sources.list.d/vscode.list
-        apt-get update
+        #apt-get update
     fi
 }
 
