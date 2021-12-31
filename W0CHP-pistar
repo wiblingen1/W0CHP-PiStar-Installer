@@ -16,10 +16,12 @@ fi
 W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar"
 W0CHP_DASH_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash.git"
 W0CHP_SBIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin.git"
+W0CHP_YSFCLIENTS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash_YSFclients.git"
 OFFICIAL_DASH_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
 OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
 REQD_PACKS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/reqd-packs"
 SUPPORTING_FILES_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/supporting-files"
+W0CHP_YSFCLIENTS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash_YSFclients.git"
 PS_SERVICES_SCRIPT="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin/raw/master/pistar-services"
 # don't fuck with this unless you're brave and adept at troubleshooting
 if [ -z ${W0CHP_DASH_BRANCH} ]; then
@@ -99,8 +101,13 @@ function ChangeAndCheckoutRepo() {
     git reset --hard > /dev/null # need this for initial install, since two php config files are over-written when user applies config
     git remote add newrepo "$repo" > /dev/null
     GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git fetch newrepo > /dev/null
-    git remote remove origin > /dev/null
-    git remote rename newrepo origin > /dev/null
+    if [[ $dir == "/usr/local/bin" ]] ; then
+        git checkout origin/master
+        git checkout newrepo/master -b W0CHP-PiStar-Dash_bin -- DGIdGateway YSFGateway  YSFParrot
+        git stash
+    fi
+    #git remote remove origin > /dev/null
+    #git remote rename newrepo origin > /dev/null
     if [[ $dir == "/var/www/dashboard" ]] && [[ ${key} =~ ^(-id|-idc|--install-dashboard|--install-dashboard-css)$ ]]; then # do (specified) branch checkout on dashboard, AND, that it's an install, not a restore...
         git checkout "$W0CHP_DASH_BRANCH" > /dev/null
         git reset --hard origin/"$W0CHP_DASH_BRANCH" > /dev/null
@@ -147,6 +154,7 @@ function InstallDashboard() {
 
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
+    ChangeAndCheckoutRepo "/usr/local/bin" "$W0CHP_YSFCLIENTS_REPO"
     # check for mobilegps else install skel if not exist...
     if [ ! -f "/etc/mobilegps" ]; then
         curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/mobilegps -o /etc/mobilegps --user-agent "WPSD-Installer"
@@ -224,6 +232,9 @@ function RestoreDashboard() {
     fi
     if compgen -G "/usr/local/etc/user.csv*" > /dev/null; then
         rm -r /usr/local/etc/user.csv*
+    fi
+    if compgen -G "/usr/local/etc/stripped.csv*" > /dev/null; then
+        rm -r /usr/local/etc/stripped.csv*
     fi
     if compgen -G "/usr/local/etc/groups.txt*" > /dev/null; then
         rm -r //usr/local/etc/groups.txt*
