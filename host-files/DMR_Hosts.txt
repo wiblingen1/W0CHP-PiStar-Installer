@@ -3,7 +3,7 @@
 #	Written for Pi-Star Digital Voice Node by Andy Taylor (MW0MWZ)
 #	Origional idea from Adrian Craig (M0GLJ)
 #
-#	Updated 30-Dec-2021
+#	Updated 31-Dec-2021
 #
 #	The format of this file is the name of the reflector followed by its
 #	IP address / Hotname / Password. NO SPACES!!
@@ -294,7 +294,6 @@ XLX_365				0000	222.6.234.205				passw0rd	62030
 XLX_367				0000	18.216.66.72				passw0rd	62030
 XLX_369				0000	72.89.122.8				passw0rd	62030
 XLX_370				0000	188.213.168.24				passw0rd	62030
-XLX_371				0000	212.237.8.77				passw0rd	62030
 XLX_373				0000	119.231.9.171				passw0rd	62030
 XLX_374				0000	68.183.19.139				passw0rd	62030
 XLX_375				0000	46.173.218.79				passw0rd	62030
@@ -550,7 +549,6 @@ XLX_887				0000	118.163.103.177				passw0rd	62030
 XLX_888				0000	111.202.44.36				passw0rd	62030
 XLX_889				0000	18.188.148.180				passw0rd	62030
 XLX_891				0000	209.251.60.131				passw0rd	62030
-XLX_893				0000	153.233.248.177				passw0rd	62030
 XLX_899				0000	77.68.30.160				passw0rd	62030
 XLX_900				0000	94.177.237.192				passw0rd	62030
 XLX_901				0000	91.126.242.39				passw0rd	62030
@@ -570,7 +568,7 @@ XLX_919				0000	128.199.235.93				passw0rd	62030
 XLX_920				0000	18.217.73.9				passw0rd	62030
 XLX_922				0000	81.150.10.62				passw0rd	62030
 XLX_924				0000	142.93.44.244				passw0rd	62030
-XLX_928				0000	221.237.92.40				passw0rd	62030
+XLX_928				0000	118.114.197.109				passw0rd	62030
 XLX_930				0000	80.211.133.104				passw0rd	62030
 XLX_933				0000	152.228.170.6				passw0rd	62030
 XLX_934				0000	79.6.136.177				passw0rd	62030
