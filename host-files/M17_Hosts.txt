@@ -1,7 +1,7 @@
 # M17_Hosts.txt downloaded from http://www.pistar.uk/downloads/M17_Hosts.txt
 # sourced from https://reflectors.m17.link/ref-list/json
 # Please report issues at https://www.facebook.com/groups/pistarusergroup/
-# File updated on Saturday 1st of January 2022
+# File updated on Friday 31st of December 2021
 M17-020	66.175.215.217	17000
 M17-033	46.226.178.84	17000
 M17-090	172.245.19.144	17000
