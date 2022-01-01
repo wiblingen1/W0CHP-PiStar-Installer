@@ -8,8 +8,8 @@
 
 # privilege check
 if [ "$(id -u)" != "0" ]; then
-  echo -e "You need to be root to run this command...\n"
-  exit 1
+    echo -e "You need to be root to run this command...\n"
+    exit 1
 fi
 
 # common vars
@@ -32,8 +32,17 @@ ROOT_PATH=${ROOT_PATH:-"/"}
 WORK_PATH=${WORK_PATH:-"${ROOT_PATH}/root"}
 SELFUPDATE_SCRIPT="${WORK_PATH}/.updateScript-W0CHP-pistar.sh"
 CURL_OPTIONS=${CURL_OPTIONS:-""}
-ALL_ARGS="$@"
 SUPPORTED_MAJOR="4"
+ALL_ARGS="$@"
+
+COL_NC='\e[0m' # No Color
+COL_LIGHT_GREEN='\e[1;32m'
+COL_LIGHT_RED='\e[1;31m'
+TICK="[${COL_LIGHT_GREEN}✓${COL_NC}]"
+CROSS="[${COL_LIGHT_RED}✗${COL_NC}]"
+INFO="[i]"
+DONE="${COL_LIGHT_GREEN}Done!${COL_NC}"
+OVER="\\r\\033[K"
 
 # pi-star version check. only 4.x is supported.
 RELEASE_FILE="/etc/pistar-release"
@@ -41,14 +50,14 @@ if [ -f ${RELEASE_FILE} ]; then
     PISTAR_VERSION=$(grep 'Version' /etc/pistar-release | cut -f 2 -d '=' | tr -d ' ')
     PISTAR_VERSION_INFO=( ${PISTAR_VERSION//./ })
     if [[ ${PISTAR_VERSION_INFO[0]} -ne ${SUPPORTED_MAJOR} ]]; then
-        echo "ERROR: Only Pi-Star 4.x.x is supported."
+        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} Only Pi-Star 4.x.x is supported."
         exit 1
     fi
     if [[ ${UPDATE_SELF} -eq 0 ]]; then
-        echo "Detected Pi-Star version: $PISTAR_VERSION (major: ${PISTAR_VERSION_INFO[0]})"
+        echo -e "${INFO} Detected Pi-Star version: $PISTAR_VERSION (major: ${PISTAR_VERSION_INFO[0]})"
     fi
 else
-    echo "ERROR: you're not running a PiStar."
+    echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You're not running a Pi-Star."
     exit 1
 fi
 
@@ -93,7 +102,7 @@ function CheckFWstate () {
 function ChangeAndCheckoutRepo() {
     dir="$1"
     repo="$2"
-    echo -e "Retrieving the files from the respective git repositories...\n"
+    echo -e "${INFO} Retrieving the files from the respective git repositories..."
     cd "$1"
     cp -a  /var/www/dashboard/config/{config.php,ircddblocal.php,language.php} /tmp/ # save user config files.
     git reset --hard > /dev/null # need this for initial install, since two php config files are over-written when user applies config
@@ -124,25 +133,28 @@ function ChangeAndCheckoutRepo() {
         git checkout stash@{0} -- config/config.php config/ircddblocal.php config/language.php > /dev/null 2<&1 #restore config  from stash
         git stash clear > /dev/null 2<&1 # housekeeping
     fi
-    echo -e "DONE\n"
+    echo -e "${TICK} ${DONE}\n"
 }
 
 function InstallDashboard() {
     WaitForUnattendedUpgrade
     curl -s ${CURL_OPTIONS} $PS_SERVICES_SCRIPT -o /tmp/pistar-services --user-agent "WPSD-Installer"
     echo -e ""
-    bash /tmp/pistar-services fullstop
-    echo -e "\nChecking for required program(s)..."
+    echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
+    bash /tmp/pistar-services fullstop > /dev/null 2<&1
+    echo -e "${TICK} ${DONE}\n"
+    echo -e "${INFO} Checking for required program(s)..."
     FuckOffMS
     if ! [ -x "$(command -v jq)" ]; then
-        echo -e "\nThe 'jq' package was not found. Installing prerequsite, 'jq' and its"
-        echo -e "associated libraries from the official Raspberry Pi OS Repository, \nwhich helps to mass-manage your static Brandmeister Talkgroups."
-	    echo -e "This will take some time..."
+        echo -e "\n${INFO} The 'jq' package was not found. Installing prerequsite, 'jq' and its"
+        echo -e "    associated libraries from the official Raspberry Pi OS Repository,"
+        echo -e "    which helps to mass-manage your static Brandmeister Talkgroups."
+	    echo -e "    This will take some time..."
         apt-get update > /dev/null
         apt-get install -y jq > /dev/null
-        echo -e "DONE\n"
+        echo -e "${TICK} ${DONE}\n"
     else
-        echo -e "The required 'jq' package was already found! NOT intalling.\n"
+        echo -e "${TICK} The required 'jq' package was already found! NOT intalling.\n"
     fi
 
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
@@ -153,19 +165,23 @@ function InstallDashboard() {
         chown -R www-data:www-data /etc/mobilegps
     fi
     chown -R www-data:www-data /var/www/dashboard
-    echo -e "Updating Hostfiles, User ID DB's and DMR Talkgroup Lists. This will take some time..."
-    /bin/bash /usr/local/sbin/HostFilesUpdate.sh
-    echo -e "DONE\n"
-    bash /tmp/pistar-services start
+    echo -e "${INFO} Updating Hostfiles, User ID DB's and DMR Talkgroup Lists."
+    echo -e "    This will take some time..."
+    /bin/bash /usr/local/sbin/HostFilesUpdate.sh  > /dev/null 2<&1
+    echo -e "${TICK} ${DONE}\n"
+    echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
+    bash /tmp/pistar-services start > /dev/null 2<&1
+    echo -e "${TICK} ${DONE}\n"
     rm /tmp/pistar-services
-    echo -e "\nW0CHP-PiStar-Dash Installation Complete!\n" 
+    echo -e "${TICK} ${COL_LIGHT_GREEN}W0CHP-PiStar-Dash Installation Complete!${COL_NC}\n" 
 }
 
 function InstallCSS() {
     WaitForUnattendedUpgrade
     # Are we already running W0CHP Dash with user CSS? If so, leave all CSS alone...
     if [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
-        echo -e "\nNOTE: Installation of CSS requested; however, W0CHP-PiStar-Dash installation and custom CSS detected... Leaving CSS alone."
+        echo -e "\n${INFO} NOTE: Installation of CSS requested; however, W0CHP-PiStar-Dash"
+        echo -e "    installation and custom CSS detected... Leaving CSS alone."
     # check for user's css (if any, back it up, and install W0CHP version)
     elif [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
@@ -181,23 +197,28 @@ function MapCSS() {
     # ensure no user W0CHP css exists and install stock color mapping to new selectors
     if [[ ! $RUNNING_W0CHP ]] && [ ! -f "/etc/pistar-css.ini" ]; then
         #curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent "WPSD-Installer"
-        echo ""
+        echo "" > /dev/null
     # are we running W0CHP with user css? if so, bail
     elif [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
-        echo -e "\nNOTE: W0CHP-PiStar-Dash installation and custom CSS detected... Not mapping stock CSS. Leaving custom  CSS alone.\n"
+        echo -e "\n${INFO} NOTE: W0CHP-PiStar-Dash installation and custom CSS detected."
+        echo -e "    Not mapping stock CSS. Leaving custom CSS alone."
     # otherwise, not running W0CHP dash, but user has css: make a backup of user's css and map stock css
     elif [[ ! $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
         #curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent "WPSD-Installer"
-        echo -e "\n\nNOTE: Custom CSS detected. Making backup and mapping stock Pi-Star colors. To re-map/re-customize"
-        echo -e "your CSS manually, please see <https://w0chp.net/w0chp-pistar-dash/#notes-about-css-and-custom-css-you-may-have-previously-applied>\n\n"
+        echo -e "\n${INFO} ${COL_LIGHT_RED}NOTE: Custom CSS detected. Making backup and${COL_NC}"
+        echo -e "    ${COL_LIGHT_RED}mapping stock Pi-Star colors. To re-map/re-customize${COL_NC}"
+        echo -e "    ${COL_LIGHT_RED}your CSS manually, please see:${COL_NC}"
+        echo -e "    ${COL_LIGHT_RED}<https://w0chp.net/w0chp-pistar-dash/#notes-about-css-and-custom-css-you-may-have-previously-applied>${COL_NC}"
     fi
 }
 
 function RestoreDashboard() {
     if [ -f "/usr/local/sbin/pistar-services" ] ; then
         cp /usr/local/sbin/pistar-services /tmp/
-        bash /tmp/pistar-services fullstop
+        echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
+        bash /tmp/pistar-services fullstop > /dev/null 2<&1
+        echo -e "${TICK} ${DONE}"
         echo -e ""
     fi
     WaitForUnattendedUpgrade
@@ -207,6 +228,7 @@ function RestoreDashboard() {
     ChangeAndCheckoutRepo "/var/www/dashboard" "$OFFICIAL_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$OFFICIAL_SBIN_REPO"
     # clean up the rest
+    echo -e "${INFO} Cleaning up stray W0CHP-PiStar-Dash Files..."
     if compgen -G "/usr/local/etc/BM_TGs.json*" > /dev/null; then
         rm -r /usr/local/etc/BM_TGs.json*
     fi
@@ -231,34 +253,29 @@ function RestoreDashboard() {
     if compgen -G "/usr/local/etc/groups.txt*" > /dev/null; then
         rm -r //usr/local/etc/groups.txt*
     fi
-    echo -e "Removing packages installed for W0CHP-PiStar-Dash which are no longer required. This will take some time..."
+    echo -e "${TICK} ${DONE}\n"
+    echo -e "${INFO} Removing packages installed for W0CHP-PiStar-Dash"
+    echo -e "    which are no longer required.\n    This will take some time..."
     if  [ -x "$(command -v jq)" ]; then
         apt-get purge -y jq > /dev/null
         apt-get autoremove -y > /dev/null
-        echo -e "DONE\n"
+        echo -e "${TICK} ${DONE}"
     else
-        echo -e "Required packages already removed."
-    fi
-    if php -m | grep -q dom; then
-	    if php -v | grep -q '7.3' ; then
-	        apt-get purge -y php7.3-xml > /dev/null
-            echo -e "DONE\n"
-        else
-	        apt-get purge -y php7.0-xml > /dev/null
-            echo -e "DONE\n"
-        fi
-        apt-get autoremove -y > /dev/null
-        echo -e "DONE\n"
+        echo -e "${TICK} Non-required packages already removed."
     fi
     # re-init stock Pi-Star FW:
+    echo -e "\n${INFO} Reinitializing Pi-Star firewall..."
     /usr/local/sbin/pistar-firewall > /dev/null 2<&1;
+    echo -e "${TICK} ${DONE}\n"
     # Put platformDetect.sh back..
     git --work-tree=/usr/local/bin --git-dir=/usr/local/bin/.git reset --hard > /dev/null
-    if [ -f "/tmp//pistar-services" ] ; then
-        bash /tmp/pistar-services start
+    if [ -f "/tmp/pistar-services" ] ; then
+        echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
+        bash /tmp/pistar-services start > /dev/null 2<&1
+        echo -e "${TICK} ${DONE}\n"
         rm /tmp/pistar-services
     fi
-    echo -e "\nOfficial Pi-Star Dashboard and files restoration complete!\n"
+    echo -e "${TICK} ${COL_LIGHT_GREEN}Official Pi-Star Dashboard and files restoration complete!${COL_NC}\n"
 }
 
 function FuckOffMS()
@@ -275,24 +292,24 @@ function FuckOffMS()
 
 function UpdateSelf() {
     _rw
-    echo "Performing self-update..."
+    echo -e "${INFO} Performing self-update..."
     local _tempFileName="$0.tmp"
 
     if ! eval curl -s ${CURL_OPTIONS} --output "${_tempFileName}" "${UPDATE_URI}"; then
-        echo "ERROR: Failed to download update for installation script!"
-        echo "ERROR: Make sure you have ca-certificates installed and that the time is set correctly"
+        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} Failed to download update for installation script!"
+        echo -e "Make sure you have 'ca-certificates' installed and that the time is set correctly"
         exit 1
     fi
     
     if [[ "$(head -1 ${_tempFileName})" != '#!/usr/bin/env bash' ]]; then
-        echo "ERROR: Failed to download update for installation script!"
-        echo "ERROR: Contents of file is not as expected - repo may be down"
+        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} Failed to download update for installation script!"
+        echo -e "Contents of file is not as expected - repo may be down"
         exit 1
     fi
     
     local OCTAL_MODE=$(stat -c '%a' "$0")
     if ! chmod ${OCTAL_MODE} "${_tempFileName}" ; then
-        echo "ERROR: Error while trying to set mode on ${_tempFileName}"
+        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} Error while trying to set mode on ${_tempFileName}"
         exit 1
     fi
     
@@ -316,18 +333,19 @@ function UpdateSelf() {
         mount -o remount,ro /boot
 EOF
 
-    echo "Relaunching after update..."
+    echo -e "${INFO} Relaunching after update..."
     exec /usr/bin/env bash "${SELFUPDATE_SCRIPT}"
     _ro
 }
 
 function DisplayConfigUpdate() {
-    echo " ****************************************** NOTICE ********************************************"
-    echo " *                                                                                            *"
-    echo " * Now you need to open the Pi-Star's Configuration page, and click \"Apply Changes\" button    *"
-    echo " *                                                                                            *"
-    echo " **********************************************************************************************"
-    echo -e ""
+    echo -e "${COL_LIGHT_RED} ************************ NOTICE *************************"
+    echo -e " *                                                       *"
+    echo -e " * Now you need to open the Pi-Star's Configuration page *"
+    echo -e " *        and click the \"Apply Changes\" button           *"
+    echo -e " *                                                       *"
+    echo -e " *********************************************************"
+    echo -e "${COL_NC}"
 }
 
 function DisableFirewall() {
@@ -335,9 +353,9 @@ function DisableFirewall() {
         rm /usr/local/sbin/pistar-firewall
         ln -s /usr/local/sbin/pistar-firewall.disabled /usr/local/sbin/pistar-firewall
         bash /usr/local/sbin/pistar-firewall > /dev/null 2<&1
-        echo "Firewall Disabled"
+        echo -e "\n${TICK} Firewall Disabled\n"
     else
-        echo "ERROR: You must perform the full W0CHP-PiStar-Dash installation before disabling the firewall!"
+        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before disabling the firewall!"
         exit 1
     fi
 }
@@ -347,9 +365,9 @@ function EnableFirewall() {
         rm /usr/local/sbin/pistar-firewall
         ln -s /usr/local/sbin/pistar-firewall.enabled /usr/local/sbin/pistar-firewall
         bash /usr/local/sbin/pistar-firewall > /dev/null 2<&1
-        echo "Firewall Ensabled"
+        echo -e "\n${TICK} Firewall Enabled\n"
     else
-        echo "ERROR: You must perform the full W0CHP-PiStar-Dash installation before (re-)enabling the firewall!"
+        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before (re-)enabling the firewall!"
         exit 1
     fi
 }
@@ -406,7 +424,8 @@ while [[ $# -gt 0 ]]; do
 
     case $key in
 	"-id" | "--install-dashboard")
-	    echo -e "\nINFO: Installing the W0CHP-PiStar dashboard. This will take some time..."
+        clear
+	    echo -e "\n${INFO} Installing the W0CHP-PiStar dashboard.\n    This will take some time..."
         _rw
 	    MapCSS
 	    InstallDashboard
@@ -417,7 +436,8 @@ while [[ $# -gt 0 ]]; do
 	    ;;
 
 	"-idc" | "--install-dashboard-css")
-	    echo -e "\nINFO: Installing the W0CHP-PiStar dashboard with custom stylesheet. This will take some time..."
+        clear
+	    echo -e "\n${INFO} Installing the W0CHP-PiStar dashboard with custom stylesheet.\n    This will take some time..."
         _rw
 	    InstallCSS
 	    InstallDashboard
@@ -428,7 +448,8 @@ while [[ $# -gt 0 ]]; do
 	    ;;
 
 	"-rd" | "--restore-dashboard")
-	    echo -e "\nINFO: Restoring the original Pi-Star dashboard and files. This will take some time...\n"
+        clear
+	    echo -e "\n${INFO} Restoring the original Pi-Star dashboard and files.\n    This will take some time...\n"
         _rw
 	    RestoreDashboard
 	    DisplayConfigUpdate
