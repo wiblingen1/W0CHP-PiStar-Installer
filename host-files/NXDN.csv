@@ -1969,7 +1969,7 @@ RADIO_ID,CALLSIGN,FIRST_NAME,LAST_NAME,CITY,STATE,COUNTRY
 1982,BD4VFA,Lei,WANG,NAN TONG,Shan Dong  Jiang Su,China
 1983,GM0ULK,,,Aberdeenshire,None,United Kingdom
 1984,KW0LFE,Ferenc,Slezak,Los Angeles,California,United States
-1985,KI7SNJ,Adam,Piotrowski,Las Vegas,Nevada,United States
+1985,NX7T,Adam,Piotrowski,Las Vegas,Nevada,United States
 1986,BG3AE,Mingshun,Li,Tianjin,Shan Xi  He Bei  Tian Jin,China
 1987,W1SPS,Richard,Dubey,Torrington,Connecticut,United States
 1988,HB3XYE,Vladimir,Hrusca,8152 Opfikon,Zurich,Switzerland
@@ -2365,7 +2365,7 @@ RADIO_ID,CALLSIGN,FIRST_NAME,LAST_NAME,CITY,STATE,COUNTRY
 2383,PU1LHP,Levi Henrique Ouverney,Pedrosa,P.O.BOX 93357 ZIP CODE 25953-971 BRAZIL,Rio de Janeiro,Brazil
 2384,HS9EJL,Surak,Thammarak,Mueng Pathum Thani,Pathum Thani,Thailand
 2385,6K2JFI,Jae Hun,CHOI,안산시,KyungKi-Do,Korea Republic of
-2386,IK7LKD,Ciccio,,Ostuni,None,Italy
+2386,IK7LKD,Francesco,Barcone,Ostuni,,Italy
 2387,IZ8IAW,Giuseppe,DAMELIO,CAMPOBASSO,Molise / Campania / Calabria,Italy
 2388,KN4GFP,Joshua,Works,Pinellas Park,Florida,United States
 2389,TA4DIL,Adil,Cetin,Muratpasa,Antalya,Turkey
@@ -2423,7 +2423,7 @@ RADIO_ID,CALLSIGN,FIRST_NAME,LAST_NAME,CITY,STATE,COUNTRY
 2442,IU8PCP,Luigi,Lorenzano,Crotone,Molise / Campania / Calabria,Italy
 2443,W6AAX,Al,Febraro,Temecula,California,United States
 2444,E25ETT,Pumiphat,Bunchuen,Thamai,Chanthaburi,Thailand
-2445,TA3BBS,Huseyin,Gonen,izmir,Izmir,Turkey
+2445,TA3BBS,Huseyin,Gonen,Gaziemir,Izmir,Turkey
 2446,G1JKE,Nigel,Knapton,Easingwold,England,United Kingdom
 2447,HH2MCJ,Michelet,HH2MCJ,Christ-Roi,Ouest,Haiti
 2448,N9ICV,Chris,Kadlubowski,Osgood,Indiana,United States
@@ -2602,6 +2602,11 @@ RADIO_ID,CALLSIGN,FIRST_NAME,LAST_NAME,CITY,STATE,COUNTRY
 2627,KJ7DTS,Christian K,Holden,Powell Butte,Oregon,United States
 2628,K7BXQ,Brandon J,Dietrich,Bozeman,Montana,United States
 2629,KD5FHG,Jose,Garcia,Brownsville,Texas,United States
+2630,KJ7OMO,Kimberly,Chase,YUMA,Arizona,United States
+2631,YD5NPC,Sutan,P Lubis,Balikpapan,Kalimantan Timur,Indonesia
+2632,6K2KWD,Youngphil,Kwon,Seongnam-Si,Gyeonggi Province,Korea Republic of
+2633,VE7TSW,Kevin Dwayne,Antonichuk,Prince George,British Columbia,Canada
+2634,N6DAI,Duane,Isaacson,Huntington Beach,California,United States
 2648,BH4QBO,Shi,Hualiang,Shanghai City,Shan Dong  Jiang Su,China
 2649,BG8FZ,Tu,Lan,Chengdu Wuhou Zongsh,Hei Long Jiang  Ji Lin  Liao Ning,China
 2650,IK5SRQ,Dino,Solari,Porto Santo Stefano,Tuscany,Italy
