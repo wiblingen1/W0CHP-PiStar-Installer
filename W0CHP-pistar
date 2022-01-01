@@ -173,6 +173,7 @@ function InstallDashboard() {
     bash /tmp/pistar-services start > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
     rm /tmp/pistar-services
+    /usr/local/sbin/pistar-motdgen
     echo -e "${TICK} ${COL_LIGHT_GREEN}W0CHP-PiStar-Dash Installation Complete!${COL_NC}\n" 
 }
 
