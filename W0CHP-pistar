@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+#  +-------------------------------------------------------------------+
+#  | W0CHP-PiStar-Dash Installer Script                                |
+#  |   by Chip Cuccio (W0CHP)                                          |
+#  |   <https://w0chp.net/w0chp-pistar-dash/>                          |
+#  | This progam is distributed under the GNU GPL;                     |
+#  |   See <http://www.gnu.org/licenses/gpl.html> for lic. info        |
+#  +-------------------------------------------------------------------+
+
 # ############################## NOTE ################################ #
 #                                                                      #
 # NO_SELF_UPDATE=1 # will disable auto update of this script           #
@@ -428,7 +436,7 @@ while [[ $# -gt 0 ]]; do
     case $key in
 	"-id" | "--install-dashboard")
         clear
-	    echo -e "\n${INFO} Installing the W0CHP-PiStar dashboard.\n    This will take some time..."
+	    echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
         _rw
 	    MapCSS
 	    InstallDashboard
@@ -440,7 +448,7 @@ while [[ $# -gt 0 ]]; do
 
 	"-idc" | "--install-dashboard-css")
         clear
-	    echo -e "\n${INFO} Installing the W0CHP-PiStar dashboard with custom stylesheet.\n    This will take some time..."
+	    echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software with custom stylesheet.\n    This will take some time..."
         _rw
 	    InstallCSS
 	    InstallDashboard
