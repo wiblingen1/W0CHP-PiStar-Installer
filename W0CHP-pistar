@@ -43,6 +43,8 @@ CURL_OPTIONS=${CURL_OPTIONS:-""}
 SUPPORTED_MAJOR="4"
 ALL_ARGS="$@"
 
+# Credit for the colored status indicators
+# goes to the awesome Pi-Hole devs. Love 'em!
 COL_NC='\e[0m' # No Color
 COL_LIGHT_GREEN='\e[1;32m'
 COL_LIGHT_RED='\e[1;31m'
@@ -263,8 +265,8 @@ function RestoreDashboard() {
         rm -r //usr/local/etc/groups.txt*
     fi
     echo -e "${TICK} ${DONE}\n"
-    echo -e "${INFO} Removing packages installed for W0CHP-PiStar-Dash"
-    echo -e "    which are no longer required.\n    This will take some time..."
+    echo -e "${INFO} Removing packages installed for W0CHP-PiStar-Dash which"
+    echo -e "    are no longer required.\n    This will take some time..."
     if  [ -x "$(command -v jq)" ]; then
         apt-get purge -y jq > /dev/null
         apt-get autoremove -y > /dev/null
@@ -352,12 +354,22 @@ EOF
 function DisplayConfigUpdate() {
     echo -e "${COL_LIGHT_RED} ************************ NOTICE *************************"
     echo -e " *                                                       *"
-    echo -e " * Now you need to open the Pi-Star's Configuration page *"
-    echo -e " *        and click the \"Apply Changes\" button           *"
+    echo -e " * Now you need to refresh and/or go back to the main    *"
+    echo -e " *     Dashboard Page to see all of the changes.         *"
     echo -e " *                                                       *"
     echo -e " *********************************************************"
-    echo -e "${COL_NC}"
+    echo -e "${OL_NC}"
 }
+
+#function DisplayConfigUpdate() {
+#    echo -e "${COL_LIGHT_RED} ************************ NOTICE *************************"
+#    echo -e " *                                                       *"
+#    echo -e " * Now you need to open the Pi-Star's Configuration page *"
+#    echo -e " *        and click the \"Apply Changes\" button           *"
+#    echo -e " *                                                       *"
+#    echo -e " *********************************************************"
+#    echo -e "${COL_NC}"
+#}
 
 function DisableFirewall() {
     if [[ $RUNNING_W0CHP ]]; then
@@ -441,7 +453,7 @@ while [[ $# -gt 0 ]]; do
 	    MapCSS
 	    InstallDashboard
         CheckFWstate
-	    #DisplayConfigUpdate
+	    DisplayConfigUpdate
         _ro
 	    shift
 	    ;;
@@ -453,7 +465,7 @@ while [[ $# -gt 0 ]]; do
 	    InstallCSS
 	    InstallDashboard
         CheckFWstate
-	    #DisplayConfigUpdate
+	    DisplayConfigUpdate
         _ro
 	    shift
 	    ;;
@@ -463,7 +475,7 @@ while [[ $# -gt 0 ]]; do
 	    echo -e "\n${INFO} Restoring the original Pi-Star dashboard and files.\n    This will take some time...\n"
         _rw
 	    RestoreDashboard
-	    #DisplayConfigUpdate
+	    DisplayConfigUpdate
         _ro
 	    shift
 	    ;;
