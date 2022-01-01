@@ -441,7 +441,7 @@ while [[ $# -gt 0 ]]; do
 	    MapCSS
 	    InstallDashboard
         CheckFWstate
-	    DisplayConfigUpdate
+	    #DisplayConfigUpdate
         _ro
 	    shift
 	    ;;
@@ -453,7 +453,7 @@ while [[ $# -gt 0 ]]; do
 	    InstallCSS
 	    InstallDashboard
         CheckFWstate
-	    DisplayConfigUpdate
+	    #DisplayConfigUpdate
         _ro
 	    shift
 	    ;;
@@ -463,7 +463,7 @@ while [[ $# -gt 0 ]]; do
 	    echo -e "\n${INFO} Restoring the original Pi-Star dashboard and files.\n    This will take some time...\n"
         _rw
 	    RestoreDashboard
-	    DisplayConfigUpdate
+	    #DisplayConfigUpdate
         _ro
 	    shift
 	    ;;
