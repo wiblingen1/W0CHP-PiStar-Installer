@@ -115,11 +115,12 @@ function ChangeAndCheckoutRepo() {
     dir="$1"
     repo="$2"
     echo -e "${INFO} Retrieving the files from the respective git repositories..."
+    echo -e "    * Working on: \"${dir}\"..."
     cd "$1"
     cp -a  /var/www/dashboard/config/{config.php,ircddblocal.php,language.php} /tmp/ # save user config files.
     git reset --hard > /dev/null # need this for initial install, since two php config files are over-written when user applies config
     git remote add newrepo "$repo" > /dev/null
-    GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git fetch newrepo > /dev/null
+    GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git fetch -q newrepo > /dev/null
     git remote remove origin > /dev/null
     git remote rename newrepo origin > /dev/null
     if [[ $dir == "/var/www/dashboard" ]] && [[ ${key} =~ ^(-id|-idc|--install-dashboard|--install-dashboard-css)$ ]]; then # do (specified) branch checkout on dashboard, AND, that it's an install, not a restore...
