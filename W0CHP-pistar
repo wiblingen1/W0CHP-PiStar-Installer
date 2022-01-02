@@ -24,7 +24,7 @@ fi
 W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar"
 W0CHP_DASH_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash.git"
 W0CHP_SBIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin.git"
-W0CHP_YSFCLIENTS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash_YSFclients"
+W0CHP_EXP_BINS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash_CustomBinaries.git"
 OFFICIAL_DASH_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
 OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
 REQD_PACKS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/reqd-packs"
@@ -173,12 +173,12 @@ function InstallDashboard() {
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     if [[ ${W0CHP_DASH_BRANCH} = DG-ID_M17 ]] ; then
         cd /tmp/
-        GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git clone ${W0CHP_YSFCLIENTS_REPO} > /dev/null
-        cp -a /tmp/W0CHP-PiStar-Dash_YSFclients/* /usr/local/bin/
-        rm -rf /tmp/W0CHP-PiStar-Dash_YSFclients
+        GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git clone ${W0CHP_EXP_BINS_REPO} > /dev/null
+        cp -a /W0CHP-PiStar-Dash_CustomBinaries/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway} /usr/local/bin/
+        rm -rf /tmp/W0CHP-PiStar-Dash_CustomBinaries
         cd /usr/local/bin/
-        git stash > /dev/null 2<&1 # stash custom YSFclients
-        git checkout stash@{0} -- YSFGateway YSFParrot DGIdGateway > /dev/null 2<&1
+        git stash > /dev/null 2<&1 # stash custom bins
+        git checkout stash@{0} -- YSFGateway YSFParrot DGIdGateway M17Gateway > /dev/null 2<&1
     fi
     # check for mobilegps else install skel if not exist...
     if [ ! -f "/etc/mobilegps" ]; then
@@ -289,7 +289,7 @@ function RestoreDashboard() {
     echo -e "\n${INFO} Reinitializing Pi-Star firewall..."
     /usr/local/sbin/pistar-firewall > /dev/null 2<&1;
     echo -e "${TICK} ${DONE}\n"
-    # Put platformDetect.sh and YSFclients back..
+    # Put platformDetect.sh and orig/official bins back..
     cd /usr/local/bin
     git stash clear > /dev/null 2<&1 # housekeeping
     git --work-tree=/usr/local/bin --git-dir=/usr/local/bin/.git reset --hard > /dev/null
