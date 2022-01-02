@@ -174,7 +174,7 @@ function InstallDashboard() {
     if [[ ${W0CHP_DASH_BRANCH} = DG-ID_M17 ]] ; then
         cd /tmp/
         GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git clone ${W0CHP_EXP_BINS_REPO} > /dev/null
-        cp -a /W0CHP-PiStar-Dash_CustomBinaries/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway} /usr/local/bin/
+        cp -a /tmp/W0CHP-PiStar-Dash_CustomBinaries/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway} /usr/local/bin/
         rm -rf /tmp/W0CHP-PiStar-Dash_CustomBinaries
         cd /usr/local/bin/
         git stash > /dev/null 2<&1 # stash custom bins
