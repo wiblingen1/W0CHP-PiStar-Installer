@@ -155,7 +155,7 @@ function InstallDashboard() {
     curl -s ${CURL_OPTIONS} $PS_SERVICES_SCRIPT -o /tmp/pistar-services --user-agent "WPSD-Installer"
     echo -e ""
     echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
-    bash /tmp/pistar-services fullstop > /dev/null 2<&1
+    env REMOUNT_RO="NO"bash /tmp/pistar-services fullstop > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
     echo -e "${INFO} Checking for required program(s)..."
     FuckOffMS
@@ -176,11 +176,11 @@ function InstallDashboard() {
     if [[ ${W0CHP_DASH_BRANCH} = DG-ID_M17 ]] ; then
         cd /tmp/
         GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git clone ${W0CHP_EXP_BINS_REPO} > /dev/null
-        cp -a /tmp/W0CHP-PiStar-Dash_CustomBinaries/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway} /usr/local/bin/
+        cp -a /tmp/W0CHP-PiStar-Dash_CustomBinaries/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway,MMDVMHost,MMDVMCal} /usr/local/bin/
         rm -rf /tmp/W0CHP-PiStar-Dash_CustomBinaries
         cd /usr/local/bin/
         git stash > /dev/null 2<&1 # stash custom bins
-        git checkout stash@{0} -- YSFGateway YSFParrot DGIdGateway M17Gateway > /dev/null 2<&1
+        git checkout stash@{0} -- YSFGateway YSFParrot DGIdGateway M17Gateway MMDVMHost MMDVMCal> /dev/null 2<&1
     fi
     # check for mobilegps else install skel if not exist...
     if [ ! -f "/etc/mobilegps" ]; then
@@ -241,7 +241,7 @@ function RestoreDashboard() {
     if [ -f "/usr/local/sbin/pistar-services" ] ; then
         cp /usr/local/sbin/pistar-services /tmp/
         echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
-        bash /tmp/pistar-services fullstop > /dev/null 2<&1
+        env REMOUNT_RO="NO" bash /tmp/pistar-services fullstop > /dev/null 2<&1
         echo -e "${TICK} ${DONE}"
         echo -e ""
     fi
