@@ -24,9 +24,10 @@ fi
 W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/W0CHP-pistar"
 W0CHP_DASH_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash.git"
 W0CHP_SBIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin.git"
-W0CHP_EXP_BINS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash_CustomBinaries.git"
+W0CHP_CUST_BINS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash_CustomBinaries.git"
 OFFICIAL_DASH_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
 OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
+OFFICIAL_BIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_v4_Binaries_Bin.git"
 REQD_PACKS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/reqd-packs"
 SUPPORTING_FILES_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/master/supporting-files"
 PS_SERVICES_SCRIPT="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin/raw/master/pistar-services"
@@ -175,13 +176,15 @@ function InstallDashboard() {
 
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
+    ChangeAndCheckoutRepo "/usr/local/bin" "$OFFICIAL_BIN_REPO" # need to mke certain they have latest official binaries
+
     if [[ ${W0CHP_DASH_BRANCH} = DG-ID_M17 ]] ; then
-        echo -e "${INFO} DG-ID and M17 support require custom-compiled MMDVMHost, M17,"
-        echo -e"     RemoteCommand and YSFClient binaries..."
+        echo -e "${INFO} DG-ID and M17 support require custom-compiled MMDVMHost,"
+        echo -e "    M17Gateway, RemoteCommand and YSFClient binaries..."
         echo -e "    Retrieving and installing them now."
 	    echo -e "    This will take some time..."
         cd /tmp/
-        GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git clone -q ${W0CHP_EXP_BINS_REPO} > /dev/null
+        GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git clone -q ${W0CHP_CUST_BINS_REPO} > /dev/null
         cp -a /tmp/W0CHP-PiStar-Dash_CustomBinaries/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway,MMDVMHost,MMDVMCal,RemoteCommand} /usr/local/bin/
         rm -rf /tmp/W0CHP-PiStar-Dash_CustomBinaries
         cd /usr/local/bin/
@@ -262,6 +265,7 @@ function RestoreDashboard() {
     fi
     ChangeAndCheckoutRepo "/var/www/dashboard" "$OFFICIAL_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$OFFICIAL_SBIN_REPO"
+    ChangeAndCheckoutRepo "/usr/local/bin" "$OFFICIAL_BIN_REPO"
     # clean up the rest
     echo -e "${INFO} Cleaning up stray W0CHP-PiStar-Dash Files..."
     if compgen -G "/usr/local/etc/BM_TGs.json*" > /dev/null; then
