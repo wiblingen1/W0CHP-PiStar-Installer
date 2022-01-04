@@ -190,9 +190,6 @@ function InstallDashboard() {
         cd /usr/local/bin/
         git stash > /dev/null 2<&1 # stash custom bins
         git checkout stash@{0} -- YSFGateway YSFParrot DGIdGateway M17Gateway MMDVMHost MMDVMCal RemoteCommand > /dev/null 2<&1
-        # need custom MMDVMhost startup script. *shrug*
-        mv /usr/local/sbin/mmdvmhost.service /usr/local/sbin/mmdvmhost.service.dist
-        mv /usr/local/sbin/mmdvmhost.service_M17-DG-ID  /usr/local/sbin/mmdvmhost.service
         echo -e "${TICK} ${DONE}\n"
     fi
     # check for mobilegps else install skel if not exist...
