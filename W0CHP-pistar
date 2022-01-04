@@ -176,7 +176,8 @@ function InstallDashboard() {
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     if [[ ${W0CHP_DASH_BRANCH} = DG-ID_M17 ]] ; then
-        echo -e "${INFO} DG-ID and M17 support require custom-compiled binaries."
+        echo -e "${INFO} DG-ID and M17 support require custom-compiled MMDVMHost, M17,"
+        echo -e"     RemoteCommand and YSFClient binaries..."
         echo -e "    Retrieving and installing them now."
 	    echo -e "    This will take some time..."
         cd /tmp/
@@ -186,6 +187,9 @@ function InstallDashboard() {
         cd /usr/local/bin/
         git stash > /dev/null 2<&1 # stash custom bins
         git checkout stash@{0} -- YSFGateway YSFParrot DGIdGateway M17Gateway MMDVMHost MMDVMCal> /dev/null 2<&1
+        # need custom MMDVMhost startup script. *shrug*
+        mv /usr/local/sbin/mmdvmhost.service /usr/local/sbin/mmdvmhost.service.dist
+        mv /usr/local/sbin/mmdvmhost.service_M17-DG-ID  /usr/local/sbin/mmdvmhost.service
         echo -e "${TICK} ${DONE}\n"
     fi
     # check for mobilegps else install skel if not exist...
