@@ -188,6 +188,7 @@ function InstallDashboard() {
         cp -a /tmp/W0CHP-PiStar-Dash_CustomBinaries/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway,MMDVMHost,MMDVMCal,RemoteCommand} /usr/local/bin/
         rm -rf /tmp/W0CHP-PiStar-Dash_CustomBinaries
         cd /usr/local/bin/
+        chmod root:bin * > /dev/null 2<&1
         git stash > /dev/null 2<&1 # stash custom bins
         git checkout stash@{0} -- YSFGateway YSFParrot DGIdGateway M17Gateway MMDVMHost MMDVMCal RemoteCommand > /dev/null 2<&1
         echo -e "${TICK} ${DONE}\n"
