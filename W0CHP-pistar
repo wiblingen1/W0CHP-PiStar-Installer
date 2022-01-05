@@ -188,6 +188,7 @@ function InstallDashboard() {
 
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
+    systemctl daemon-reload > /dev/null 2>/dev/null # Restart Systemd to account for any service changes 
     ChangeAndCheckoutRepo "/usr/local/bin" "$OFFICIAL_BIN_REPO" # need to mke certain they have latest official binaries
  
     if [[ ${W0CHP_DASH_BRANCH} = DG-ID_M17 ]] ; then
