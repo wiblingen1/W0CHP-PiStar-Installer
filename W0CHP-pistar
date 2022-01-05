@@ -45,7 +45,7 @@ CURL_OPTIONS=${CURL_OPTIONS:-""}
 SUPPORTED_MAJOR="4"
 ALL_ARGS="$@"
 installedDashBranch=$(git --work-tree=/var/www/dashboard --git-dir=/var/www/dashboard/.git branch | grep '*' | cut -f2 -d ' ')
-
+W0CHP_BINS="/usr/local/.W0CHP_bin"
 # Credit for the colored status indicators
 # goes to the awesome Pi-Hole devs. Love 'em!
 COL_NC='\e[0m' # No Color
@@ -85,6 +85,12 @@ function CheckPausedMode() {
         echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} Paused mode(s) deteced..."
         echo -e "    You must unpause your mode(s) in Instant Mode Manager before proceeding."
         exit 1
+    fi
+}
+
+function RemovePlatDet() {
+    if [ -f /usr/local/bin/platformDetect.sh ]; then # remove platformDetect.sh since we have a custom version in /usr/local/sbin
+        rm -f /usr/local/bin/platformDetect.sh
     fi
 }
 
@@ -141,9 +147,6 @@ function ChangeAndCheckoutRepo() {
         git stash > /dev/null 2<&1 # stash user config files in local repo
         git checkout stash@{0} -- config/config.php config/ircddblocal.php > /dev/null 2<&1 #restore config  from stash
         git stash clear > /dev/null 2<&1 # housekeeping
-        if [ -f /usr/local/bin/platformDetect.sh ]; then # remove platformDetect.sh since we have a custom version in /usr/local/sbin
-            rm -f /usr/local/bin/platformDetect.sh
-        fi
         # cache W0CHP-PiStar-Dash git version:
         ver_cmd=$( git --work-tree=/usr/local/sbin --git-dir=/usr/local/sbin/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
         gitRemoteURL=$(git --work-tree=${dir} --git-dir=${dir}/.git config --get remote.origin.url)
@@ -175,8 +178,8 @@ function InstallDashboard() {
         echo -e "\n${INFO} The 'jq' package was not found. Installing prerequsite, 'jq' and its"
         echo -e "    associated libraries from the official Raspberry Pi OS Repository,"
         echo -e "    which helps to mass-manage your static Brandmeister Talkgroups."
-	    echo -e "    This will take some time..."
-        apt-get update > /dev/null
+	echo -e "    This will take some time..."
+	apt-get update > /dev/null
         apt-get install -y jq > /dev/null
         echo -e "${TICK} ${DONE}\n"
     else
@@ -186,16 +189,14 @@ function InstallDashboard() {
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     ChangeAndCheckoutRepo "/usr/local/bin" "$OFFICIAL_BIN_REPO" # need to mke certain they have latest official binaries
-
+ 
     if [[ ${W0CHP_DASH_BRANCH} = DG-ID_M17 ]] ; then
         echo -e "${INFO} DG-ID and M17 support require custom-compiled MMDVMHost,"
         echo -e "    M17Gateway, RemoteCommand and YSFClient binaries..."
         echo -e "    Retrieving and installing them now."
-	    echo -e "    This will take some time..."
-        cd /tmp/
-        GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git clone -q ${W0CHP_CUST_BINS_REPO} > /dev/null
-        cp -a /tmp/W0CHP-PiStar-Dash_CustomBinaries/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway,MMDVMHost,MMDVMCal,RemoteCommand} /usr/local/bin/
-        rm -rf /tmp/W0CHP-PiStar-Dash_CustomBinaries
+	echo -e "    This will take some time..."
+        GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git clone -q ${W0CHP_CUST_BINS_REPO} ${W0CHP_BINS} > /dev/null
+        cp -a ${W0CHP_BINS}/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway,MMDVMHost,MMDVMCal,RemoteCommand} /usr/local/bin/
         cd /usr/local/bin/
         chmod root:bin * > /dev/null 2<&1
         git stash > /dev/null 2<&1 # stash custom bins
@@ -299,6 +300,9 @@ function RestoreDashboard() {
     if compgen -G "/usr/local/etc/groups.txt*" > /dev/null; then
         rm -r //usr/local/etc/groups.txt*
     fi
+    if [[ -d ${W0CHP_BINS} ]] ; then
+        rm -rf ${W0CHP_BINS}
+    fi
     echo -e "${TICK} ${DONE}\n"
     echo -e "${INFO} Removing packages installed for W0CHP-PiStar-Dash which"
     echo -e "    are no longer required.\n    This will take some time..."
@@ -388,16 +392,6 @@ EOF
     _ro
 }
 
-#function DisplayConfigUpdate() {
-#    echo -e "${COL_LIGHT_RED} ************************ NOTICE *************************"
-#    echo -e " *                                                       *"
-#    echo -e " * Now you need to refresh and/or go back to the main    *"
-#    echo -e " *     Dashboard Page to see all of the changes.         *"
-#    echo -e " *                                                       *"
-#    echo -e " *********************************************************"
-#    echo -e "${OL_NC}"
-#}
-
 function DisplayConfigUpdate() {
     echo -e "${COL_LIGHT_RED} ************************ NOTICE *************************"
     echo -e " *                                                       *"
@@ -484,53 +478,55 @@ while [[ $# -gt 0 ]]; do
 
     case $key in
 	"-id" | "--install-dashboard")
-        clear
-        CheckPausedMode
+            clear
+            CheckPausedMode
 	    echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
-        _rw
+            _rw
 	    MapCSS
 	    InstallDashboard
-        CheckFWstate
+            CheckFWstate
+            RemovePlatDet
 	    DisplayConfigUpdate
-        _ro
+            _ro
 	    shift
 	    ;;
 
 	"-idc" | "--install-dashboard-css")
-        clear
-        CheckPausedMode
+            clear
+            CheckPausedMode
 	    echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software with custom stylesheet.\n    This will take some time..."
-        _rw
+            _rw
 	    InstallCSS
 	    InstallDashboard
-        CheckFWstate
+            CheckFWstate
+	    RemovePlatDet
 	    DisplayConfigUpdate
-        _ro
+            _ro
 	    shift
 	    ;;
 
 	"-rd" | "--restore-dashboard")
-        clear
-        CheckPausedMode
+            clear
+            CheckPausedMode
 	    echo -e "\n${INFO} Restoring the original Pi-Star dashboard and files.\n    This will take some time...\n"
-        _rw
+            _rw
 	    RestoreDashboard
 	    DisplayConfigUpdate
-        _ro
+            _ro
 	    shift
 	    ;;
 
 	"-dfw" | "--disable-firewall")
-        _rw
+            _rw
 	    DisableFirewall
-        _ro
+            _ro
 	    shift
 	    ;;
 
 	"-efw" | "--enable-firewall")
-        _rw
+            _rw
 	    EnableFirewall
-        _ro
+            _ro
 	    shift
 	    ;;
 
