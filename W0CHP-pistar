@@ -133,7 +133,7 @@ function ChangeAndCheckoutRepo() {
         git checkout stash@{0} -- config/config.php config/ircddblocal.php > /dev/null 2<&1 #restore config  from stash
         git stash clear > /dev/null 2<&1 # housekeeping
         if [ -f /usr/local/bin/platformDetect.sh ]; then # remove platformDetect.sh since we have a custom version in /usr/local/sbin
-            git --work-tree=/usr/local/bin --git-dir=/usr/local/bin/.git rm platformDetect.sh > /dev/null
+            rm -f /usr/local/bin/platformDetect.sh
         fi
         # cache W0CHP-PiStar-Dash git version:
         ver_cmd=$( git --work-tree=/usr/local/sbin --git-dir=/usr/local/sbin/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
