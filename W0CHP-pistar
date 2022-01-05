@@ -79,6 +79,15 @@ if grep -q W0CHP /var/www/dashboard/config/version.php ; then
     RUNNING_W0CHP=1
 fi
 
+function CheckPausedMode() {
+    # check if user havs paused modes:
+    if compgen -G "/etc/*_paused*" > /dev/null ; then
+        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} Paused mode(s) deteced..."
+        echo -e "    You must unpause your mode(s) in Instant Mode Manager before proceeding."
+        exit 1
+    fi
+}
+
 # check if user already has firewall disabled, and if so, ensure it's kept that way.
 if ! grep -q LOGNDROP /etc/iptables.rules ; then
     FW_DISABLED=1
@@ -476,6 +485,7 @@ while [[ $# -gt 0 ]]; do
     case $key in
 	"-id" | "--install-dashboard")
         clear
+        CheckPausedMode
 	    echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
         _rw
 	    MapCSS
@@ -488,6 +498,7 @@ while [[ $# -gt 0 ]]; do
 
 	"-idc" | "--install-dashboard-css")
         clear
+        CheckPausedMode
 	    echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software with custom stylesheet.\n    This will take some time..."
         _rw
 	    InstallCSS
@@ -500,6 +511,7 @@ while [[ $# -gt 0 ]]; do
 
 	"-rd" | "--restore-dashboard")
         clear
+        CheckPausedMode
 	    echo -e "\n${INFO} Restoring the original Pi-Star dashboard and files.\n    This will take some time...\n"
         _rw
 	    RestoreDashboard
