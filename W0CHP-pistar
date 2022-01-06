@@ -197,11 +197,11 @@ function InstallDashboard() {
         echo -e "    Retrieving and installing them now."
 	echo -e "    This will take some time..."
         GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git clone -q ${W0CHP_CUST_BINS_REPO} ${W0CHP_BINS} > /dev/null
-        cp -a ${W0CHP_BINS}/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway,MMDVMHost,MMDVMCal,RemoteCommand} /usr/local/bin/
+        cp -a ${W0CHP_BINS}/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway,MMDVMHost,MMDVMCal,RemoteCommand,config_clean.zip} /usr/local/bin/
         cd /usr/local/bin/
         chmod root:bin * > /dev/null 2<&1
         git stash > /dev/null 2<&1 # stash custom bins
-        git checkout stash@{0} -- YSFGateway YSFParrot DGIdGateway M17Gateway MMDVMHost MMDVMCal RemoteCommand > /dev/null 2<&1
+        git checkout stash@{0} -- YSFGateway YSFParrot DGIdGateway M17Gateway MMDVMHost MMDVMCal RemoteCommand config_clean.zip > /dev/null 2<&1
         echo -e "${TICK} ${DONE}\n"
     fi
     # check for mobilegps else install skel if not exist...
