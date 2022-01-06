@@ -315,9 +315,6 @@ function RestoreDashboard() {
     if compgen -G "/usr/local/bin/README.md*" > /dev/null; then
         rm -r /usr/local/bin/README.md*
     fi
-    if compgen -G "/usr/local/bin/M17Gateway*" > /dev/null; then
-        git --work-tree=/usr/local/bin --git-dir=/usr/local/bin/.git rm M17Gateway > /dev/null
-    fi
     if [[ -d ${W0CHP_BINS} ]] ; then
         rm -rf ${W0CHP_BINS}
     fi
