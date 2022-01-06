@@ -196,6 +196,7 @@ function InstallDashboard() {
         echo -e "    M17Gateway, RemoteCommand and YSFClient binaries..."
         echo -e "    Retrieving and installing them now."
 	echo -e "    This will take some time..."
+        rm -rf  ${W0CHP_BINS} > /dev/null
         GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git clone -q ${W0CHP_CUST_BINS_REPO} ${W0CHP_BINS} > /dev/null
         cp -a ${W0CHP_BINS}/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway,MMDVMHost,MMDVMCal,RemoteCommand,config_clean.zip} /usr/local/bin/
         cd /usr/local/bin/
