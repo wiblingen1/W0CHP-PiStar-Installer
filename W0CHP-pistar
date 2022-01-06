@@ -121,6 +121,7 @@ function WaitForUnattendedUpgrade() {
 function CheckFWstate () {
     #SCRIPT_PATH=`dirname $SCRIPT_SELF`
     if [[ $FW_DISABLED  -eq "1" ]] ; then
+	echo -e "${INFO} Detected user-disabled firewall; Saving this prefrence and re-applying..."
         DisableFirewall
     fi
 }
@@ -131,7 +132,7 @@ function ChangeAndCheckoutRepo() {
     dir="$1"
     repo="$2"
     echo -e "${INFO} Retrieving the files from the respective git repositories..."
-    echo -e "    * Git repo: ${repo}"
+    echo -e "    * Git repo: <${repo}>"
     echo -e "    * Installing into: \"${dir}\""
     cd "$1"
     cp -a  /var/www/dashboard/config/{config.php,ircddblocal.php,language.php} /tmp/ # save user config files.
@@ -189,16 +190,22 @@ function InstallDashboard() {
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     ChangeAndCheckoutRepo "/usr/local/bin" "$OFFICIAL_BIN_REPO" # need to mke certain they have latest official binaries
-    systemctl daemon-reload > /dev/null 2>/dev/null # Restart Systemd to account for any service changes 
  
     if [[ ${W0CHP_DASH_BRANCH} = DG-ID_M17 ]] ; then
-        echo -e "${INFO} DG-ID and M17 support require custom-compiled MMDVMHost,"
-        echo -e "    M17Gateway, RemoteCommand and YSFClient binaries..."
+        echo -e "${INFO} You have selected to install the DG-ID and M17 branch."
+	echo -e "    This requires custom-compiled \`MMDVMHost, M17Gateway,"
+        echo -e "    RemoteCommand and YSFClient\` binaries..."
         echo -e "    Retrieving and installing them now."
 	echo -e "    This will take some time..."
+	echo -e "      * Git repo: <${W0CHP_CUST_BINS_REPO}>"
+	echo -e "      * Installing into: \"${W0CHP_BINS}\""
+	echo -e "      * Symlinking into: \"/usr/local/bin\""
         rm -rf  ${W0CHP_BINS} > /dev/null
         GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git clone -q ${W0CHP_CUST_BINS_REPO} ${W0CHP_BINS} > /dev/null
-        cp -a ${W0CHP_BINS}/{YSFGateway,YSFParrot,DGIdGateway,M17Gateway,MMDVMHost,MMDVMCal,RemoteCommand,config_clean.zip} /usr/local/bin/
+	for i in $( ls ${W0CHP_BINS}/ ) ; do
+		rm -f /usr/local/bin/$i
+		ln -sfn ${W0CHP_BINS}/$i /usr/local/bin/$i
+	done
         cd /usr/local/bin/
         chmod root:bin * > /dev/null 2<&1
         git stash > /dev/null 2<&1 # stash custom bins
@@ -216,6 +223,7 @@ function InstallDashboard() {
     /bin/bash /usr/local/sbin/HostFilesUpdate.sh  > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
     echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
+    systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
     env REMOUNT_RO="NO" /tmp/pistar-services start > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
     rm /tmp/pistar-services
@@ -273,9 +281,11 @@ function RestoreDashboard() {
     if [ -f "/etc/pistar-css.ini" ]; then
 	    rm -f /etc/pistar-css.ini
     fi
+
     ChangeAndCheckoutRepo "/var/www/dashboard" "$OFFICIAL_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$OFFICIAL_SBIN_REPO"
     ChangeAndCheckoutRepo "/usr/local/bin" "$OFFICIAL_BIN_REPO"
+
     # clean up the rest
     echo -e "${INFO} Cleaning up stray W0CHP-PiStar-Dash Files..."
     if compgen -G "/usr/local/etc/BM_TGs.json*" > /dev/null; then
@@ -300,13 +310,19 @@ function RestoreDashboard() {
         rm -r /usr/local/etc/stripped.csv*
     fi
     if compgen -G "/usr/local/etc/groups.txt*" > /dev/null; then
-        rm -r //usr/local/etc/groups.txt*
+        rm -r /usr/local/etc/groups.txt*
+    fi
+    if compgen -G "/usr/local/bin/README.md*" > /dev/null; then
+        rm -r /usr/local/bin/README.md*
+    fi
+    if compgen -G "/usr/local/bin/M17Gateway*" > /dev/null; then
+        git --work-tree=/usr/local/bin --git-dir=/usr/local/bin/.git rm M17Gateway > /dev/null
     fi
     if [[ -d ${W0CHP_BINS} ]] ; then
         rm -rf ${W0CHP_BINS}
     fi
     echo -e "${TICK} ${DONE}\n"
-    echo -e "${INFO} Removing packages installed for W0CHP-PiStar-Dash which"
+    echo -e "${INFO} Removing packages specific to W0CHP-PiStar-Dash, which"
     echo -e "    are no longer required.\n    This will take some time..."
     if  [ -x "$(command -v jq)" ]; then
         apt-get purge -y jq > /dev/null
@@ -325,6 +341,7 @@ function RestoreDashboard() {
     git --work-tree=/usr/local/bin --git-dir=/usr/local/bin/.git reset --hard > /dev/null
     if [ -f "/tmp/pistar-services" ] ; then
         echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
+    	systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
         env REMOUNT_RO="NO" /tmp/pistar-services start > /dev/null 2<&1
         echo -e "${TICK} ${DONE}\n"
         rm /tmp/pistar-services
@@ -409,9 +426,9 @@ function DisableFirewall() {
         rm /usr/local/sbin/pistar-firewall
         ln -s /usr/local/sbin/pistar-firewall.disabled /usr/local/sbin/pistar-firewall
         bash /usr/local/sbin/pistar-firewall > /dev/null 2<&1
-        echo -e "\n${TICK} Firewall Disabled\n"
+        echo -e "${TICK} Firewall Disabled\n"
     else
-        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before disabling the firewall!"
+        echo -e "\n${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before disabling the firewall!\n"
         exit 1
     fi
 }
@@ -421,9 +438,9 @@ function EnableFirewall() {
         rm /usr/local/sbin/pistar-firewall
         ln -s /usr/local/sbin/pistar-firewall.enabled /usr/local/sbin/pistar-firewall
         bash /usr/local/sbin/pistar-firewall > /dev/null 2<&1
-        echo -e "\n${TICK} Firewall Enabled\n"
+        echo -e "${TICK} Firewall Enabled\n"
     else
-        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before (re-)enabling the firewall!"
+        echo -e "\n${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before (re-)enabling the firewall!\n"
         exit 1
     fi
 }
@@ -482,7 +499,12 @@ while [[ $# -gt 0 ]]; do
 	"-id" | "--install-dashboard")
             clear
             CheckPausedMode
-	    echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+	    if [[ $RUNNING_W0CHP ]] ; then 
+	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
+	    	echo -e "    Re-Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+	    else
+	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+	    fi
             _rw
 	    MapCSS
 	    InstallDashboard
@@ -496,7 +518,12 @@ while [[ $# -gt 0 ]]; do
 	"-idc" | "--install-dashboard-css")
             clear
             CheckPausedMode
-	    echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software with custom stylesheet.\n    This will take some time..."
+	    if [[ $RUNNING_W0CHP ]] ; then 
+	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
+	    	echo -e "    Re-Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+	    else
+	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+	    fi
             _rw
 	    InstallCSS
 	    InstallDashboard
