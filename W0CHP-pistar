@@ -191,7 +191,7 @@ function InstallDashboard() {
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     ChangeAndCheckoutRepo "/usr/local/bin" "$OFFICIAL_BIN_REPO" # need to mke certain they have latest official binaries
  
-    if [[ ${W0CHP_DASH_BRANCH} = DG-ID_M17 ]] ; then
+    if [[ ${W0CHP_DASH_BRANCH} = DO_NOT_USE ]] ; then
         echo -e "${INFO} You have selected to install the DG-ID and M17 branch."
 	echo -e "    This requires custom-compiled \`MMDVMHost, M17Gateway,"
         echo -e "    RemoteCommand and YSFClient\` binaries..."
