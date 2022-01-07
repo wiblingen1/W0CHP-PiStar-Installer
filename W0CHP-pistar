@@ -46,16 +46,22 @@ SUPPORTED_MAJOR="4"
 ALL_ARGS="$@"
 installedDashBranch=$(git --work-tree=/var/www/dashboard --git-dir=/var/www/dashboard/.git branch | grep '*' | cut -f2 -d ' ')
 W0CHP_BINS="/usr/local/.W0CHP_bin"
-# Credit for the colored status indicators
-# goes to the awesome Pi-Hole devs. Love 'em!
+
 COL_NC='\e[0m' # No Color
+BOLD='\e[1m'
+REVERSE='\e[7m'
 COL_LIGHT_GREEN='\e[1;32m'
+COL_BRIGHT_GREEN='\e[1;92m'
 COL_LIGHT_RED='\e[1;31m'
-TICK="[${COL_LIGHT_GREEN}✓${COL_NC}]"
-CROSS="[${COL_LIGHT_RED}✗${COL_NC}]"
-INFO="[i]"
-DONE="${COL_LIGHT_GREEN}Done!${COL_NC}"
-OVER="\\r\\033[K"
+COL_BRIGHT_RED='\e[1;91m'
+COL_LIGHT_CYAN='\e[1;36m'
+COL_LIGHT_BLUE='\e[1;46m'
+COL_LIGHT_MAGENTA='\e[1;95m'
+COL_LIGHT_YELLOW='\e[1;93m'
+INFO="${BOLD}[i]${COL_NC}"
+TICK="${BOLD}[${COL_LIGHT_GREEN}✓${COL_NC}]"
+CROSS="${BOLD}[${COL_LIGHT_RED}✗${COL_NC}]"
+DONE="${BOLD}${COL_LIGHT_GREEN}Done!${COL_NC}"
 
 # pi-star version check. only 4.x is supported.
 RELEASE_FILE="/etc/pistar-release"
@@ -409,7 +415,7 @@ EOF
 }
 
 function DisplayConfigUpdate() {
-    echo -e "${COL_LIGHT_RED} ************************ NOTICE *************************"
+    echo -e "${COL_BRIGHT_RED} ************************ NOTICE *************************"
     echo -e " *                                                       *"
     echo -e " *  Now you MUST open the Pi-Star's Configuration page   *"
     echo -e " *        and click the \"Apply Changes\" button!          *"
