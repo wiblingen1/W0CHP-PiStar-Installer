@@ -55,6 +55,8 @@ COL_BRIGHT_GREEN='\e[1;92m'
 COL_LIGHT_RED='\e[1;31m'
 COL_BRIGHT_RED='\e[1;91m'
 COL_LIGHT_CYAN='\e[1;36m'
+COL_REG_CYAN='\e[38;5;30m'
+COL_REG_ORANGE='\e[38;5;173m'
 COL_LIGHT_BLUE='\e[1;46m'
 COL_LIGHT_MAGENTA='\e[1;95m'
 COL_LIGHT_YELLOW='\e[1;93m'
@@ -480,7 +482,6 @@ function DisplayHelp() {
     echo ""
 }
 
-
 if [ $# -eq 0 ]; then
     DisplayHelp
     exit 1
@@ -494,6 +495,23 @@ if [ -z "$NO_SELF_UPDATE" -a x"$NO_UPDATE_SELF" != "x1" ]; then
     fi
 fi
 
+function DisplayBanner() {
+echo -e "${COL_REG_CYAN}
+ ▄         ▄   ▄▄▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄  ▄▄▄▄▄▄▄▄▄▄▄ 
+▐░▌       ▐░▌ ▐░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌
+▐░▌       ▐░▌▐░█░█▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░▌       ▐░▌▐░█▀▀▀▀▀▀▀█░▌
+▐░▌       ▐░▌▐░▌▐░▌    ▐░▌▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌
+▐░▌   ▄   ▐░▌▐░▌ ▐░▌   ▐░▌▐░▌          ▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌
+▐░▌  ▐░▌  ▐░▌▐░▌  ▐░▌  ▐░▌▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+▐░▌ ▐░▌░▌ ▐░▌▐░▌   ▐░▌ ▐░▌▐░▌          ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀ 
+▐░▌▐░▌ ▐░▌▐░▌▐░▌    ▐░▌▐░▌▐░▌          ▐░▌       ▐░▌▐░▌          
+▐░▌░▌   ▐░▐░▌▐░█▄▄▄▄▄█░█░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░▌       ▐░▌▐░▌          
+▐░░▌     ▐░░▌ ▐░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌          
+ ▀▀       ▀▀   ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀ ${COL_NC}
+${COL_REG_ORANGE}
+                           PiStar-Dash${COL_NC}"
+}
+
 ## Parse command line
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -502,10 +520,12 @@ while [[ $# -gt 0 ]]; do
 	"-id" | "--install-dashboard")
             clear
             CheckPausedMode
-	    if [[ $RUNNING_W0CHP ]] ; then 
+	    if [[ $RUNNING_W0CHP ]] ; then
+		DisplayBanner
 	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
 	    	echo -e "    Re-Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
 	    else
+		DisplayBanner
 	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
 	    fi
             _rw
@@ -521,10 +541,12 @@ while [[ $# -gt 0 ]]; do
 	"-idc" | "--install-dashboard-css")
             clear
             CheckPausedMode
-	    if [[ $RUNNING_W0CHP ]] ; then 
+	    if [[ $RUNNING_W0CHP ]] ; then
+		DisplayBanner
 	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
 	    	echo -e "    Re-Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
 	    else
+		DisplayBanner
 	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
 	    fi
             _rw
