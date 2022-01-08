@@ -146,7 +146,7 @@ function ChangeAndCheckoutRepo() {
     cp -a  /var/www/dashboard/config/{config.php,ircddblocal.php,language.php} /tmp/ # save user config files.
     git reset --hard > /dev/null # need this for initial install, since two php config files are over-written when user applies config
     git remote add newrepo "$repo" > /dev/null
-    GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git fetch -q newrepo > /dev/null
+    GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer (req. ${W0CHP_DASH_BRANCH})" git fetch -q newrepo > /dev/null
     git remote remove origin > /dev/null
     git remote rename newrepo origin > /dev/null
     if [[ $dir == "/var/www/dashboard" ]] && [[ ${key} =~ ^(-id|-idc|--install-dashboard|--install-dashboard-css)$ ]]; then # do (specified) branch checkout on dashboard, AND, that it's an install, not a restore...
@@ -160,7 +160,7 @@ function ChangeAndCheckoutRepo() {
         ver_cmd=$( git --work-tree=/usr/local/sbin --git-dir=/usr/local/sbin/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
         gitRemoteURL=$(git --work-tree=${dir} --git-dir=${dir}/.git config --get remote.origin.url)
         gitBranch="$( git --git-dir=${dir}/.git branch | grep '*' | awk {'print $2'} )"
-        gitStatusRemote=$(env GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="W0CHP-Update_Check Version Cacher (PS-CD) Ver.#${ver_cmd}" git ls-remote --heads ${gitRemoteURL} ${dashBranch} | grep ${gitBranch} | awk {'print $1'} | awk '{ print substr($1,1,10) }') # last pipe to awk: converts long hash to 10 chars.
+        gitStatusRemote=$(env GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer Version Cacher (req. ${W0CHP_DASH_BRANCH}) Ver.#${ver_cmd}" git ls-remote --heads ${gitRemoteURL} ${dashBranch} | grep ${gitBranch} | awk {'print $1'} | awk '{ print substr($1,1,10) }') # last pipe to awk: converts long hash to 10 chars.
         echo ${gitStatusRemote} > /etc/.W0CHP-PiStar-Dash.remote_version
     else # official pistar restore
         git reset --hard origin/master > /dev/null
@@ -209,7 +209,7 @@ function InstallDashboard() {
 	echo -e "      * Installing into: \"${W0CHP_BINS}\""
 	echo -e "      * Symlinking into: \"/usr/local/bin\""
         rm -rf  ${W0CHP_BINS} > /dev/null
-        GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer" git clone -q ${W0CHP_CUST_BINS_REPO} ${W0CHP_BINS} > /dev/null
+        GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer (req. ${W0CHP_DASH_BRANCH})" git clone -q ${W0CHP_CUST_BINS_REPO} ${W0CHP_BINS} > /dev/null
 	for i in $( ls ${W0CHP_BINS}/ ) ; do
 		rm -f /usr/local/bin/$i
 		ln -sfn ${W0CHP_BINS}/$i /usr/local/bin/$i
@@ -236,7 +236,7 @@ function InstallDashboard() {
     echo -e "${TICK} ${DONE}\n"
     rm /tmp/pistar-services
     /usr/local/sbin/pistar-motdgen
-    echo -e "${TICK} ${COL_LIGHT_GREEN}W0CHP-PiStar-Dash Installation Complete!${COL_NC}\n" 
+    echo -e "${TICK} ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash Installation Complete!${COL_NC}\n" 
 }
 
 function InstallCSS() {
