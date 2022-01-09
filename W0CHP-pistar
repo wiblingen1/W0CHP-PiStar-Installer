@@ -522,7 +522,7 @@ echo -e "${COL_REG_CYAN}
 ▐░░▌     ▐░░▌ ▐░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌          
  ▀▀       ▀▀   ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀ ${COL_NC}
 ${COL_LIGHT_MAGENTA}
-                           PiStar-Dash${COL_NC}"
+                             PiStar-Dash${COL_NC}"
 }
 
 ## Parse command line
