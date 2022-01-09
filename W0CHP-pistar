@@ -58,7 +58,7 @@ COL_LIGHT_CYAN='\e[1;36m'
 COL_REG_CYAN='\e[38;5;30m'
 COL_REG_ORANGE='\e[38;5;173m'
 COL_LIGHT_BLUE='\e[1;46m'
-COL_LIGHT_MAGENTA='\e[1;95m'
+COL_LIGHT_MAGENTA='\e[1;35m'
 COL_LIGHT_YELLOW='\e[1;93m'
 INFO="${BOLD}[i]${COL_NC}"
 TICK="${BOLD}[${COL_LIGHT_GREEN}✓${COL_NC}]"
@@ -417,7 +417,7 @@ EOF
 }
 
 function DisplayConfigUpdate() {
-    echo -e "${COL_BRIGHT_RED} ************************ NOTICE *************************"
+    echo -e "${COL_LIGHT_RED} ************************ NOTICE *************************"
     echo -e " *                                                       *"
     echo -e " *  Now you MUST open the Pi-Star's Configuration page   *"
     echo -e " *        and click the \"Apply Changes\" button!          *"
@@ -522,7 +522,7 @@ echo -e "${COL_REG_CYAN}
 ▐░▌░▌   ▐░▐░▌▐░█▄▄▄▄▄█░█░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░▌       ▐░▌▐░▌          
 ▐░░▌     ▐░░▌ ▐░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌          
  ▀▀       ▀▀   ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀ ${COL_NC}
-${COL_LIGHT_YELLOW}
+${COL_LIGHT_MAGENTA}
                            PiStar-Dash${COL_NC}"
 }
 
