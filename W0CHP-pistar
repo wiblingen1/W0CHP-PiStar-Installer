@@ -471,7 +471,7 @@ function DisplayStatus() {
 
 function DisplayHelp() {
     echo ""
-    echo "`basename $0` usage:"
+    echo -e "${INFO} ${COL_LIGHT_CYAN}W0CHP PiStar-Dash Installer Command Usage:${COL_NC}"
     echo ""
     echo "  -h,   --help                  :  Display this help text."
     echo ""
