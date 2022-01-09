@@ -150,8 +150,8 @@ function ChangeAndCheckoutRepo() {
     git remote remove origin > /dev/null
     git remote rename newrepo origin > /dev/null
     if [[ $dir == "/var/www/dashboard" ]] && [[ ${key} =~ ^(-id|-idc|--install-dashboard|--install-dashboard-css)$ ]]; then # do (specified) branch checkout on dashboard, AND, that it's an install, not a restore...
-        git checkout -q "$W0CHP_DASH_BRANCH" > /dev/null
-        git reset --hard origin/"$W0CHP_DASH_BRANCH" > /dev/null
+        git checkout -q "$W0CHP_DASH_BRANCH" > /dev/null 2<&1
+        git reset --hard origin/"$W0CHP_DASH_BRANCH" > /dev/null 2<&1
         mv /tmp/{config.php,ircddblocal.php,language.php} /var/www/dashboard/config/ # move back the user config files
         git stash > /dev/null 2<&1 # stash user config files in local repo
         git checkout stash@{0} -- config/config.php config/ircddblocal.php > /dev/null 2<&1 #restore config  from stash
