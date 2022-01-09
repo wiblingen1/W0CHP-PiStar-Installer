@@ -282,7 +282,6 @@ function RestoreDashboard() {
     echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
     env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
     sleep 1
-    rm -f /tmp/pistar-services
     echo -e "${TICK} ${DONE}"
     echo -e ""
     WaitForUnattendedUpgrade
