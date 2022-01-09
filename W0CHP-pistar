@@ -277,14 +277,14 @@ function MapCSS() {
 }
 
 function RestoreDashboard() {
-    if [ -f "/usr/local/sbin/pistar-services" ] ; then
-        cp -a /usr/local/sbin/pistar-services /tmp/
-        echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
-        env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
-        sleep 1
-        echo -e "${TICK} ${DONE}"
-        echo -e ""
-    fi
+    curl -s ${CURL_OPTIONS} $PS_SERVICES_SCRIPT -o /tmp/pistar-services --user-agent "WPSD-Installer (UNINSTALL)"
+    chmod +x /tmp/pistar-services
+    echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
+    env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
+    sleep 1
+    rm -f /tmp/pistar-services
+    echo -e "${TICK} ${DONE}"
+    echo -e ""
     WaitForUnattendedUpgrade
     if [ -f "/etc/pistar-css.ini" ]; then
 	    rm -f /etc/pistar-css.ini
