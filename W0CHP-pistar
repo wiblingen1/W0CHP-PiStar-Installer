@@ -79,7 +79,7 @@ if [ -f ${RELEASE_FILE} ]; then
         echo -e "\n${INFO} Detected Pi-Star version: $PISTAR_VERSION (major: ${PISTAR_VERSION_INFO[0]})"
     fi
 else
-    echo -e "\n${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You're not running a Pi-Star.\ "
+    echo -e "\n${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You're not running a Pi-Star.\n "
     exit 1
 fi
 
