@@ -154,9 +154,11 @@ function ChangeAndCheckoutRepo() {
         git checkout -q "$W0CHP_DASH_BRANCH" > /dev/null 2<&1
         git reset --hard origin/"$W0CHP_DASH_BRANCH" > /dev/null 2<&1
         mv /tmp/{config.php,ircddblocal.php,language.php} /var/www/dashboard/config/ # move back the user config files
-        sed -i "/^date_default_timezone_set.*/i define('TIME_FORMAT', '24');" /var/www/dashboard/config/config.php # insert new constant
         git stash > /dev/null 2<&1 # stash user config files in local repo
         git checkout stash@{0} -- config/config.php config/ircddblocal.php > /dev/null 2<&1 #restore config from stash
+        if ! grep -q TIME_FORMAT /var/www/dashboard/config/config.php ; then # insert req'd constant if not found. WIll be stashed on next update :-)
+                sed -i "/^date_default_timezone_set.*/i define('TIME_FORMAT', '24');" /var/www/dashboard/config/config.php 
+        fi
         git stash clear > /dev/null 2<&1 # housekeeping
         # cache W0CHP-PiStar-Dash git version:
         ver_cmd=$( git --work-tree=/usr/local/sbin --git-dir=/usr/local/sbin/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
