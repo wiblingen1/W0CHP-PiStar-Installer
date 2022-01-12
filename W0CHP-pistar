@@ -276,7 +276,7 @@ function MapCSS() {
         echo -e "\n${INFO} ${COL_LIGHT_RED}NOTE: Custom CSS detected. Making backup and${COL_NC}"
         echo -e "    ${COL_LIGHT_RED}mapping stock Pi-Star colors. To re-map/re-customize${COL_NC}"
         echo -e "    ${COL_LIGHT_RED}your CSS manually, please see:${COL_NC}"
-        echo -e "    ${COL_LIGHT_RED}<https://w0chp.net/w0chp-pistar-dash/#notes-about-css-and-custom-css-you-may-have-previously-applied>${COL_NC}"
+        echo -e "    ${COL_LIGHT_RED}<https://w0chp.net/w0chp-pistar-dash/#css-notes>${COL_NC}"
     fi
 }
 
