@@ -145,17 +145,18 @@ function ChangeAndCheckoutRepo() {
     echo -e "    * Installing into: \"${dir}\""
     cd "$1"
     cp -a  /var/www/dashboard/config/{config.php,ircddblocal.php,language.php} /tmp/ # save user config files.
-    git reset --hard > /dev/null # need this for initial install, since two php config files are over-written when user applies config
-    git remote add newrepo "$repo" > /dev/null
-    GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer (req. ${W0CHP_DASH_BRANCH})" git fetch -q newrepo > /dev/null
+    git reset --hard > /dev/null # need this for initial install, since two/three php config files are over-written when user applies config
+    git remote add newrepo "$repo" > /dev/null 2<&1
+    GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer (req. ${W0CHP_DASH_BRANCH})" git fetch -q newrepo > /dev/null 2<&1
     git remote remove origin > /dev/null
     git remote rename newrepo origin > /dev/null
     if [[ $dir == "/var/www/dashboard" ]] && [[ ${key} =~ ^(-id|-idc|--install-dashboard|--install-dashboard-css)$ ]]; then # do (specified) branch checkout on dashboard, AND, that it's an install, not a restore...
         git checkout -q "$W0CHP_DASH_BRANCH" > /dev/null 2<&1
         git reset --hard origin/"$W0CHP_DASH_BRANCH" > /dev/null 2<&1
         mv /tmp/{config.php,ircddblocal.php,language.php} /var/www/dashboard/config/ # move back the user config files
+        sed -i "/^date_default_timezone_set.*/i define('TIME_FORMAT', '24');" /var/www/dashboard/config/config.php # insert new constant
         git stash > /dev/null 2<&1 # stash user config files in local repo
-        git checkout stash@{0} -- config/config.php config/ircddblocal.php > /dev/null 2<&1 #restore config  from stash
+        git checkout stash@{0} -- config/config.php config/ircddblocal.php > /dev/null 2<&1 #restore config from stash
         git stash clear > /dev/null 2<&1 # housekeeping
         # cache W0CHP-PiStar-Dash git version:
         ver_cmd=$( git --work-tree=/usr/local/sbin --git-dir=/usr/local/sbin/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
