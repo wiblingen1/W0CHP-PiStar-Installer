@@ -128,7 +128,6 @@ function WaitForUnattendedUpgrade() {
 }
 
 function CheckFWstate () {
-    #SCRIPT_PATH=`dirname $SCRIPT_SELF`
     if [[ $FW_DISABLED  -eq "1" ]] ; then
 	echo -e "${INFO} Detected user-disabled firewall; Saving this prefrence and re-applying..."
         DisableFirewall
@@ -240,6 +239,7 @@ function InstallDashboard() {
     echo -e "${TICK} ${DONE}\n"
     rm /tmp/pistar-services
     /usr/local/sbin/pistar-motdgen
+    CheckFWstate
     echo -e "${TICK} ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash Installation Complete!${COL_NC}\n" 
 }
 
@@ -402,11 +402,7 @@ function UpdateSelf() {
     	mount -o remount,rw /boot
         if mv "${_tempFileName}" "$0"; then
            rm -- "\$0"
-           #if [[ $FW_DISABLED -eq "1" ]] ; then
-           #    exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS" "-dfw"
-           #else
-               exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS"
-           #fi
+           exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS"
         else
            echo "ERROR: Failed!"
         fi
@@ -431,9 +427,7 @@ function DisplayConfigUpdate() {
 
 function DisableFirewall() {
     if [[ $RUNNING_W0CHP ]]; then
-        rm /usr/local/sbin/pistar-firewall
-        ln -s /usr/local/sbin/pistar-firewall.disabled /usr/local/sbin/pistar-firewall
-        bash /usr/local/sbin/pistar-firewall > /dev/null 2<&1
+        bash /usr/local/sbin/pistar-system-manager -dfw > /dev/null 2<&1
         echo -e "${TICK} Firewall Disabled\n"
     else
         echo -e "\n${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before disabling the firewall!\n"
@@ -443,9 +437,7 @@ function DisableFirewall() {
 
 function EnableFirewall() {
     if [[ $RUNNING_W0CHP ]]; then
-        rm /usr/local/sbin/pistar-firewall
-        ln -s /usr/local/sbin/pistar-firewall.enabled /usr/local/sbin/pistar-firewall
-        bash /usr/local/sbin/pistar-firewall > /dev/null 2<&1
+        bash /usr/local/sbin/pistar-system-manager -efw > /dev/null 2<&1
         echo -e "${TICK} Firewall Enabled\n"
     else
         echo -e "\n${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before (re-)enabling the firewall!\n"
@@ -487,12 +479,6 @@ function DisplayHelp() {
     echo ""
     echo "  -rd,  --restore-dashboard     :  Restore original dashboard."
     echo ""
-    echo ""
-    echo "  -dfw  --disable-firewall      :  Disable Pi-Star firewall rules,"
-    echo "				   and allow all traffic."
-    echo ""
-    echo "  -efw  --enable-firewall       :  Enable Pi-Star firewall rules to"
-    echo "				   defaults and only allow required traffic."
     echo ""
     echo "  -s,   --status                :  Display current install, original,"
     echo "				   or W0CHP installations."
@@ -548,7 +534,6 @@ while [[ $# -gt 0 ]]; do
             _rw
 	    MapCSS
 	    InstallDashboard
-            CheckFWstate
             RemovePlatDet
 	    DisplayConfigUpdate
             _ro
@@ -569,7 +554,6 @@ while [[ $# -gt 0 ]]; do
             _rw
 	    InstallCSS
 	    InstallDashboard
-            CheckFWstate
 	    RemovePlatDet
 	    DisplayConfigUpdate
             _ro
@@ -583,20 +567,6 @@ while [[ $# -gt 0 ]]; do
             _rw
 	    RestoreDashboard
 	    DisplayConfigUpdate
-            _ro
-	    shift
-	    ;;
-
-	"-dfw" | "--disable-firewall")
-            _rw
-	    DisableFirewall
-            _ro
-	    shift
-	    ;;
-
-	"-efw" | "--enable-firewall")
-            _rw
-	    EnableFirewall
             _ro
 	    shift
 	    ;;
