@@ -480,7 +480,7 @@ function DisplayHelp() {
     echo "  -rd,  --restore-dashboard     :  Restore original dashboard."
     echo ""
     echo ""
-    echo "  -s,   --status                :  Display current install, original,"
+    echo "  -s,   --status                :  Display current install; original,"
     echo "				   or W0CHP installations."
     echo ""
 }
