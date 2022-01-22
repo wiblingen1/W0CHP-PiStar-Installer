@@ -179,12 +179,6 @@ function ChangeAndCheckoutRepo() {
 }
 
 function InstallDashboard() {
-    if [ ${checkProc} == "armv6l" ] ; then
-	echo -e "\n${COL_BRIGHT_RED}* WARNING! *${COL_NC}\nYou are running an older and very under-powered processor ('${COL_LIGHT_RED}${checkProc}${COL_NC}')."
-	echo -e "W0CHP-PiStar-Dash will run VERY slowly on your crappy hardware.\n"
-	echo -e "You've been warned!"
-	echo -e "To uninstall, run: ${COL_LIGHT_GREEN}curl -Ls https://w0chp.net/WPSD-Installer | sudo env NO_SELF_UPDATE=1 bash -s -- -rd${COL_NC}"
-    fi
     WaitForUnattendedUpgrade
     curl -s ${CURL_OPTIONS} $PS_SERVICES_SCRIPT -o /tmp/pistar-services --user-agent "WPSD-Installer"
     chmod +x /tmp/pistar-services
@@ -474,6 +468,15 @@ function DisplayStatus() {
     DisplayRepoStatus "/usr/local/bin" "$OFFICIAL_BIN_REPO"
 }
 
+function WarnForCrappyHW() {
+    if [ ${checkProc} == "armv6l" ] ; then
+        echo -e "\n${COL_BRIGHT_RED}* WARNING! *${COL_NC}\nYou are running an older and very under-powered processor ('${COL_LIGHT_RED}${checkProc}${COL_NC}')."
+        echo -e "W0CHP-PiStar-Dash will run VERY slowly on your crappy hardware.\n"
+        echo -e "You've been warned!"
+        echo -e "To uninstall, run: ${COL_LIGHT_GREEN}curl -Ls https://w0chp.net/WPSD-Installer | sudo env NO_SELF_UPDATE=1 bash -s -- -rd${COL_NC}"
+    fi
+}
+
 function DisplayHelp() {
     echo ""
     echo -e "${INFO} ${COL_LIGHT_CYAN}W0CHP PiStar-Dash Installer Command Usage:${COL_NC}"
@@ -499,6 +502,8 @@ if [ $# -eq 0 ]; then
     DisplayHelp
     exit 1
 fi
+
+
 
 if [ -z "$NO_SELF_UPDATE" -a x"$NO_UPDATE_SELF" != "x1" ]; then
     if [[ ${UPDATE_SELF} -ne 0 ]]; then
@@ -532,20 +537,7 @@ while [[ $# -gt 0 ]]; do
     case $key in
 	"-id" | "--install-dashboard")
             clear
-#	    if [ ${checkProc} == "armv6l" ] ; then
-#		while true; do
-#		    echo -e "\n${COL_BRIGHT_RED}* WARNING! *${COL_NC}\n\nYou are running an older and very under-powered processor ('${checkProc}')."
-#		    echo -e "W0CHP-PiStar-Dash will run VERY slowly on your crappy hardware.\n"
-#		    echo -e "Are you sure you want to install and torture yourself?\n"
-#		    read -p "[Y]es / [N]o  " yn
-#		    case $yn in
-#			[Yy]* ) break;;
-#			[Nn]* ) exit;;
-#			* ) echo "Answer Yes or No.";;
-#		    esac
-#		done
-#	    fi
-#	    clear
+	    WarnForCrappyHW
 	    CheckPausedMode
 	    if [[ $RUNNING_W0CHP ]] ; then
 		DisplayBanner
@@ -566,20 +558,7 @@ while [[ $# -gt 0 ]]; do
 
 	"-idc" | "--install-dashboard-css")
             clear
-#	    if [ ${checkProc} == "armv6l" ] ; then
-#		while true; do
-#		    echo -e "\n${COL_BRIGHT_RED}* WARNING! *${COL_NC}\n\nYou are running an older and very under-powered processor ('${checkProc}')."
-#		    echo -e "W0CHP-PiStar-Dash will run VERY slowly on your crappy hardware.\n"
-#		    echo -e "Are you sure you want to install and torture yourself?\n"
-#		    read -p "[Y]es / [N]o  " yn
-#		    case $yn in
-#			[Yy]* ) break;;
-#			[Nn]* ) exit;;
-#			* ) echo "Answer Yes or No.";;
-#		    esac
-#		done
-#	    fi
-#	    clear
+	    WarnForCrappyHW
             CheckPausedMode
 	    if [[ $RUNNING_W0CHP ]] ; then
 		DisplayBanner
