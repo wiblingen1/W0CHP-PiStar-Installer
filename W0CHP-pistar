@@ -533,7 +533,7 @@ while [[ $# -gt 0 ]]; do
 		    echo -e "Are you sure you want to install and torture yourself?\n"
 		    read -p "[Y]es / [N]o  " yn
 		    case $yn in
-			[Yy]* ) make install; break;;
+			[Yy]* ) break;;
 			[Nn]* ) exit;;
 			* ) echo "Answer Yes or No.";;
 		    esac
@@ -567,7 +567,7 @@ while [[ $# -gt 0 ]]; do
 		    echo -e "Are you sure you want to install and torture yourself?\n"
 		    read -p "[Y]es / [N]o  " yn
 		    case $yn in
-			[Yy]* ) make install; break;;
+			[Yy]* ) break;;
 			[Nn]* ) exit;;
 			* ) echo "Answer Yes or No.";;
 		    esac
