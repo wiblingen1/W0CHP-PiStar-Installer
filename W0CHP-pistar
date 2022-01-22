@@ -53,18 +53,21 @@ BOLD='\e[1m'
 REVERSE='\e[7m'
 COL_LIGHT_GREEN='\e[1;32m'
 COL_BRIGHT_GREEN='\e[1;92m'
-COL_LIGHT_RED='\e[1;31m'
-COL_BRIGHT_RED='\e[1;91m'
+COL_LIGHT_RED='\e[31m'
+COL_BRIGHT_RED='\e[1;31m'
 COL_LIGHT_CYAN='\e[1;36m'
 COL_REG_CYAN='\e[38;5;30m'
 COL_REG_ORANGE='\e[38;5;173m'
 COL_LIGHT_BLUE='\e[1;46m'
 COL_LIGHT_MAGENTA='\e[1;35m'
 COL_LIGHT_YELLOW='\e[1;93m'
+COL_REG_YELLOW='\e[93m'
 INFO="${BOLD}[i]${COL_NC}"
 TICK="${BOLD}[${COL_LIGHT_GREEN}✓${COL_NC}]"
-CROSS="${BOLD}[${COL_LIGHT_RED}✗${COL_NC}]"
+CROSS="${BOLD}[${COL_BRIGHT_RED}✗${COL_NC}]"
 DONE="${BOLD}${COL_LIGHT_GREEN}Done!${COL_NC}"
+
+checkProc=$(uname -m)
 
 # pi-star version check. only 4.x is supported.
 RELEASE_FILE="/etc/pistar-release"
@@ -72,14 +75,14 @@ if [ -f ${RELEASE_FILE} ]; then
     PISTAR_VERSION=$(grep 'Version' /etc/pistar-release | cut -f 2 -d '=' | tr -d ' ')
     PISTAR_VERSION_INFO=( ${PISTAR_VERSION//./ })
     if [[ ${PISTAR_VERSION_INFO[0]} -ne ${SUPPORTED_MAJOR} ]] || [[ ${PISTAR_VERSION_INFO[2]} -lt ${SUPPORTED_MIN_MIN} ]]; then
-        echo -e "\n${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} Only Pi-Star 4.1.6 or above is supported.\n"
+        echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Only Pi-Star 4.1.6 or above is supported.\n"
         exit 1
     fi
     if [[ ${UPDATE_SELF} -eq 0 ]]; then
         echo -e "\n${INFO} Detected Pi-Star version: $PISTAR_VERSION (major: ${PISTAR_VERSION_INFO[0]})"
     fi
 else
-    echo -e "\n${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You're not running a Pi-Star.\n "
+    echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} You're not running a Pi-Star.\n "
     exit 1
 fi
 
@@ -91,7 +94,7 @@ fi
 function CheckPausedMode() {
     # check if user havs paused modes:
     if compgen -G "/etc/*_paused*" > /dev/null ; then
-        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} Paused mode(s) deteced..."
+        echo -e "${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Paused mode(s) deteced..."
         echo -e "    You must unpause your mode(s) in Instant Mode Manager before proceeding."
         exit 1
     fi
@@ -273,10 +276,10 @@ function MapCSS() {
     elif [[ ! $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
         #curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent "WPSD-Installer"
-        echo -e "\n${INFO} ${COL_LIGHT_RED}NOTE: Custom CSS detected. Making backup and${COL_NC}"
-        echo -e "    ${COL_LIGHT_RED}mapping stock Pi-Star colors. To re-map/re-customize${COL_NC}"
-        echo -e "    ${COL_LIGHT_RED}your CSS manually, please see:${COL_NC}"
-        echo -e "    ${COL_LIGHT_RED}<https://w0chp.net/w0chp-pistar-dash/#css-notes>${COL_NC}"
+        echo -e "\n${INFO} ${COL_LIGHT_YELLOW}NOTE: Custom CSS detected. Making backup and${COL_NC}"
+        echo -e "    ${COL_LIGHT_YELLOW}mapping stock Pi-Star colors. To re-map/re-customize${COL_NC}"
+        echo -e "    ${COL_LIGHT_YELLOW}your CSS manually, please see:${COL_NC}"
+        echo -e "    ${COL_LIGHT_YELLOW}<https://w0chp.net/w0chp-pistar-dash/#css-notes>${COL_NC}"
     fi
 }
 
@@ -377,20 +380,20 @@ function UpdateSelf() {
     local _tempFileName="$0.tmp"
 
     if ! eval curl -s ${CURL_OPTIONS} --output "${_tempFileName}" "${UPDATE_URI}"; then
-        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} Failed to download update for installation script!"
+        echo -e "${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Failed to download update for installation script!"
         echo -e "Make sure you have 'ca-certificates' installed and that the time is set correctly"
         exit 1
     fi
     
     if [[ "$(head -1 ${_tempFileName})" != '#!/usr/bin/env bash' ]]; then
-        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} Failed to download update for installation script!"
+        echo -e "${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Failed to download update for installation script!"
         echo -e "Contents of file is not as expected - repo may be down"
         exit 1
     fi
     
     local OCTAL_MODE=$(stat -c '%a' "$0")
     if ! chmod ${OCTAL_MODE} "${_tempFileName}" ; then
-        echo -e "${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} Error while trying to set mode on ${_tempFileName}"
+        echo -e "${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Error while trying to set mode on ${_tempFileName}"
         exit 1
     fi
     
@@ -416,7 +419,7 @@ EOF
 }
 
 function DisplayConfigUpdate() {
-    echo -e "${COL_LIGHT_RED} ************************ NOTICE *************************"
+    echo -e "${COL_LIGHT_YELLOW} ************************ NOTICE *************************"
     echo -e " *                                                       *"
     echo -e " *  Now you MUST open the Pi-Star's Configuration page   *"
     echo -e " *        and click the \"Apply Changes\" button!          *"
@@ -430,7 +433,7 @@ function DisableFirewall() {
         bash /usr/local/sbin/pistar-system-manager -dfw > /dev/null 2<&1
         echo -e "${TICK} Firewall Disabled\n"
     else
-        echo -e "\n${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before disabling the firewall!\n"
+        echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before disabling the firewall!\n"
         exit 1
     fi
 }
@@ -440,7 +443,7 @@ function EnableFirewall() {
         bash /usr/local/sbin/pistar-system-manager -efw > /dev/null 2<&1
         echo -e "${TICK} Firewall Enabled\n"
     else
-        echo -e "\n${CROSS} ${COL_LIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before (re-)enabling the firewall!\n"
+        echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before (re-)enabling the firewall!\n"
         exit 1
     fi
 }
@@ -451,17 +454,18 @@ function DisplayRepoStatus() {
     dir="$1"
     repo=$(git --work-tree=${dir} --git-dir=${dir}/.git config --get remote.origin.url)
     if [ "$repo" == "$2" ]; then
-        echo -e "'$1':\t uses *OFFICIAL* Pi-Star Repository"
+        echo -e "'$1':\t uses the ${COL_LIGHT_RED}OFFICIAL Pi-Star${COL_NC} Repository."
     else
         branch=$(git --work-tree=${dir} --git-dir=${dir}/.git branch | grep '*' | cut -f2 -d ' ')
         ver_cmd=$( git --work-tree=${dir} --git-dir=${dir}/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
-        echo -e "'$1':\t uses *W0CHP* Repository, on the '$branch' branch; Version # $ver_cmd"
+        echo -e "'$1':\t uses the ${COL_REG_CYAN}W0CHP-PiStar-Dash Repository${COL_NC}, on the '${BOLD}${branch}${COL_NC}' branch; Version # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}"
     fi
 }
 
 function DisplayStatus() {
     DisplayRepoStatus "/var/www/dashboard" "$OFFICIAL_DASH_REPO"
     DisplayRepoStatus "/usr/local/sbin" "$OFFICIAL_SBIN_REPO"
+    DisplayRepoStatus "/usr/local/bin" "$OFFICIAL_BIN_REPO"
 }
 
 function DisplayHelp() {
@@ -511,7 +515,7 @@ echo -e "${COL_REG_CYAN}
 ▐░▌░▌   ▐░▐░▌▐░█▄▄▄▄▄█░█░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░▌       ▐░▌▐░▌          
 ▐░░▌     ▐░░▌ ▐░░░░░░░░░▌ ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌          
  ▀▀       ▀▀   ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀ ${COL_NC}
-${COL_LIGHT_MAGENTA}
+${COL_REG_CYAN}
                              PiStar-Dash${COL_NC}"
 }
 
@@ -522,7 +526,21 @@ while [[ $# -gt 0 ]]; do
     case $key in
 	"-id" | "--install-dashboard")
             clear
-            CheckPausedMode
+	    if [ ${checkProc} == "armv6l" ] ; then
+		while true; do
+		    echo -e "\n${COL_BRIGHT_RED}* WARNING! *${COL_NC}\n\nYou are running an older and very under-powered processor ('${checkProc}')."
+		    echo -e "W0CHP-PiStar-Dash will run VERY slowly on your crappy hardware.\n"
+		    echo -e "Are you sure you want to install and torture yourself?\n"
+		    read -p "[Y]es / [N]o  " yn
+		    case $yn in
+			[Yy]* ) make install; break;;
+			[Nn]* ) exit;;
+			* ) echo "Answer Yes or No.";;
+		    esac
+		done
+	    fi
+	    clear
+	    CheckPausedMode
 	    if [[ $RUNNING_W0CHP ]] ; then
 		DisplayBanner
 	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
@@ -542,6 +560,20 @@ while [[ $# -gt 0 ]]; do
 
 	"-idc" | "--install-dashboard-css")
             clear
+	    if [ ${checkProc} == "armv6l" ] ; then
+		while true; do
+		    echo -e "\n${COL_BRIGHT_RED}* WARNING! *${COL_NC}\n\nYou are running an older and very under-powered processor ('${checkProc}')."
+		    echo -e "W0CHP-PiStar-Dash will run VERY slowly on your crappy hardware.\n"
+		    echo -e "Are you sure you want to install and torture yourself?\n"
+		    read -p "[Y]es / [N]o  " yn
+		    case $yn in
+			[Yy]* ) make install; break;;
+			[Nn]* ) exit;;
+			* ) echo "Answer Yes or No.";;
+		    esac
+		done
+	    fi
+	    clear
             CheckPausedMode
 	    if [[ $RUNNING_W0CHP ]] ; then
 		DisplayBanner
