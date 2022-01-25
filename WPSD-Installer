@@ -63,6 +63,7 @@ COL_LIGHT_MAGENTA='\e[1;35m'
 COL_LIGHT_YELLOW='\e[1;93m'
 COL_REG_YELLOW='\e[93m'
 INFO="${BOLD}[i]${COL_NC}"
+NOTE="${BOLD}[${COL_LIGHT_YELLOW}!${COL_NC}]"
 TICK="${BOLD}[${COL_LIGHT_GREEN}✓${COL_NC}]"
 CROSS="${BOLD}[${COL_BRIGHT_RED}✗${COL_NC}]"
 DONE="${BOLD}${COL_LIGHT_GREEN}Done!${COL_NC}"
@@ -470,10 +471,11 @@ function DisplayStatus() {
 
 function WarnForCrappyHW() {
     if [ ${checkProc} == "armv6l" ] ; then
-        echo -e "\n${COL_BRIGHT_RED}* WARNING! *${COL_NC}\nYou are running an older and very under-powered processor ('${COL_LIGHT_RED}${checkProc}${COL_NC}')."
-        echo -e "W0CHP-PiStar-Dash will run VERY slowly on your crappy hardware.\n"
-        echo -e "You've been warned!"
-        echo -e "To uninstall, run: ${COL_LIGHT_GREEN}curl -Ls https://w0chp.net/WPSD-Installer | sudo env NO_SELF_UPDATE=1 bash -s -- -rd${COL_NC}"
+        echo -e "\n${NOTE} Note:"
+	echo -e "    You are running an older and under-powered processor ('${COL_LIGHT_RED}${checkProc}${COL_NC}')."
+        echo -e "    W0CHP-PiStar-Dash will run quite slowly this weak hardware."
+        echo -e "    You've been warned! If you wish to uninstall, run:"
+        echo -e "    ${COL_REG_YELLOW}curl -Ls https://w0chp.net/WPSD-Installer | sudo env NO_SELF_UPDATE=1 bash -s -- -rd${COL_NC}"
     fi
 }
 
@@ -537,7 +539,6 @@ while [[ $# -gt 0 ]]; do
     case $key in
 	"-id" | "--install-dashboard")
             clear
-	    WarnForCrappyHW
 	    CheckPausedMode
 	    if [[ $RUNNING_W0CHP ]] ; then
 		DisplayBanner
@@ -547,6 +548,7 @@ while [[ $# -gt 0 ]]; do
 		DisplayBanner
 	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
 	    fi
+	    WarnForCrappyHW
             _rw
 	    MapCSS
 	    InstallDashboard
@@ -558,7 +560,6 @@ while [[ $# -gt 0 ]]; do
 
 	"-idc" | "--install-dashboard-css")
             clear
-	    WarnForCrappyHW
             CheckPausedMode
 	    if [[ $RUNNING_W0CHP ]] ; then
 		DisplayBanner
@@ -568,6 +569,7 @@ while [[ $# -gt 0 ]]; do
 		DisplayBanner
 	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
 	    fi
+	    WarnForCrappyHW
             _rw
 	    InstallCSS
 	    InstallDashboard
