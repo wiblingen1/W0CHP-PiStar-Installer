@@ -41,7 +41,6 @@ UPDATE_URI="${W0CHP_INSTALL_SCRIPT_REPO}"
 ROOT_PATH=${ROOT_PATH:-"/"}
 WORK_PATH=${WORK_PATH:-"${ROOT_PATH}/root"}
 SELFUPDATE_SCRIPT="${WORK_PATH}/.updateScript-W0CHP-pistar.sh"
-CURL_OPTIONS=${CURL_OPTIONS:-""}
 SUPPORTED_MAJOR="4"
 SUPPORTED_MIN_MIN="6"
 ALL_ARGS="$@"
@@ -69,6 +68,7 @@ CROSS="${BOLD}[${COL_BRIGHT_RED}✗${COL_NC}]"
 DONE="${BOLD}${COL_LIGHT_GREEN}Done!${COL_NC}"
 
 checkProc=$(uname -m)
+uaStr="WPSD-Installer (${checkProc})"
 
 # pi-star version check. only 4.x is supported.
 RELEASE_FILE="/etc/pistar-release"
@@ -112,8 +112,8 @@ if ! grep -q LOGNDROP /etc/iptables.rules ; then
     FW_DISABLED=1
 fi
 
-# Always follow redirects
-CURL_OPTIONS="${CURL_OPTIONS} -L"
+# curl option array
+declare -a CURL_OPTIONS=('-Ls' '-A' "${uaStr}")
 
 function _rw() {
     # Prevent the FS to be remounted as RO
@@ -150,7 +150,7 @@ function ChangeAndCheckoutRepo() {
     cp -a  /var/www/dashboard/config/{config.php,ircddblocal.php,language.php} /tmp/ # save user config files.
     git reset --hard > /dev/null # need this for initial install, since two/three php config files are over-written when user applies config
     git remote add newrepo "$repo" > /dev/null 2<&1
-    GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer (req. ${W0CHP_DASH_BRANCH})" git fetch -q newrepo > /dev/null 2<&1
+    GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="${uaStr} [req. ${W0CHP_DASH_BRANCH}]" git fetch -q newrepo > /dev/null 2<&1
     git remote remove origin > /dev/null
     git remote rename newrepo origin > /dev/null
     if [[ $dir == "/var/www/dashboard" ]] && [[ ${key} =~ ^(-id|-idc|--install-dashboard|--install-dashboard-css)$ ]]; then # do (specified) branch checkout on dashboard, AND, that it's an install, not a restore...
@@ -167,7 +167,7 @@ function ChangeAndCheckoutRepo() {
         ver_cmd=$( git --work-tree=/usr/local/sbin --git-dir=/usr/local/sbin/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
         gitRemoteURL=$(git --work-tree=${dir} --git-dir=${dir}/.git config --get remote.origin.url)
         gitBranch="$( git --git-dir=${dir}/.git branch | grep '*' | awk {'print $2'} )"
-        gitStatusRemote=$(env GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer Version Cacher (req. ${W0CHP_DASH_BRANCH}) Ver.#${ver_cmd}" git ls-remote --heads ${gitRemoteURL} ${dashBranch} | grep ${gitBranch} | awk {'print $1'} | awk '{ print substr($1,1,10) }') # last pipe to awk: converts long hash to 10 chars.
+        gitStatusRemote=$(env GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="${uaStr} Version Cacher [req. ${W0CHP_DASH_BRANCH}] Ver.#${ver_cmd}" git ls-remote --heads ${gitRemoteURL} ${dashBranch} | grep ${gitBranch} | awk {'print $1'} | awk '{ print substr($1,1,10) }') # last pipe to awk: converts long hash to 10 chars.
         echo ${gitStatusRemote} > /etc/.W0CHP-PiStar-Dash.remote_version
     else # official pistar restore
         git reset --hard origin/master > /dev/null
@@ -181,7 +181,7 @@ function ChangeAndCheckoutRepo() {
 
 function InstallDashboard() {
     WaitForUnattendedUpgrade
-    curl -s ${CURL_OPTIONS} $PS_SERVICES_SCRIPT -o /tmp/pistar-services --user-agent "WPSD-Installer"
+    curl "${CURL_OPTIONS[@]}" $PS_SERVICES_SCRIPT -o /tmp/pistar-services
     chmod +x /tmp/pistar-services
     echo -e ""
     echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
@@ -216,7 +216,7 @@ function InstallDashboard() {
 	echo -e "      * Installing into: \"${W0CHP_BINS}\""
 	echo -e "      * Symlinking into: \"/usr/local/bin\""
         rm -rf  ${W0CHP_BINS} > /dev/null
-        GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="WPSD-Installer (req. ${W0CHP_DASH_BRANCH})" git clone -q ${W0CHP_CUST_BINS_REPO} ${W0CHP_BINS} > /dev/null
+        GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="${uaStr} [req. ${W0CHP_DASH_BRANCH}]" git clone -q ${W0CHP_CUST_BINS_REPO} ${W0CHP_BINS} > /dev/null
 	for i in $( ls ${W0CHP_BINS}/ ) ; do
 		rm -f /usr/local/bin/$i
 		ln -sfn ${W0CHP_BINS}/$i /usr/local/bin/$i
@@ -229,7 +229,7 @@ function InstallDashboard() {
     fi
     # check for mobilegps else install skel if not exist...
     if [ ! -f "/etc/mobilegps" ]; then
-        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/mobilegps -o /etc/mobilegps --user-agent "WPSD-Installer"
+        curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/mobilegps -o /etc/mobilegps --user-agent ${uaStr}
         chown -R www-data:www-data /etc/mobilegps
     fi
     chown -R www-data:www-data /var/www/dashboard
@@ -256,10 +256,10 @@ function InstallCSS() {
     # check for user's css (if any, back it up, and install W0CHP version)
     elif [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
-        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini --user-agent "WPSD-Installer"
+        curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini --user-agent ${uaStr}
     # otherwise, simply install W0CHP css
     else
-        curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini --user-agent "WPSD-Installer"
+        curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini --user-agent ${uaStr}
     fi
 }
 
@@ -267,7 +267,7 @@ function MapCSS() {
     WaitForUnattendedUpgrade
     # ensure no user W0CHP css exists and install stock color mapping to new selectors
     if [[ ! $RUNNING_W0CHP ]] && [ ! -f "/etc/pistar-css.ini" ]; then
-        #curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent "WPSD-Installer"
+        #curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent ${uaStr}
         echo "" > /dev/null
     # are we running W0CHP with user css? if so, bail
     elif [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
@@ -276,7 +276,7 @@ function MapCSS() {
     # otherwise, not running W0CHP dash, but user has css: make a backup of user's css and map stock css
     elif [[ ! $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
-        #curl -s ${CURL_OPTIONS} $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent "WPSD-Installer"
+        #curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent ${uaStr}
         echo -e "\n${INFO} ${COL_LIGHT_YELLOW}NOTE: Custom CSS detected. Making backup and${COL_NC}"
         echo -e "    ${COL_LIGHT_YELLOW}mapping stock Pi-Star colors. To re-map/re-customize${COL_NC}"
         echo -e "    ${COL_LIGHT_YELLOW}your CSS manually, please see:${COL_NC}"
@@ -285,7 +285,7 @@ function MapCSS() {
 }
 
 function RestoreDashboard() {
-    curl -s ${CURL_OPTIONS} $PS_SERVICES_SCRIPT -o /tmp/pistar-services --user-agent "WPSD-Installer (UNINSTALL)"
+    curl "${CURL_OPTIONS[@]}" $PS_SERVICES_SCRIPT -o /tmp/pistar-services --user-agent "${uaStr} [UNINSTALL]"
     chmod +x /tmp/pistar-services
     echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
     env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
@@ -380,7 +380,7 @@ function UpdateSelf() {
     echo -e "${INFO} Performing self-update..."
     local _tempFileName="$0.tmp"
 
-    if ! eval curl -s ${CURL_OPTIONS} --output "${_tempFileName}" "${UPDATE_URI}"; then
+    if ! eval curl "${CURL_OPTIONS[@]}" --output "${_tempFileName}" "${UPDATE_URI}"; then
         echo -e "${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Failed to download update for installation script!"
         echo -e "Make sure you have 'ca-certificates' installed and that the time is set correctly"
         exit 1
