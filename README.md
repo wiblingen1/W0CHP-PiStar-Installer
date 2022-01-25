@@ -1,1 +1,1 @@
-### See https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash#repo-readme for installation instructions.
+### See https://w0chp.net/w0chp-pistar-dash/#installing-w0chp-pistar-dash for installation instructions
