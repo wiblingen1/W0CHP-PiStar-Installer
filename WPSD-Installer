@@ -471,7 +471,7 @@ function DisplayStatus() {
 
 function WarnForCrappyHW() {
     if [ ${checkProc} == "armv6l" ] ; then
-        echo -e "\n${NOTE} Note:"
+	echo -e "\n${NOTE} Note:"
 	echo -e "    You are running an older and under-powered processor ('${COL_LIGHT_RED}${checkProc}${COL_NC}')."
         echo -e "    W0CHP-PiStar-Dash will run quite slowly this weak hardware."
         echo -e "    You've been warned! If you wish to uninstall, run:"
