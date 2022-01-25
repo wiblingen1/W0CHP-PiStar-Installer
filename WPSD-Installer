@@ -229,7 +229,7 @@ function InstallDashboard() {
     fi
     # check for mobilegps else install skel if not exist...
     if [ ! -f "/etc/mobilegps" ]; then
-        curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/mobilegps -o /etc/mobilegps --user-agent ${uaStr}
+        curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/mobilegps -o /etc/mobilegps
         chown -R www-data:www-data /etc/mobilegps
     fi
     chown -R www-data:www-data /var/www/dashboard
@@ -256,10 +256,10 @@ function InstallCSS() {
     # check for user's css (if any, back it up, and install W0CHP version)
     elif [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
-        curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini --user-agent ${uaStr}
+        curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini
     # otherwise, simply install W0CHP css
     else
-        curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini --user-agent ${uaStr}
+        curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/pistar-css-W0CHP.ini -o /etc/pistar-css.ini
     fi
 }
 
@@ -267,7 +267,7 @@ function MapCSS() {
     WaitForUnattendedUpgrade
     # ensure no user W0CHP css exists and install stock color mapping to new selectors
     if [[ ! $RUNNING_W0CHP ]] && [ ! -f "/etc/pistar-css.ini" ]; then
-        #curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent ${uaStr}
+        #curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini
         echo "" > /dev/null
     # are we running W0CHP with user css? if so, bail
     elif [[ $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
@@ -276,7 +276,7 @@ function MapCSS() {
     # otherwise, not running W0CHP dash, but user has css: make a backup of user's css and map stock css
     elif [[ ! $RUNNING_W0CHP ]] && [ -f "/etc/pistar-css.ini" ]; then
         mv /etc/pistar-css.ini /etc/.pistar-css.ini.user
-        #curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini --user-agent ${uaStr}
+        #curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/pistar-css-dist.ini -o /etc/pistar-css.ini
         echo -e "\n${INFO} ${COL_LIGHT_YELLOW}NOTE: Custom CSS detected. Making backup and${COL_NC}"
         echo -e "    ${COL_LIGHT_YELLOW}mapping stock Pi-Star colors. To re-map/re-customize${COL_NC}"
         echo -e "    ${COL_LIGHT_YELLOW}your CSS manually, please see:${COL_NC}"
@@ -285,7 +285,7 @@ function MapCSS() {
 }
 
 function RestoreDashboard() {
-    curl "${CURL_OPTIONS[@]}" $PS_SERVICES_SCRIPT -o /tmp/pistar-services --user-agent "${uaStr} [UNINSTALL]"
+    curl "${CURL_OPTIONS[@]}" $PS_SERVICES_SCRIPT -o /tmp/pistar-services
     chmod +x /tmp/pistar-services
     echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
     env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
