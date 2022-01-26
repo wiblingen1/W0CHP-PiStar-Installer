@@ -24,13 +24,13 @@ fi
 W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/branch/master/W0CHP-pistar"
 W0CHP_DASH_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash.git"
 W0CHP_SBIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin.git"
-W0CHP_CUST_BINS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash_CustomBinaries.git"
-OFFICIAL_DASH_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
-OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
-OFFICIAL_BIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_v4_Binaries_Bin.git"
+W0CHP_BIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-bin.git"
 REQD_PACKS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/branch/master/reqd-packs"
 SUPPORTING_FILES_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/branch/master/supporting-files"
 PS_SERVICES_SCRIPT="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin/raw/branch/master/pistar-services"
+OFFICIAL_DASH_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
+OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
+OFFICIAL_BIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_v4_Binaries_Bin.git"
 # don't fuck with this unless you're brave and adept at troubleshooting
 if [ -z ${W0CHP_DASH_BRANCH} ]; then
     W0CHP_DASH_BRANCH="master"
@@ -45,7 +45,7 @@ SUPPORTED_MAJOR="4"
 SUPPORTED_MIN_MIN="6"
 ALL_ARGS="$@"
 installedDashBranch=$(git --work-tree=/var/www/dashboard --git-dir=/var/www/dashboard/.git branch | grep '*' | cut -f2 -d ' ')
-W0CHP_BINS="/usr/local/.W0CHP_bin"
+W0CHP_BINS="/usr/local/.W0CHP_bin" # legacy...for cleanup
 
 COL_NC='\e[0m' # No Color
 BOLD='\e[1m'
@@ -69,6 +69,14 @@ DONE="${BOLD}${COL_LIGHT_GREEN}Done!${COL_NC}"
 
 checkProc=$(uname -m)
 uaStr="WPSD-Installer (${checkProc})"
+
+# check if user already has firewall disabled, and if so, ensure it's kept that way.
+if ! grep -q LOGNDROP /etc/iptables.rules ; then
+    FW_DISABLED=1
+fi
+
+# curl option array
+declare -a CURL_OPTIONS=('-Ls' '-A' "${uaStr}")
 
 # pi-star version check. only 4.x is supported.
 RELEASE_FILE="/etc/pistar-release"
@@ -106,14 +114,6 @@ function RemovePlatDet() {
         rm -f /usr/local/bin/platformDetect.sh
     fi
 }
-
-# check if user already has firewall disabled, and if so, ensure it's kept that way.
-if ! grep -q LOGNDROP /etc/iptables.rules ; then
-    FW_DISABLED=1
-fi
-
-# curl option array
-declare -a CURL_OPTIONS=('-Ls' '-A' "${uaStr}")
 
 function _rw() {
     # Prevent the FS to be remounted as RO
@@ -189,7 +189,6 @@ function InstallDashboard() {
     sleep 1
     echo -e "${TICK} ${DONE}\n"
     echo -e "${INFO} Checking for required program(s)..."
-    FuckOffMS
     if ! [ -x "$(command -v jq)" ]; then
         echo -e "\n${INFO} The 'jq' package was not found. Installing prerequsite, 'jq' and its"
         echo -e "    associated libraries from the official Raspberry Pi OS Repository,"
@@ -204,29 +203,8 @@ function InstallDashboard() {
 
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
-    ChangeAndCheckoutRepo "/usr/local/bin" "$OFFICIAL_BIN_REPO" # need to mke certain they have latest official binaries
+    ChangeAndCheckoutRepo "/usr/local/bin" "$W0CHP_BIN_REPO"
  
-    if [[ ${W0CHP_DASH_BRANCH} = DO_NOT_USE ]] ; then
-        echo -e "${INFO} You have selected to install the DG-ID and M17 branch."
-	echo -e "    This requires custom-compiled \`MMDVMHost, M17Gateway,"
-        echo -e "    RemoteCommand and YSFClient\` binaries..."
-        echo -e "    Retrieving and installing them now."
-	echo -e "    This will take some time..."
-	echo -e "      * Git repo: <${W0CHP_CUST_BINS_REPO}>"
-	echo -e "      * Installing into: \"${W0CHP_BINS}\""
-	echo -e "      * Symlinking into: \"/usr/local/bin\""
-        rm -rf  ${W0CHP_BINS} > /dev/null
-        GIT_HTTP_CONNECT_TIMEOUT="10" env GIT_HTTP_USER_AGENT="${uaStr} [req. ${W0CHP_DASH_BRANCH}]" git clone -q ${W0CHP_CUST_BINS_REPO} ${W0CHP_BINS} > /dev/null
-	for i in $( ls ${W0CHP_BINS}/ ) ; do
-		rm -f /usr/local/bin/$i
-		ln -sfn ${W0CHP_BINS}/$i /usr/local/bin/$i
-	done
-        cd /usr/local/bin/
-        chmod root:bin * > /dev/null 2<&1
-        git stash > /dev/null 2<&1 # stash custom bins
-        git checkout stash@{0} -- YSFGateway YSFParrot DGIdGateway M17Gateway MMDVMHost MMDVMCal RemoteCommand config_clean.zip > /dev/null 2<&1
-        echo -e "${TICK} ${DONE}\n"
-    fi
     # check for mobilegps else install skel if not exist...
     if [ ! -f "/etc/mobilegps" ]; then
         curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/mobilegps -o /etc/mobilegps
@@ -237,6 +215,13 @@ function InstallDashboard() {
     echo -e "    This will take some time..."
     /bin/bash /usr/local/sbin/HostFilesUpdate.sh  > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
+    checkMMDVMhostINI=$(grep -A 15 "DMR Network" /etc/mmdvmhost | grep -v "DMR Network" | grep -v '^\d*$' | grep "RemoteAddress=127.0.0.1")
+    if [[ ! ${checkMMDVMhostINI} ]] ; then
+        sed -i '/\[DMR Network\]/a RemoteAddress=127.0.0.1' /etc/mmdvmhost # need this for new conf. dicts.
+    fi
+    # set log perms for newer bins...
+    chown -R mmdvm:mmdvm /var/log/pi-star
+    chmod 775 /var/log/pi-star
     echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
     systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
     env REMOUNT_RO="NO" /tmp/pistar-services start > /dev/null 2<&1
@@ -361,18 +346,6 @@ function RestoreDashboard() {
     # orig motd:
     /usr/local/sbin/pistar-motdgen
     echo -e "${TICK} ${COL_LIGHT_GREEN}Official Pi-Star Dashboard and files restoration complete!${COL_NC}\n"
-}
-
-function FuckOffMS()
-{
-    ## Remove damn Microsoft repo
-    if [ -f /etc/apt/sources.list.d/vscode.list ]; then
-        rm -r /etc/apt/sources.list.d/vscode.list
-        apt-get update > /dev/null
-    fi
-    if [ -f /etc/apt/sources.list.d/.vscode.disabled ]; then
-        rm -r /etc/apt/sources.list.d/.vscode.disabled
-    fi
 }
 
 function UpdateSelf() {
