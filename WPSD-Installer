@@ -202,7 +202,7 @@ function InstallDashboard() {
     fi
     # Check for gpsd
     if [ ! -f /lib/systemd/system/gpsd.socket ]; then
-        echo -e "\n${INFO} The 'gpsd' package was not found. Installing prerequsite, 'gpsd' and its"
+        echo -e "${INFO} The 'gpsd' package was not found. Installing prerequsite, 'gpsd' and its"
         echo -e "    associated libraries from the official Raspberry Pi OS Repository."
 	echo -e "    This will take some time..."
 	apt-get update > /dev/null
