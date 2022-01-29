@@ -200,6 +200,17 @@ function InstallDashboard() {
     else
         echo -e "${TICK} The required 'jq' package was already found! NOT intalling.\n"
     fi
+    # Check for gpsd
+    if [ ! -f /lib/systemd/system/gpsd.socket ]; then
+        echo -e "\n${INFO} The 'gpsd' package was not found. Installing prerequsite, 'gpsd' and its"
+        echo -e "    associated libraries from the official Raspberry Pi OS Repository."
+	echo -e "    This will take some time..."
+	apt-get update > /dev/null
+        apt-get install -y libgps-dev gpsd > /dev/null 2>&1
+        echo -e "${TICK} ${DONE}\n"
+    else
+        echo -e "${TICK} The required 'gpsd' package was already found! NOT intalling.\n"
+    fi
 
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
