@@ -314,15 +314,6 @@ function RestoreDashboard() {
     if compgen -G "/etc/.W0CHP-PiStar-Dash.remote_version*" > /dev/null; then
         rm -r /etc/.W0CHP-PiStar-Dash.remote_version*
     fi
-    if compgen -G "/usr/local/etc/user.csv*" > /dev/null; then
-        rm -r /usr/local/etc/user.csv*
-    fi
-    if compgen -G "/usr/local/etc/stripped.csv*" > /dev/null; then
-        rm -r /usr/local/etc/stripped.csv*
-    fi
-    if compgen -G "/usr/local/etc/groups.txt*" > /dev/null; then
-        rm -r /usr/local/etc/groups.txt*
-    fi
     if compgen -G "/usr/local/bin/README.md*" > /dev/null; then
         rm -r /usr/local/bin/README.md*
     fi
