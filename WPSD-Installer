@@ -201,7 +201,7 @@ function InstallDashboard() {
         echo -e "${TICK} The required 'jq' package was already found! NOT intalling.\n"
     fi
     # Check for gpsd
-    if [ ! -f /lib/systemd/system/gpsd.socket ]; then
+    if ! [ -x "$(command -v gpsd)" ]; then 
         echo -e "${INFO} The 'gpsd' package was not found. Installing prerequsite, 'gpsd' and its"
         echo -e "    associated libraries from the official Raspberry Pi OS Repository."
 	echo -e "    This will take some time..."
@@ -333,7 +333,7 @@ function RestoreDashboard() {
     echo -e "${INFO} Removing packages specific to W0CHP-PiStar-Dash, which"
     echo -e "    are no longer required.\n    This will take some time..."
     if  [ -x "$(command -v jq)" ]; then
-        apt-get purge -y jq > /dev/null
+        apt-get purge -y jq libgps-dev gpsd > /dev/null
         apt-get autoremove -y > /dev/null
         echo -e "${TICK} ${DONE}"
     else
