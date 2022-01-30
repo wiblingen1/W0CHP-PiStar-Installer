@@ -216,11 +216,6 @@ function InstallDashboard() {
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     ChangeAndCheckoutRepo "/usr/local/bin" "$W0CHP_BIN_REPO"
  
-    # check for mobilegps else install skel if not exist...
-    if [ ! -f "/etc/mobilegps" ]; then
-        curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/mobilegps -o /etc/mobilegps
-        chown -R www-data:www-data /etc/mobilegps
-    fi
     chown -R www-data:www-data /var/www/dashboard
     echo -e "${INFO} Updating Hostfiles, User ID DB's and DMR Talkgroup Lists."
     echo -e "    This will take some time..."
@@ -294,7 +289,11 @@ function RestoreDashboard() {
     fi
 
     # Revert MobileGPS
-    systemctl disable mobilegps.timer
+    systemctl disable mobilegps.timer > /dev/null/ 2<&1
+    if [ ! -f "/etc/mobilegps" ]; then
+        curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/mobilegps -o /etc/mobilegps
+        chown -R www-data:www-data /etc/mobilegps
+    fi
     rm -f /lib/systemd/system/mobilegps.timer
     echo '[Unit]' > /lib/systemd/system/mobilegps.service
     echo 'Description=Pi-Star MobileGPS Service' >> /lib/systemd/system/mobilegps.service
