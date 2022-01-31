@@ -235,6 +235,9 @@ function InstallDashboard() {
     rm /tmp/pistar-services
     /usr/local/sbin/pistar-motdgen
     CheckFWstate
+    if [ ! -f /etc/WPSD-release ]; then
+	cat /proc/sys/kernel/random/uuid > /etc/WPSD-release
+    fi
     echo -e "${TICK} ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash Installation Complete!${COL_NC}\n" 
 }
 
