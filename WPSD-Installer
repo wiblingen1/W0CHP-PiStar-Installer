@@ -67,8 +67,10 @@ TICK="${BOLD}[${COL_LIGHT_GREEN}✓${COL_NC}]"
 CROSS="${BOLD}[${COL_BRIGHT_RED}✗${COL_NC}]"
 DONE="${BOLD}${COL_LIGHT_GREEN}Done!${COL_NC}"
 
-checkProc=$(uname -m)
-uaStr="WPSD-Installer (${checkProc})"
+modelName=$(grep -m 1 'model name' /proc/cpuinfo | sed 's/.*: //')
+hardwareField=$(grep 'Model' /proc/cpuinfo | sed 's/.*: //')
+hwDeetz="${hardwareField} - ${modelName}"
+uaStr="WPSD-Installer (${hwDeetz})"
 
 # check if user already has firewall disabled, and if so, ensure it's kept that way.
 if ! grep -q LOGNDROP /etc/iptables.rules ; then
@@ -469,12 +471,12 @@ function DisplayStatus() {
 }
 
 function WarnForCrappyHW() {
-    if [ ${checkProc} == "armv6l" ] ; then
+    if [ $( uname -m ) == "armv6l" ] ; then
 	echo -e "\n${NOTE} Note:"
-	echo -e "    You are running an older and under-powered processor ('${COL_LIGHT_RED}${checkProc}${COL_NC}')."
-        echo -e "    W0CHP-PiStar-Dash will run quite slowly on your weak hardware."
-        echo -e "    You've been warned! If you wish to uninstall, run:"
-        echo -e "    ${COL_REG_YELLOW}curl -Ls https://w0chp.net/WPSD-Installer | sudo env NO_SELF_UPDATE=1 bash -s -- -rd${COL_NC}"
+	echo -e "    You are running an older and under-powered system (${COL_LIGHT_RED}${hardwareField} [$( uname -m)]${COL_NC})."
+	echo -e "    W0CHP-PiStar-Dash will run quite slowly on your weak hardware."
+	echo -e "    You've been warned! If you wish to uninstall, run:"
+	echo -e "    ${COL_REG_YELLOW}curl -Ls https://w0chp.net/WPSD-Installer | sudo env NO_SELF_UPDATE=1 bash -s -- -rd${COL_NC}"
     fi
 }
 
