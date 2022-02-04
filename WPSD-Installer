@@ -21,12 +21,12 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # common vars
-W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/branch/master/W0CHP-pistar"
+W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Installer/raw/branch/master/W0CHP-Installer"
 W0CHP_DASH_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash.git"
 W0CHP_SBIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin.git"
 W0CHP_BIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-bin.git"
-REQD_PACKS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/branch/master/reqd-packs"
-SUPPORTING_FILES_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Install/raw/branch/master/supporting-files"
+REQD_PACKS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Installer/raw/branch/master/reqd-packs"
+SUPPORTING_FILES_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Installer/raw/branch/master/supporting-files"
 PS_SERVICES_SCRIPT="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin/raw/branch/master/pistar-services"
 OFFICIAL_DASH_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
 OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
