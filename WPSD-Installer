@@ -294,7 +294,7 @@ function RestoreDashboard() {
     fi
 
     # Revert MobileGPS
-    systemctl disable mobilegps.timer > /dev/null/ 2<&1
+    systemctl disable mobilegps.timer > /dev/null 2<&1
     if [ ! -f "/etc/mobilegps" ]; then
         curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/mobilegps -o /etc/mobilegps
         chown -R www-data:www-data /etc/mobilegps
