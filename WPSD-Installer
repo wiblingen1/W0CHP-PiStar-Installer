@@ -21,7 +21,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # common vars
-W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Installer/raw/branch/master/W0CHP-Installer"
+W0CHP_INSTALL_SCRIPT_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Installer/raw/branch/master/WPSD-Installer"
 W0CHP_DASH_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Dash.git"
 W0CHP_SBIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin.git"
 W0CHP_BIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-bin.git"
@@ -381,7 +381,7 @@ function UpdateSelf() {
     echo -e "${INFO} Performing self-update..."
     local _tempFileName="$0.tmp"
 
-    if ! eval curl "${CURL_OPTIONS[@]}" --output "${_tempFileName}" "${UPDATE_URI}"; then
+    if ! eval curl -Ls --output "${_tempFileName}" "${UPDATE_URI}"; then
         echo -e "${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Failed to download update for installation script!"
         echo -e "Make sure you have 'ca-certificates' installed and that the time is set correctly"
         exit 1
