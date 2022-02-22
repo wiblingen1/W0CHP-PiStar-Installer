@@ -368,8 +368,8 @@ function RestoreDashboard() {
     echo '[Install]' >> /lib/systemd/system/mobilegps.service
     echo 'WantedBy=multi-user.target' >> /lib/systemd/system/mobilegps.service
     # Enable the service
-    systemctl daemon-reload
-    systemctl enable mobilegps.service
+    systemctl daemon-reload > /dev/null 2<&1
+    systemctl enable mobilegps.service > /dev/null 2<&1
 
     # Remove pistar-service bash completion
     rm -f /usr/share/bash-completion/completions/pistar-services
