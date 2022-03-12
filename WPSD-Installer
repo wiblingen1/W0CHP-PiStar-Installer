@@ -280,46 +280,32 @@ function InstallDashboard() {
     sed -i "/dstarrepeater/c dstarrepeater = 20180911_W0CHP" /etc/pistar-release
     _KernelVer=`uname -r`
     _MMDVMHostVer=`MMDVMHost -v | awk '{ print $3 }'`
-    logDate=`printf '%(%Y-%m-%d)T\n' -1`
-    mmdvmHostLog="/var/log/pi-star/MMDVM-${logDate}.log"
-    _FWver=`grep 'MMDVM protocol version' ${mmdvmHostLog} | awk '{print $9}' | tail -1`
-    _TCXO=`grep 'MMDVM protocol version' ${mmdvmHostLog} | awk '{print $11}' | tail -1`
-    sed -i "/kernel/c kernel = $_KernelVer" /etc/pistar-release
-    sed -i "/MMDVMHost/c MMDVMHost = $_MMDVMHostVer" /etc/pistar-release
-    if ! grep -q 'Firmware' /etc/pistar-release > /dev/null; then
-	sed -i "/Hardware = /a Firmware = \nTCXO = " /etc/pistar-release
-	sed -i "/Firmware/c Firmware = $_FWver" /etc/pistar-release
-	sed -i "/TCXO/c TCXO = $_TCXO" /etc/pistar-release
+    /usr/local/bin/pistar-modemcache
+    # migrate config update notice
+    if grep -q ConfUpdReqd /etc/mmdvmhost ; then
+	grep ConfUpdReqd /etc/mmdvmhost | sed 's/=/ = /' >> /etc/pistar-release
+	sed -i '/^\[WPSD\]/d' /etc/mmdvmhost
+	sed -i '/^ConfUpdReqd/d' /etc/mmdvmhost
+    elif ! grep -q ConfUpdReqd /etc/pistar-release ; then
+	echo "ConfUpdReqd = " >> /etc/pistar-release
+    fi
+    # migrate UUID
+    if [ -f /etc/WPSD-release ]; then
+	UUIDck=$( cat /etc/WPSD-release )
+	if [[ ${UUIDck}  == '69dee892-b82e-400e-b2bd-39e602969e94' ]] ; then
+	    rm -f /etc/WPSD-release
+	    GU=$( cat /proc/sys/kernel/random/uuid )
+	    echo "UUID = $GU" >> /etc/pistar-release
+	else
+	    echo "UUID = $UUIDck" >> /etc/pistar-release
+	    rm -f /etc/WPSD-release
+	fi
     else
-	sed -i "/Firmware/c Firmware = $_FWver" /etc/pistar-release
-	sed -i "/TCXO/c TCXO = $_TCXO" /etc/pistar-release
+	if ! grep -q UUID /etc/pistar-release ; then
+	    GU=$( cat /proc/sys/kernel/random/uuid )
+	    echo "UUID = $GU" >> /etc/pistar-release
+	fi
     fi
-# migrate config update notice
-if grep -q ConfUpdReqd /etc/mmdvmhost ; then
-    grep ConfUpdReqd /etc/mmdvmhost | sed 's/=/ = /' >> /etc/pistar-release
-    sed -i '/^\[WPSD\]/d' /etc/mmdvmhost
-    sed -i '/^ConfUpdReqd/d' /etc/mmdvmhost
-elif ! grep -q ConfUpdReqd /etc/pistar-release ; then
-    echo "ConfUpdReqd = " >> /etc/pistar-release
-fi
-
-# migrate UUID
-if [ -f /etc/WPSD-release ]; then
-    UUIDck=$( cat /etc/WPSD-release )
-    if [[ ${UUIDck}  == '69dee892-b82e-400e-b2bd-39e602969e94' ]] ; then
-        rm -f /etc/WPSD-release
-        GU=$( cat /proc/sys/kernel/random/uuid )
-        echo "UUID = $GU" >> /etc/pistar-release
-    else
-        echo "UUID = $UUIDck" >> /etc/pistar-release
-        rm -f /etc/WPSD-release
-    fi
-else
-    if ! grep -q UUID /etc/pistar-release ; then
-        GU=$( cat /proc/sys/kernel/random/uuid )
-        echo "UUID = $GU" >> /etc/pistar-release
-    fi
-fi
 
     echo -e "${TICK} ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash Installation Complete!${COL_NC}\n" 
 }
