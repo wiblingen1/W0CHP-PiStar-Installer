@@ -240,21 +240,9 @@ function InstallDashboard() {
     chown -R mmdvm:mmdvm /var/log/pi-star
     chmod 775 /var/log/pi-star
 
-    echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
-    systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
-    env REMOUNT_RO="NO" /tmp/pistar-services start > /dev/null 2<&1
-    echo -e "${TICK} ${DONE}\n"
-    rm /tmp/pistar-services
-
     /usr/local/sbin/pistar-motdgen
 
     CheckFWstate
-
-    # add modem cache to rc.local
-    if ! grep -q 'modemcache' /etc/rc.local ; then
-        sed -i '/^\/usr\/local\/sbin\/pistar-motdgen/a \\n\n# cache modem info\n\/usr\/local\/sbin\/pistar-modemcache' /etc/rc.local 
-        /usr/local/sbin/pistar-modemcache
-    fi
 
     # Add pistar-service bash completion
     DEST="/usr/share/bash-completion/completions/pistar-services"
@@ -276,7 +264,13 @@ function InstallDashboard() {
     chmod 0644 $DEST
 
     # Update pertinent versions in /etc/pistar-release
-    /usr/local/sbin/pistar-modemcache
+    # add modem cache to rc.local
+    if ! grep -q 'modemcache' /etc/rc.local ; then
+        sed -i '/^\/usr\/local\/sbin\/pistar-motdgen/a \\n\n# cache modem info\n\/usr\/local\/sbin\/pistar-modemcache' /etc/rc.local 
+        /usr/local/sbin/pistar-modemcache > /dev/null 2<&1
+    else
+	/usr/local/sbin/pistar-modemcach > /dev/null 2<&1
+    fi
     # migrate config update notice
     if grep -q ConfUpdReqd /etc/mmdvmhost ; then
 	grep ConfUpdReqd /etc/mmdvmhost | sed 's/=/ = /' >> /etc/pistar-release
@@ -304,6 +298,12 @@ function InstallDashboard() {
 	    echo "UUID = $GU" >> /etc/pistar-release
 	fi
     fi
+
+    echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
+    systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
+    env REMOUNT_RO="NO" /tmp/pistar-services start > /dev/null 2<&1
+    echo -e "${TICK} ${DONE}\n"
+    rm /tmp/pistar-services
 
     echo -e "${TICK} ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash Installation Complete!${COL_NC}\n" 
 }
