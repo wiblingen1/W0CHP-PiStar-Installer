@@ -282,8 +282,10 @@ function InstallDashboard() {
 	grep ConfUpdReqd /etc/mmdvmhost | sed 's/=/ = /' >> /etc/pistar-release
 	sed -i '/^\[WPSD\]/d' /etc/mmdvmhost
 	sed -i '/^ConfUpdReqd/d' /etc/mmdvmhost
-    elif ! grep -q ConfUpdReqd /etc/pistar-release ; then
-	echo "ConfUpdReqd = " >> /etc/pistar-release
+    else
+	if ! grep -q ConfUpdReqd /etc/pistar-release ; then
+	    echo "ConfUpdReqd = " >> /etc/pistar-release
+	fi
     fi
     # migrate UUID
     if [ -f /etc/WPSD-release ]; then
