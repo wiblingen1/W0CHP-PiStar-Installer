@@ -276,7 +276,7 @@ function InstallDashboard() {
     chmod 0644 $DEST
 
     # Update pertinent versions in /etc/pistar-release
-    /usr/local/bin/pistar-modemcache
+    /usr/local/sbin/pistar-modemcache
     # migrate config update notice
     if grep -q ConfUpdReqd /etc/mmdvmhost ; then
 	grep ConfUpdReqd /etc/mmdvmhost | sed 's/=/ = /' >> /etc/pistar-release
