@@ -276,10 +276,6 @@ function InstallDashboard() {
     chmod 0644 $DEST
 
     # Update pertinent versions in /etc/pistar-release
-    sed -i "/ircddbgateway/c ircddbgateway = 20190621_W0CHP" /etc/pistar-release
-    sed -i "/dstarrepeater/c dstarrepeater = 20180911_W0CHP" /etc/pistar-release
-    _KernelVer=`uname -r`
-    _MMDVMHostVer=`MMDVMHost -v | awk '{ print $3 }'`
     /usr/local/bin/pistar-modemcache
     # migrate config update notice
     if grep -q ConfUpdReqd /etc/mmdvmhost ; then
