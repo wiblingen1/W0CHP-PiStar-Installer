@@ -387,17 +387,22 @@ function RestoreDashboard() {
     rm -f /usr/share/bash-completion/completions/pistar-services
 
     # Enable unattended-upgrades
-    systemctl unmask unattended-upgrades
+    systemctl unmask unattended-upgrades > /dev/null 2<&1
     LC_ALL=C systemctl enable unattended-upgrades > /dev/null 2<&1
-    systemctl start unattended-upgrades
+    systemctl start unattended-upgrades > /dev/null 2<&1
 	
     # Enable SAMBA
-    systemctl unmask smbd
+    systemctl unmask smbd > /dev/null 2<&1
     systemctl unmask nmbd
     LC_ALL=C systemctl enable smbd > /dev/null 2<&1
     LC_ALL=C systemctl enable nmbd > /dev/null 2<&1
-    systemctl start smbd
-    systemctl start nmbd
+    systemctl start smbd > /dev/null 2<&1
+    systemctl start nmbd > /dev/null 2<&1
+
+    # revert stock avahi config
+    rm -rf /etc/avahi/services/
+    mv /etc/avahi/avahi-daemon.conf.dist /etc/avahi/avahi-daemon.conf
+    systemctl restart avahi-daemon > /dev/null 2<&1
 
     ChangeAndCheckoutRepo "/var/www/dashboard" "$OFFICIAL_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$OFFICIAL_SBIN_REPO"
