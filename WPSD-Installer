@@ -386,6 +386,19 @@ function RestoreDashboard() {
     # Remove pistar-service bash completion
     rm -f /usr/share/bash-completion/completions/pistar-services
 
+    # Enable unattended-upgrades
+    systemctl unmask unattended-upgrades
+    LC_ALL=C systemctl enable unattended-upgrades > /dev/null 2<&1
+    systemctl start unattended-upgrades
+	
+    # Enable SAMBA
+    systemctl unmask smbd
+    systemctl unmask nmbd
+    LC_ALL=C systemctl enable smbd > /dev/null 2<&1
+    LC_ALL=C systemctl enable nmbd > /dev/null 2<&1
+    systemctl start smbd
+    systemctl start nmbd
+
     ChangeAndCheckoutRepo "/var/www/dashboard" "$OFFICIAL_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$OFFICIAL_SBIN_REPO"
     ChangeAndCheckoutRepo "/usr/local/bin" "$OFFICIAL_BIN_REPO"
