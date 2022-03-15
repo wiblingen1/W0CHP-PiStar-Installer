@@ -181,6 +181,25 @@ function ChangeAndCheckoutRepo() {
     echo -e "${TICK} ${DONE}\n"
 }
 
+function ApplyConfigs() {
+    echo -e "${INFO} Updating Configuration Files."
+    echo -e "    This will take some time..."
+    # temp allow localhost to submit config form without auth to enter new configs
+    sed -i '/try_files/i satisfy any;' /etc/nginx/sites-enabled/pi-star
+    sed -i '/satisfy any/a allow 127.0.0.1;' /etc/nginx/sites-enabled/pi-star
+    sed -i '/allow 127.0.0.1/a deny all;' /etc/nginx/sites-enabled/pi-star
+    systemctl restart nginx > /dev/null 2<&1
+    sleep 3
+    # apply config/submit form
+    curl -s -X POST -F name=config http://127.0.0.1/admin/configure.php > /dev/null
+    # remove localhost auth bypass
+    sed -i '/satisfy any/d' /etc/nginx/sites-enabled/pi-star
+    sed -i '/allow 127.0.0.1/d' /etc/nginx/sites-enabled/pi-star
+    sed -i '/deny all/d' /etc/nginx/sites-enabled/pi-star
+    systemctl restart nginx > /dev/null 2<&1
+    echo -e "${TICK} ${DONE}\n"
+}
+
 function InstallDashboard() {
     WaitForUnattendedUpgrade
     curl "${CURL_OPTIONS[@]}" $PS_SERVICES_SCRIPT -o /tmp/pistar-services
@@ -300,6 +319,8 @@ function InstallDashboard() {
     chmod 0644 $DEST
 
     /usr/local/sbin/wpsd-backend-maint > /dev/null 2<&1
+
+    ApplyConfigs
 
     echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
     systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
@@ -517,8 +538,8 @@ EOF
 function DisplayConfigUpdate() {
     echo -e "${COL_LIGHT_YELLOW} ************************ NOTICE *************************"
     echo -e " *                                                       *"
-    echo -e " *  Now you MUST open the Pi-Star's Configuration page   *"
-    echo -e " *        and click the \"Apply Changes\" button!          *"
+    echo -e " *   Now you need to refresh your hotspot webpage in     *"
+    echo -e " *         order to see the changes take effect.         *"
     echo -e " *                                                       *"
     echo -e " *********************************************************"
     echo -e "${COL_NC}"
