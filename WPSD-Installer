@@ -209,13 +209,17 @@ function InstallDashboard() {
     env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
     sleep 1
     echo -e "${TICK} ${DONE}\n"
+
+    echo -e "${INFO} Updating Raspberry Pi OS Package Cache..."
+    apt-get update > /dev/null
+    echo -e "${TICK} ${DONE}\n"
+
     echo -e "${INFO} Checking for required program(s)..."
     if ! [ -x "$(command -v jq)" ]; then
         echo -e "\n${INFO} The 'jq' package was not found. Installing prerequsite, 'jq' and its"
         echo -e "    associated libraries from the official Raspberry Pi OS Repository,"
         echo -e "    which helps to mass-manage your static Brandmeister Talkgroups."
 	echo -e "    This will take some time..."
-	apt-get update > /dev/null
         apt-get install -y jq > /dev/null
         echo -e "${TICK} ${DONE}\n"
     else
@@ -232,7 +236,6 @@ function InstallDashboard() {
         echo -e "${INFO} The 'gpsd' package was not found. Installing prerequsite, 'gpsd' and its"
         echo -e "    associated libraries from the official Raspberry Pi OS Repository."
 	echo -e "    This will take some time..."
-	apt-get update > /dev/null
         apt-get install -y libgps-dev gpsd > /dev/null 2>&1
         echo -e "${TICK} ${DONE}\n"
     else
@@ -244,24 +247,6 @@ function InstallDashboard() {
     ChangeAndCheckoutRepo "/usr/local/bin" "$W0CHP_BIN_REPO"
  
     chown -R www-data:www-data /var/www/dashboard
-
-    echo -e "${INFO} Updating Hostfiles, User ID DB's and DMR Talkgroup Lists."
-    echo -e "    This will take some time..."
-    /bin/bash /usr/local/sbin/HostFilesUpdate.sh  > /dev/null 2<&1
-    echo -e "${TICK} ${DONE}\n"
-    checkMMDVMhostINI=$(grep -A 15 "DMR Network" /etc/mmdvmhost | grep -v "DMR Network" | grep -v '^\d*$' | grep "RemoteAddress=127.0.0.1")
-
-    if [[ ! ${checkMMDVMhostINI} ]] ; then
-        sed -i '/\[DMR Network\]/a RemoteAddress=127.0.0.1' /etc/mmdvmhost # need this for new conf. dicts.
-    fi
-
-    # set log perms for newer bins...
-    chown -R mmdvm:mmdvm /var/log/pi-star
-    chmod 775 /var/log/pi-star
-
-    /usr/local/sbin/pistar-motdgen
-
-    CheckFWstate
 
     # Update pertinent versions in /etc/pistar-release
     # add modem cache to rc.local
@@ -299,6 +284,24 @@ function InstallDashboard() {
 	fi
     fi
 
+    echo -e "${INFO} Updating Hostfiles, User ID DB's and DMR Talkgroup Lists."
+    echo -e "    This will take some time..."
+    /bin/bash /usr/local/sbin/HostFilesUpdate.sh  > /dev/null 2<&1
+    echo -e "${TICK} ${DONE}\n"
+    checkMMDVMhostINI=$(grep -A 15 "DMR Network" /etc/mmdvmhost | grep -v "DMR Network" | grep -v '^\d*$' | grep "RemoteAddress=127.0.0.1")
+
+    if [[ ! ${checkMMDVMhostINI} ]] ; then
+        sed -i '/\[DMR Network\]/a RemoteAddress=127.0.0.1' /etc/mmdvmhost # need this for new conf. dicts.
+    fi
+
+    # set log perms for newer bins...
+    chown -R mmdvm:mmdvm /var/log/pi-star
+    chmod 775 /var/log/pi-star
+
+    /usr/local/sbin/pistar-motdgen
+
+    CheckFWstate
+
     # Add pistar-service bash completion
     DEST="/usr/share/bash-completion/completions/pistar-services"
     echo "#!/bin/bash" > $DEST
@@ -318,8 +321,13 @@ function InstallDashboard() {
     chown root:root $DEST
     chmod 0644 $DEST
 
+    echo -e "${INFO} Performing some backend maintence and preparation tasks."
+    echo -e "    This will take some time..."
+    _rw
     /usr/local/sbin/wpsd-backend-maint > /dev/null 2<&1
+    echo -e "${TICK} ${DONE}\n"
 
+    _rw
     ApplyConfigs
 
     echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
@@ -409,11 +417,12 @@ function RestoreDashboard() {
     # Remove pistar-service bash completion
     rm -f /usr/share/bash-completion/completions/pistar-services
 
+    echo -e "${INFO} Reverting all Original Pi-Star Services."
+    echo -e "    This will take some time..."
     # Enable unattended-upgrades
     systemctl unmask unattended-upgrades > /dev/null 2<&1
     LC_ALL=C systemctl enable unattended-upgrades > /dev/null 2<&1
     systemctl start unattended-upgrades > /dev/null 2<&1
-	
     # Enable SAMBA
     systemctl unmask smbd > /dev/null 2<&1
     systemctl unmask nmbd > /dev/null 2<&1
@@ -421,11 +430,11 @@ function RestoreDashboard() {
     LC_ALL=C systemctl enable nmbd > /dev/null 2<&1
     systemctl start smbd > /dev/null 2<&1
     systemctl start nmbd > /dev/null 2<&1
-
     # revert stock avahi config
     rm -rf /etc/avahi/services/
     mv /etc/avahi/avahi-daemon.conf.dist /etc/avahi/avahi-daemon.conf > /dev/null 2<&1
     systemctl restart avahi-daemon > /dev/null 2<&1
+    echo -e "${TICK} ${DONE}\n"
 
     ChangeAndCheckoutRepo "/var/www/dashboard" "$OFFICIAL_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$OFFICIAL_SBIN_REPO"
