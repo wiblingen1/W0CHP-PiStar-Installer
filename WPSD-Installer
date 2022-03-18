@@ -332,7 +332,7 @@ function InstallDashboard() {
 
     echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
     systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
-    env REMOUNT_RO="NO" /tmp/pistar-services start > /dev/null 2<&1
+    env REMOUNT_RO="NO" /tmp/pistar-services restart > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
     rm /tmp/pistar-services
 
