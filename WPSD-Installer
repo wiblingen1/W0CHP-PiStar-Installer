@@ -119,13 +119,17 @@ function RemovePlatDet() {
 
 function _rw() {
     # Prevent the FS to be remounted as RO
+    systemctl disable cron.service > /dev/null 2<&1
     systemctl stop cron.service > /dev/null 2<&1
+    systemctl mask cron.service > /dev/null 2<&1
     mount -o remount,rw /
 }
 
 function _ro() {
     sync
     mount -o remount,ro /
+    systemctl unmask cron.service > /dev/null 2<&1
+    systemctl enable cron.service > /dev/null 2<&1
     systemctl start cron.service > /dev/null 2<&1
 }
 
