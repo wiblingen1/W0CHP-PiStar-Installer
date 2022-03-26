@@ -192,6 +192,7 @@ function ApplyConfigs() {
     sleep 3
     # apply config/submit form
     curl -s -X POST -F name=config http://127.0.0.1/admin/configure.php > /dev/null
+    curl -s -X POST -F name=edit-css http://127.0.0.1/admin/expert/edit_dashboard.php > /dev/null
     # remove localhost auth bypass
     sed -i '/satisfy any/d' /etc/nginx/sites-enabled/pi-star
     sed -i '/allow 127.0.0.1/d' /etc/nginx/sites-enabled/pi-star
