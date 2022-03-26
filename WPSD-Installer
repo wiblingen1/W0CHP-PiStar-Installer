@@ -336,6 +336,9 @@ function InstallDashboard() {
     ApplyConfigs
 
     echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
+    systemctl unmask cron.service > /dev/null 2<&1
+    systemctl enable cron.service > /dev/null 2<&1
+    systemctl start cron.service > /dev/null 2<&1
     systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
     env REMOUNT_RO="NO" /tmp/pistar-services restart > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
