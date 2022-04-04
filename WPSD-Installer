@@ -418,25 +418,6 @@ function RestoreDashboard() {
     # Remove pistar-service bash completion
     rm -f /usr/share/bash-completion/completions/pistar-services
 
-    echo -e "${INFO} Reverting all Original Pi-Star Services."
-    echo -e "    Be patient! This will take some time..."
-    # Enable unattended-upgrades
-    systemctl unmask unattended-upgrades > /dev/null 2<&1
-    LC_ALL=C systemctl enable unattended-upgrades > /dev/null 2<&1
-    systemctl start unattended-upgrades > /dev/null 2<&1
-    # Enable SAMBA
-    systemctl unmask smbd > /dev/null 2<&1
-    systemctl unmask nmbd > /dev/null 2<&1
-    LC_ALL=C systemctl enable smbd > /dev/null 2<&1
-    LC_ALL=C systemctl enable nmbd > /dev/null 2<&1
-    systemctl start smbd > /dev/null 2<&1
-    systemctl start nmbd > /dev/null 2<&1
-    # revert stock avahi config
-    rm -rf /etc/avahi/services/
-    mv /etc/avahi/avahi-daemon.conf.dist /etc/avahi/avahi-daemon.conf > /dev/null 2<&1
-    systemctl restart avahi-daemon > /dev/null 2<&1
-    echo -e "${TICK} ${DONE}\n"
-
     ChangeAndCheckoutRepo "/var/www/dashboard" "$OFFICIAL_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$OFFICIAL_SBIN_REPO"
     ChangeAndCheckoutRepo "/usr/local/bin" "$OFFICIAL_BIN_REPO"
@@ -494,6 +475,25 @@ function RestoreDashboard() {
     if [ -f "/tmp/pistar-services" ] ; then
         rm /tmp/pistar-services
     fi
+
+    echo -e "${INFO} Reverting all Original Pi-Star Services."
+    echo -e "    Be patient! This will take some time..."
+    # Enable unattended-upgrades
+    systemctl unmask unattended-upgrades > /dev/null 2<&1
+    LC_ALL=C systemctl enable unattended-upgrades > /dev/null 2<&1
+    systemctl start unattended-upgrades > /dev/null 2<&1
+    # Enable SAMBA
+    systemctl unmask smbd > /dev/null 2<&1
+    systemctl unmask nmbd > /dev/null 2<&1
+    LC_ALL=C systemctl enable smbd > /dev/null 2<&1
+    LC_ALL=C systemctl enable nmbd > /dev/null 2<&1
+    systemctl start smbd > /dev/null 2<&1
+    systemctl start nmbd > /dev/null 2<&1
+    # revert stock avahi config
+    rm -rf /etc/avahi/services/
+    mv /etc/avahi/avahi-daemon.conf.dist /etc/avahi/avahi-daemon.conf > /dev/null 2<&1
+    systemctl restart avahi-daemon > /dev/null 2<&1
+    echo -e "${TICK} ${DONE}\n"
 
     # orig motd:
     /usr/local/sbin/pistar-motdgen
