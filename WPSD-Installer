@@ -119,18 +119,14 @@ function RemovePlatDet() {
 
 function _rw() {
     # Prevent the FS to be remounted as RO
-    mount -o remount,rw /
-    systemctl disable cron.service > /dev/null 2<&1
     systemctl stop cron.service > /dev/null 2<&1
-    systemctl mask cron.service > /dev/null 2<&1
+    mount -o remount,rw /
 }
 
 function _ro() {
     sync
-    systemctl unmask cron.service > /dev/null 2<&1
-    systemctl enable cron.service > /dev/null 2<&1
+    mount -o remount,ro / > /dev/null 2<&1
     systemctl start cron.service > /dev/null 2<&1
-    mount -o remount,ro /
 }
 
 function WaitForUnattendedUpgrade() {
@@ -221,9 +217,9 @@ function InstallDashboard() {
 
     echo -e "${INFO} Checking for required program(s)..."
     if ! [ -x "$(command -v jq)" ]; then
-        echo -e "\n${INFO} The 'jq' package was not found. Installing prerequsite, 'jq' and its"
-        echo -e "    associated libraries from the official Raspberry Pi OS Repository,"
-        echo -e "    which helps to mass-manage your static Brandmeister Talkgroups."
+	echo -e "\n${INFO} The 'jq' package was not found. Installing prerequsite, 'jq' and its associated"
+	echo -e "    associated libraries from the official Raspberry Pi OS Repository; which helps to"
+	echo -e "    mass-manage static Brandmeister Talkgroups and to parse APRS tier-2 server lists."
 	echo -e "    This will take some time..."
         apt-get install -y jq > /dev/null
         echo -e "${TICK} ${DONE}\n"
@@ -336,11 +332,9 @@ function InstallDashboard() {
     ApplyConfigs
 
     echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
-    systemctl unmask cron.service > /dev/null 2<&1
-    systemctl enable cron.service > /dev/null 2<&1
-    systemctl start cron.service > /dev/null 2<&1
     systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
     env REMOUNT_RO="NO" /tmp/pistar-services restart > /dev/null 2<&1
+    systemctl start cron.service > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
     rm /tmp/pistar-services
 
