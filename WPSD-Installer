@@ -119,14 +119,14 @@ function RemovePlatDet() {
 
 function _rw() {
     # Prevent the FS to be remounted as RO
-    systemctl stop cron.service > /dev/null 2<&1
+    systemctl stop cron.service & > /dev/null 2<&1
     mount -o remount,rw /
 }
 
 function _ro() {
     sync
     mount -o remount,ro / > /dev/null 2<&1
-    systemctl start cron.service > /dev/null 2<&1
+    systemctl start cron.service & > /dev/null 2<&1
 }
 
 function WaitForUnattendedUpgrade() {
@@ -492,7 +492,7 @@ function RestoreDashboard() {
     if [ -f "/tmp/pistar-services" ] ; then
         echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
     	systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
-        env REMOUNT_RO="NO" /tmp/pistar-services start > /dev/null 2<&1
+        env REMOUNT_RO="NO" /tmp/pistar-services start & > /dev/null 2<&1
         echo -e "${TICK} ${DONE}\n"
         rm /tmp/pistar-services
     fi
