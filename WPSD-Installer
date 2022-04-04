@@ -218,6 +218,7 @@ function InstallDashboard() {
     echo -e "    Be patient! This will take some time..."
     _rw
     curl "${CURL_OPTIONS[@]}" $WPSD_MAINT_SCRIPT -o /tmp/wpsd-maint
+    chmod +x /tmp/wpsd-maint
     /tmp/wpsd-maint > /dev/null 2<&1
     systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
     rm -f /tmp/wpsd-maint > /dev/null 2<&1
