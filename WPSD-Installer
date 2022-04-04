@@ -333,15 +333,6 @@ function InstallDashboard() {
     chown root:root $DEST
     chmod 0644 $DEST
 
-    echo -e "${INFO} Performing some backend maintence/preparation tasks."
-    echo -e "    This will take some time..."
-    _rw
-    /usr/local/sbin/wpsd-backend-maint > /dev/null 2<&1
-    systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
-    apt-get clean > /dev/null 2<&1
-    apt-get autoclean > /dev/null 2<&1
-    echo -e "${TICK} ${DONE}\n"
-
     _rw
     ApplyConfigs
 
@@ -428,6 +419,7 @@ function RestoreDashboard() {
     rm -f /usr/share/bash-completion/completions/pistar-services
 
     echo -e "${INFO} Reverting all Original Pi-Star Services."
+    echo -e "    Be patient! This will take some time..."
     echo -e "    This will take some time..."
     # Enable unattended-upgrades
     systemctl unmask unattended-upgrades > /dev/null 2<&1
