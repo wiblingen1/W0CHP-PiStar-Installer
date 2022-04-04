@@ -218,8 +218,6 @@ function InstallDashboard() {
     _rw
     /usr/local/sbin/wpsd-backend-maint > /dev/null 2<&1
     systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
-    apt-get clean > /dev/null 2<&1
-    apt-get autoclean > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
 
     echo -e "${INFO} Updating Raspberry Pi OS Package Cache..."
@@ -233,6 +231,8 @@ function InstallDashboard() {
 	echo -e "    mass-manage static Brandmeister Talkgroups and to parse APRS tier-2 server lists."
 	echo -e "    This will take some time..."
         apt-get install -y jq > /dev/null
+	apt-get clean > /dev/null 2<&1
+ 	apt-get autoclean > /dev/null 2<&1
         echo -e "${TICK} ${DONE}\n"
     else
         echo -e "${TICK} The required 'jq' package was already found! NOT intalling.\n"
@@ -249,6 +249,8 @@ function InstallDashboard() {
         echo -e "    associated libraries from the official Raspberry Pi OS Repository."
 	echo -e "    This will take some time..."
         apt-get install -y libgps-dev gpsd > /dev/null 2>&1
+	apt-get clean > /dev/null 2<&1
+ 	apt-get autoclean > /dev/null 2<&1
         echo -e "${TICK} ${DONE}\n"
     else
         echo -e "${TICK} The required 'gpsd' package was already found! NOT intalling.\n"
