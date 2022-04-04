@@ -379,10 +379,8 @@ function MapCSS() {
 }
 
 function RestoreDashboard() {
-    curl "${CURL_OPTIONS[@]}" $PS_SERVICES_SCRIPT -o /tmp/pistar-services
-    chmod +x /tmp/pistar-services
     echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
-    env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
+    env REMOUNT_RO="NO" /usr/local/sbinpistar-services fullstop > /dev/null 2<&1
     WaitForUnattendedUpgrade
     sleep 1
     echo -e "${TICK} ${DONE}"
@@ -488,11 +486,10 @@ function RestoreDashboard() {
     cd /usr/local/bin
     git stash clear > /dev/null 2<&1 # housekeeping
     git --work-tree=/usr/local/bin --git-dir=/usr/local/bin/.git reset --hard > /dev/null
+
+    ApplyConfigs
+
     if [ -f "/tmp/pistar-services" ] ; then
-        echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
-    	systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
-        env REMOUNT_RO="NO" /tmp/pistar-services start > /dev/null 2>/dev/null &
-        echo -e "${TICK} ${DONE}\n"
         rm /tmp/pistar-services
     fi
 
