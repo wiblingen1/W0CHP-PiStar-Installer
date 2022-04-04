@@ -387,13 +387,6 @@ function RestoreDashboard() {
     env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
     WaitForUnattendedUpgrade
     sleep 1
-    echo -e "${TICK} ${DONE}"
-    echo -e ""
-
-    if [ -f "/etc/pistar-css.ini" ]; then
-	    rm -f /etc/pistar-css.ini
-    fi
-
     # Revert MobileGPS
     systemctl disable mobilegps.timer > /dev/null 2<&1
     if [ ! -f "/etc/mobilegps" ]; then
@@ -416,6 +409,12 @@ function RestoreDashboard() {
     # Enable the service
     systemctl daemon-reload > /dev/null 2<&1
     systemctl enable mobilegps.service > /dev/null 2<&1
+    echo -e "${TICK} ${DONE}"
+    echo -e ""
+
+    if [ -f "/etc/pistar-css.ini" ]; then
+	    rm -f /etc/pistar-css.ini
+    fi
 
     # Remove pistar-service bash completion
     rm -f /usr/share/bash-completion/completions/pistar-services
