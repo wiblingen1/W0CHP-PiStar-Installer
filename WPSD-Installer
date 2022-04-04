@@ -28,6 +28,7 @@ W0CHP_BIN_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-bin.git"
 REQD_PACKS_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Installer/raw/branch/master/reqd-packs"
 SUPPORTING_FILES_REPO="https://repo.w0chp.net/Chipster/W0CHP-PiStar-Installer/raw/branch/master/supporting-files"
 PS_SERVICES_SCRIPT="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin/raw/branch/master/pistar-services"
+WPSD_MAINT_SCRIPT="https://repo.w0chp.net/Chipster/W0CHP-PiStar-sbin/raw/branch/master/wpsd-backend-maint"
 OFFICIAL_DASH_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
 OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
 OFFICIAL_BIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_v4_Binaries_Bin.git"
@@ -216,8 +217,10 @@ function InstallDashboard() {
     echo -e "    which will help improve performance and security."
     echo -e "    Be patient! This will take some time..."
     _rw
-    /usr/local/sbin/wpsd-backend-maint > /dev/null 2<&1
+    curl "${CURL_OPTIONS[@]}" $WPSD_MAINT_SCRIPT -o /tmp/wpsd-maint
+    /tmp/wpsd-maint > /dev/null 2<&1
     systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
+    rm -f /tmp/wpsd-maint > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
 
     echo -e "${INFO} Updating Raspberry Pi OS Package Cache..."
