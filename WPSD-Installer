@@ -328,15 +328,14 @@ function InstallDashboard() {
     _rw
     /usr/local/sbin/wpsd-backend-maint > /dev/null 2<&1
     systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
+    apt-get clean > /dev/null 2<&1
+    apt-get autoclean > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
 
     _rw
     ApplyConfigs
 
     rm /tmp/pistar-services
-
-    apt-get clean > /dev/null 2<&1
-    apt-get autoclean > /dev/null 2<&1
 
     echo -e "${TICK} ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash Installation Complete!${COL_NC}\n" 
 }
@@ -665,9 +664,11 @@ while [[ $# -gt 0 ]]; do
 		DisplayBanner
 	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
 	    	echo -e "    Re-Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+	    	echo -e "    Go enjoy a nice glass of whisky while you wait 🥃"
 	    else
 		DisplayBanner
 	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+	    	echo -e "    Go enjoy a nice glass of whisky while you wait 🥃"
 	    fi
 	    WarnForCrappyHW
             _rw
@@ -686,9 +687,11 @@ while [[ $# -gt 0 ]]; do
 		DisplayBanner
 	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
 	    	echo -e "    Re-Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+	    	echo -e "    Go enjoy a nice glass of whisky while you wait 🥃"
 	    else
 		DisplayBanner
 	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+	    	echo -e "    Go enjoy a nice glass of whisky while you wait 🥃"
 	    fi
 	    WarnForCrappyHW
             _rw
@@ -704,6 +707,7 @@ while [[ $# -gt 0 ]]; do
             clear
             CheckPausedMode
 	    echo -e "\n${INFO} Restoring the original Pi-Star dashboard and files.\n    This will take some time...\n"
+	    echo -e "    Go enjoy a nice glass of whisky while you wait 🥃"
             _rw
 	    RestoreDashboard
 	    DisplayConfigUpdate
