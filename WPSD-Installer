@@ -119,14 +119,14 @@ function RemovePlatDet() {
 
 function _rw() {
     # Prevent the FS to be remounted as RO
-    systemctl stop cron.service & > /dev/null 2<&1
+    systemctl stop cron.service > /dev/null 2>/dev/null &
     mount -o remount,rw /
 }
 
 function _ro() {
     sync
     mount -o remount,ro / > /dev/null 2<&1
-    systemctl start cron.service & > /dev/null 2<&1
+    systemctl start cron.service > /dev/null 2>/dev/null &
 }
 
 function WaitForUnattendedUpgrade() {
@@ -182,7 +182,8 @@ function ChangeAndCheckoutRepo() {
 }
 
 function ApplyConfigs() {
-    echo -e "${INFO} Updating Configuration Files."
+    echo -e "${INFO} Updating Configuration Files,"
+    echo -e "    then restarting all required Services. Please wait."
     echo -e "    This will take some time..."
     # temp allow localhost to submit config form without auth to enter new configs
     sed -i '/try_files/i satisfy any;' /etc/nginx/sites-enabled/pi-star
@@ -207,7 +208,7 @@ function InstallDashboard() {
     chmod +x /tmp/pistar-services
     echo -e ""
     echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
-    env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
+    env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2>/dev/null &
     sleep 1
     echo -e "${TICK} ${DONE}\n"
 
@@ -322,20 +323,16 @@ function InstallDashboard() {
     chown root:root $DEST
     chmod 0644 $DEST
 
-    echo -e "${INFO} Performing some backend maintence and preparation tasks."
+    echo -e "${INFO} Performing some backend maintence/preparation tasks."
     echo -e "    This will take some time..."
     _rw
-    /usr/local/sbin/wpsd-backend-maint > /dev/null 2<&1
+    /usr/local/sbin/wpsd-backend-maint & > /dev/null 2<&1
+    systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
     echo -e "${TICK} ${DONE}\n"
 
     _rw
     ApplyConfigs
 
-    echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
-    systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
-    env REMOUNT_RO="NO" /tmp/pistar-services restart > /dev/null 2<&1
-    systemctl start cron.service > /dev/null 2<&1
-    echo -e "${TICK} ${DONE}\n"
     rm /tmp/pistar-services
 
     echo -e "${TICK} ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash Installation Complete!${COL_NC}\n" 
@@ -382,7 +379,7 @@ function RestoreDashboard() {
     curl "${CURL_OPTIONS[@]}" $PS_SERVICES_SCRIPT -o /tmp/pistar-services
     chmod +x /tmp/pistar-services
     echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
-    env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
+    env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2>/dev/null &
     sleep 1
     echo -e "${TICK} ${DONE}"
     echo -e ""
@@ -492,7 +489,7 @@ function RestoreDashboard() {
     if [ -f "/tmp/pistar-services" ] ; then
         echo -e "${INFO} Restarting all Pi-Star Services. Please wait..."
     	systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
-        env REMOUNT_RO="NO" /tmp/pistar-services start & > /dev/null 2<&1
+        env REMOUNT_RO="NO" /tmp/pistar-services start > /dev/null 2>/dev/null &
         echo -e "${TICK} ${DONE}\n"
         rm /tmp/pistar-services
     fi
