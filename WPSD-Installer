@@ -212,6 +212,16 @@ function InstallDashboard() {
     sleep 1
     echo -e "${TICK} ${DONE}\n"
 
+    echo -e "${INFO} Performing some backend maintence/preparation tasks;"
+    echo -e "    which will help improve performance and security."
+    echo -e "    Be patient! This will take some time..."
+    _rw
+    /usr/local/sbin/wpsd-backend-maint > /dev/null 2<&1
+    systemctl daemon-reload > /dev/null 2>/dev/null & # Restart Systemd to account for any service changes 
+    apt-get clean > /dev/null 2<&1
+    apt-get autoclean > /dev/null 2<&1
+    echo -e "${TICK} ${DONE}\n"
+
     echo -e "${INFO} Updating Raspberry Pi OS Package Cache..."
     apt-get update > /dev/null
     echo -e "${TICK} ${DONE}\n"
