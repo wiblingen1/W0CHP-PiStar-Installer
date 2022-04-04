@@ -474,10 +474,6 @@ function RestoreDashboard() {
 
     ApplyConfigs
 
-    if [ -f "/tmp/pistar-services" ] ; then
-        rm /tmp/pistar-services
-    fi
-
     echo -e "${INFO} Reverting all Original Pi-Star Services."
     echo -e "    Be patient! This will take some time..."
     # Enable unattended-upgrades
@@ -495,6 +491,11 @@ function RestoreDashboard() {
     rm -rf /etc/avahi/services/
     mv /etc/avahi/avahi-daemon.conf.dist /etc/avahi/avahi-daemon.conf > /dev/null 2<&1
     systemctl restart avahi-daemon > /dev/null 2<&1
+    # restart WPSD services once more
+    env REMOUNT_RO="NO" /tmp/pistar-services restart > /dev/null 2<&1
+    if [ -f "/tmp/pistar-services" ] ; then
+        rm /tmp/pistar-services
+    fi
     echo -e "${TICK} ${DONE}\n"
 
     # orig motd:
