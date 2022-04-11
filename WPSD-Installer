@@ -81,11 +81,6 @@ hardwareField=$(grep 'Model' /proc/cpuinfo | sed 's/.*: //')
 hwDeetz="${hardwareField} - ${modelName}"
 uaStr="WPSD-Installer (${hwDeetz})"
 
-# check if user already has firewall disabled, and if so, ensure it's kept that way.
-if ! grep -q LOGNDROP /etc/iptables.rules ; then
-    FW_DISABLED=1
-fi
-
 # curl option array
 declare -a CURL_OPTIONS=('-Ls' '-A' "${uaStr}")
 
@@ -107,7 +102,7 @@ else
 fi
 
 # check if already running W0CHP and set result in var.
-if grep -q W0CHP /var/www/dashboard/config/version.php ; then
+if grep W0CHP /var/www/dashboard/config/version.php > /dev/null 2>/dev/null ; then
     RUNNING_W0CHP=1
 fi
 
@@ -140,13 +135,6 @@ function _ro() {
 
 function WaitForUnattendedUpgrade() {
     /usr/bin/systemd-run --property="After=apt-daily.service apt-daily-upgrade.service" --wait /bin/true > /dev/null 2<&1
-}
-
-function CheckFWstate () {
-    if [[ $FW_DISABLED  -eq "1" ]] ; then
-	echo -e "${INFO} Detected user-disabled firewall; Saving this prefrence and re-applying..."
-        DisableFirewall
-    fi
 }
 
 function SaveConfigs () {
@@ -204,12 +192,14 @@ function ApplyConfigs() {
     echo -e "${INFO} Updating Configuration Files,"
     echo -e "    then restarting all required Services. Please wait."
     echo -e "    This will take some time..."
+    _rw
     # temp allow localhost to submit config form without auth to enter new configs
     sed -i '/try_files/i satisfy any;' /etc/nginx/sites-enabled/pi-star
     sed -i '/satisfy any/a allow 127.0.0.1;' /etc/nginx/sites-enabled/pi-star
     sed -i '/allow 127.0.0.1/a deny all;' /etc/nginx/sites-enabled/pi-star
     systemctl restart nginx > /dev/null 2<&1
     sleep 3
+    _rw
     # apply config/submit form
     curl -s -X POST -F name=config http://127.0.0.1/admin/configure.php > /dev/null
     curl -s http://127.0.0.1/admin/expert/edit_dashboard.php > /dev/null
@@ -336,8 +326,6 @@ function InstallDashboard() {
 
     /usr/local/sbin/pistar-motdgen
 
-    CheckFWstate
-
     # Add pistar-service bash completion
     DEST="/usr/share/bash-completion/completions/pistar-services"
     echo "#!/bin/bash" > $DEST
@@ -434,10 +422,6 @@ function RestoreDashboard() {
     echo -e "${TICK} ${DONE}"
     echo -e ""
 
-    if [ -f "/etc/pistar-css.ini" ]; then
-	    rm -f /etc/pistar-css.ini
-    fi
-
     # Remove pistar-service bash completion
     rm -f /usr/share/bash-completion/completions/pistar-services
 
@@ -485,15 +469,13 @@ function RestoreDashboard() {
 
     # re-init stock Pi-Star FW:
     echo -e "\n${INFO} Reinitializing Pi-Star firewall..."
-    /usr/local/sbin/pistar-firewall > /dev/null 2<&1;
+    /usr/local/sbin/pistar-firewall > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
 
     # Put platformDetect.sh and orig/official bins back..
     cd /usr/local/bin
     git stash clear > /dev/null 2<&1 # housekeeping
     git --work-tree=/usr/local/bin --git-dir=/usr/local/bin/.git reset --hard > /dev/null
-
-    ApplyConfigs
 
     echo -e "${INFO} Reverting all Original Pi-Star Services."
     echo -e "    Be patient! This will take some time..."
@@ -518,7 +500,8 @@ function RestoreDashboard() {
         rm /tmp/pistar-services
     fi
     echo -e "${TICK} ${DONE}\n"
-
+    # remove custon "Name:" field from MMDVMHost logs:
+    sudo sed -i 's/- Name:.*//g' /var/log/pi-star/MMDVM-*.log  > /dev/null 2<&1
     # orig motd:
     /usr/local/sbin/pistar-motdgen
     echo -e "${TICK} ${COL_LIGHT_GREEN}Official Pi-Star Dashboard and files restoration complete!${COL_NC}\n"
@@ -548,8 +531,6 @@ function UpdateSelf() {
     fi
     
     cat > "${SELFUPDATE_SCRIPT}" << EOF
-        if ! grep -q LOGNDROP /etc/iptables.rules ; then
-    	    FW_DISABLED=1
         fi
       	mount -o remount,rw /
     	mount -o remount,rw /boot
@@ -576,26 +557,6 @@ function DisplayConfigUpdate() {
     echo -e " *                                                       *"
     echo -e " *********************************************************"
     echo -e "${COL_NC}"
-}
-
-function DisableFirewall() {
-    if [[ $RUNNING_W0CHP ]]; then
-        bash /usr/local/sbin/pistar-system-manager -dfw > /dev/null 2<&1
-        echo -e "${TICK} Firewall Disabled\n"
-    else
-        echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before disabling the firewall!\n"
-        exit 1
-    fi
-}
-
-function EnableFirewall() {
-    if [[ $RUNNING_W0CHP ]]; then
-        bash /usr/local/sbin/pistar-system-manager -efw > /dev/null 2<&1
-        echo -e "${TICK} Firewall Enabled\n"
-    else
-        echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} You must perform the full W0CHP-PiStar-Dash installation before (re-)enabling the firewall!\n"
-        exit 1
-    fi
 }
 
 # $1 directory
@@ -691,19 +652,26 @@ while [[ $# -gt 0 ]]; do
 		DisplayBanner
 	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
 	    	echo -e "    Re-Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+            	WarnForCrappyHW
+            	_rw
+            	MapCSS
+            	SaveConfigs
+            	InstallDashboard
+            	RemovePlatDet
+            	RestoreConfigs
+            	DisplayConfigUpdate
+            	_ro
 	    else
 		DisplayBanner
 	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+           	WarnForCrappyHW
+            	_rw
+            	MapCSS
+            	InstallDashboard
+            	RemovePlatDet
+            	DisplayConfigUpdate
+            	_ro
 	    fi
-	    WarnForCrappyHW
-            _rw
-	    MapCSS
-	    SaveConfigs
-	    InstallDashboard
-            RemovePlatDet
-	    RestoreConfigs
-	    DisplayConfigUpdate
-            _ro
 	    shift
 	    ;;
 
@@ -714,17 +682,26 @@ while [[ $# -gt 0 ]]; do
 		DisplayBanner
 	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
 	    	echo -e "    Re-Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+	     	WarnForCrappyHW
+            	_rw
+            	InstallCSS
+            	SaveConfigs
+            	InstallDashboard
+            	RemovePlatDet
+            	RestoreConfigs
+            	DisplayConfigUpdate
+            	_ro
 	    else
 		DisplayBanner
 	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
+	   	WarnForCrappyHW
+            	_rw
+	    	InstallCSS
+	    	InstallDashboard
+	    	RemovePlatDet
+	    	DisplayConfigUpdate
+            	_ro
 	    fi
-	    WarnForCrappyHW
-            _rw
-	    InstallCSS
-	    InstallDashboard
-	    RemovePlatDet
-	    DisplayConfigUpdate
-            _ro
 	    shift
 	    ;;
 
@@ -733,7 +710,12 @@ while [[ $# -gt 0 ]]; do
             CheckPausedMode
 	    echo -e "\n${INFO} Restoring the original Pi-Star dashboard and files.\n    This will take some time...\n"
             _rw
+            SaveConfigs
 	    RestoreDashboard
+            RestoreConfigs
+            if [ -f "/etc/pistar-css.ini" ]; then
+                rm -f /etc/pistar-css.ini
+            fi
 	    DisplayConfigUpdate
             _ro
 	    shift
