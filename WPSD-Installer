@@ -208,6 +208,7 @@ function ApplyConfigs() {
     sed -i '/allow 127.0.0.1/d' /etc/nginx/sites-enabled/pi-star
     sed -i '/deny all/d' /etc/nginx/sites-enabled/pi-star
     systemctl restart nginx > /dev/null 2<&1
+    sleep 3
     echo -e "${TICK} ${DONE}\n"
 }
 
