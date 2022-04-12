@@ -271,6 +271,9 @@ function InstallDashboard() {
 
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
+    if ! grep -q LOGNDROP /etc/iptables.rules ; then
+        /usr/local/sbin/pistar-system-manager -efw > /dev/null 2<&1
+    fi
     ChangeAndCheckoutRepo "/usr/local/bin" "$W0CHP_BIN_REPO"
  
     chown -R www-data:www-data /var/www/dashboard
