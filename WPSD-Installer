@@ -438,6 +438,13 @@ function RestoreDashboard() {
     ChangeAndCheckoutRepo "/usr/local/sbin" "$OFFICIAL_SBIN_REPO"
     ChangeAndCheckoutRepo "/usr/local/bin" "$OFFICIAL_BIN_REPO"
 
+    # orig motd:
+    /usr/local/sbin/pistar-motdgen
+
+    # more cleanup
+    sed -i '/cache modem info/d' /etc/rc.local
+    sed -i '/pistar-modemcache/d' /etc/rc.local
+
     # clean up the rest
     echo -e "${INFO} Cleaning up stray W0CHP-PiStar-Dash Files..."
     if compgen -G "/usr/local/etc/BM_TGs.json*" > /dev/null; then
@@ -508,12 +515,6 @@ function RestoreDashboard() {
     echo -e "${TICK} ${DONE}\n"
     # remove custon "Name:" field from MMDVMHost logs:
     sed -i 's/- Name:.*//g' /var/log/pi-star/MMDVM-*.log  > /dev/null 2<&1
-    # orig motd:
-    _rw
-    /usr/local/sbin/pistar-motdgen
-    # more cleanup
-    sed -i '/cache modem info/d' /etc/rc.local
-    sed -i '/pistar-modemcache/d' /etc/rc.local
     echo -e "${TICK} ${COL_LIGHT_GREEN}Official Pi-Star Dashboard and files restoration complete!${COL_NC}\n"
 }
 
