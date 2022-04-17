@@ -315,7 +315,7 @@ function InstallDashboard() {
 	sed -i "/UUID/c\\UUID = ${GU}" /etc/pistar-release
     fi
 
-    echo -e "${INFO} Updating Hostfiles, User ID DB's and DMR Talkgroup Lists."
+    echo -e "${INFO} Updating Hostfiles, User ID DB's & Various Talkgroup Lists."
     echo -e "    This will take some time..."
     /bin/bash /usr/local/sbin/HostFilesUpdate.sh  > /dev/null 2<&1
     echo -e "${TICK} ${DONE}\n"
