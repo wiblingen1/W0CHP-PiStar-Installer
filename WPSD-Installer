@@ -286,13 +286,20 @@ function InstallDashboard() {
     chown -R www-data:www-data /var/www/dashboard
 
     # Update pertinent versions in /etc/pistar-release
-    # add modem cache to rc.local
-    if ! grep -q 'modemcache' /etc/rc.local ; then
-        sed -i '/^\/usr\/local\/sbin\/pistar-motdgen/a \\n\n# cache modem info\n\/usr\/local\/sbin\/pistar-modemcache' /etc/rc.local 
-        /usr/local/sbin/pistar-modemcache > /dev/null 2<&1
-    else
-	/usr/local/sbin/pistar-modemcache > /dev/null 2<&1
+    # add HW cache to rc.local
+    # cleanup legacy naming convention
+    if grep -q 'modemcache' /etc/rc.local ; then
+        sed -i 's/modemcache/hwcache/g' /etc/rc.local
+        sed -i 's/# cache modem info/# cache hw info/g' /etc/rc.local 
     fi
+    # add hw cache to rc.local
+    if ! grep -q 'hwcache' /etc/rc.local ; then
+        sed -i '/^\/usr\/local\/sbin\/pistar-motdgen/a \\n\n# cache hw info\n\/usr\/local\/sbin\/pistar-hwcache' /etc/rc.local 
+        /usr/local/sbin/pistar-hwcache > /dev/null 2<&1
+    else
+        /usr/local/sbin/pistar-hwcache > /dev/null 2<&1
+    fi
+
     # migrate config update notice
     if grep -q ConfUpdReqd /etc/mmdvmhost ; then
 	grep ConfUpdReqd /etc/mmdvmhost | sed 's/=/ = /' >> /etc/pistar-release
