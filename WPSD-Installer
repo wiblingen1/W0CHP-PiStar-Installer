@@ -89,8 +89,8 @@ RELEASE_FILE="/etc/pistar-release"
 if [ -f ${RELEASE_FILE} ]; then
     PISTAR_VERSION=$(grep 'Version' /etc/pistar-release | cut -f 2 -d '=' | tr -d ' ')
     PISTAR_VERSION_INFO=( ${PISTAR_VERSION//./ })
-    if [[ $(grep 'RMB' ${RELEASE_FILE}) ]] ; then
-        echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Detected F1RMB installation. Only pristine Pi-Star installations are supported.\n    You must uninstall F1RMB first."
+    if [[ $(grep -- '-RMB' ${RELEASE_FILE}) ]] ; then
+        echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Detected F1RMB installation. Only pristine Pi-Star installations are supported.\n    You must uninstall F1RMB first.\n"
 	exit 1
     fi
     if [[ ${PISTAR_VERSION_INFO[0]} -ne ${SUPPORTED_MAJOR} ]] || [[ ${PISTAR_VERSION_INFO[2]} -lt ${SUPPORTED_MIN_MIN} ]]; then
