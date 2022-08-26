@@ -763,6 +763,8 @@ while [[ $# -gt 0 ]]; do
 	    if [ -f "/etc/pistar-css.ini" ]; then
                 rm -f /etc/pistar-css.ini
             fi
+	    _rw
+	    /usr/local/bin/pistar-motdgen
             _ro
 	    shift
 	    ;;
