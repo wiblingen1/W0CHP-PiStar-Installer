@@ -755,13 +755,14 @@ while [[ $# -gt 0 ]]; do
             _rw
             SaveConfigs
             _rw
-            if [ -f "/etc/pistar-css.ini" ]; then
-                rm -f /etc/pistar-css.ini
-            fi
 	    RestoreDashboard
             _rw
             RestoreConfigs
 	    DisplayConfigUpdate
+	    _rw
+	    if [ -f "/etc/pistar-css.ini" ]; then
+                rm -f /etc/pistar-css.ini
+            fi
             _ro
 	    shift
 	    ;;
