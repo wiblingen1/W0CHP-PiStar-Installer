@@ -342,6 +342,9 @@ function InstallDashboard() {
     fi
     echo -e "${INFO} Updating Hostfiles, User ID DB's & Various Talkgroup Lists."
     echo -e "    This will take some time..."
+    if ! [ -f /root/M17Hosts.txt ]; then
+        echo -e "# Format: Reflector Name IP Port\n# Example:\n# M17-000    81.231.241.25    17000\n\n" > /root/M17Hosts.txt
+    fi
     /bin/bash /usr/local/sbin/HostFilesUpdate.sh  > /dev/null 2<&1
     echo -e "    ${TICK} ${DONE}\n"
     checkMMDVMhostINI=$(grep -A 15 "DMR Network" /etc/mmdvmhost | grep -v "DMR Network" | grep -v '^\d*$' | grep "RemoteAddress=127.0.0.1")
