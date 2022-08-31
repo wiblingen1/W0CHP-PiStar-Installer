@@ -760,19 +760,19 @@ while [[ $# -gt 0 ]]; do
             clear
             CheckPausedMode
 	    echo -e "\n${INFO} Restoring the original Pi-Star dashboard and files.\n    This will take some time...\n"
-            _rw
-	    CleanStrayFiles
 	    _rw
             SaveConfigs
             _rw
 	    RestoreDashboard
             _rw
             RestoreConfigs
-	    DisplayConfigUpdate
+            _rw
+	    CleanStrayFiles
 	    _rw
 	    if [ -f "/etc/pistar-css.ini" ]; then
                 rm -f /etc/pistar-css.ini
             fi
+	    DisplayConfigUpdate
 	    _rw
 	    /usr/local/sbin/pistar-motdgen
             _ro
