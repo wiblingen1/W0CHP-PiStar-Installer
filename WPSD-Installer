@@ -490,6 +490,9 @@ function RestoreDashboard() {
     if compgen -G "/etc/.CALLERDETAILS*" > /dev/null; then
         rm -r /etc/.CALLERDETAILS*
     fi
+    if compgen -G "/etc/.TGNAMES*" > /dev/null; then
+        rm -r /etc/.TGNAMES*
+    fi
     if compgen -G "/etc/.W0CHP-PiStar-Dash.remote_version*" > /dev/null; then
         rm -r /etc/.W0CHP-PiStar-Dash.remote_version*
     fi
