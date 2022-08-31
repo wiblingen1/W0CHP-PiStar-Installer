@@ -508,40 +508,6 @@ function RestoreDashboard() {
     sed -i '/cache modem info/d' /etc/rc.local
     sed -i '/pistar-modemcache/d' /etc/rc.local
 
-    # clean up the rest
-    echo -e "${INFO} Cleaning up stray W0CHP-PiStar-Dash Files..."
-    if compgen -G "/usr/local/etc/BM_TGs.json*" > /dev/null; then
-        rm -r /usr/local/etc/BM_TGs.json*
-    fi
-    if compgen -G "/var/www/dashboard/.bm_tgs.json*" > /dev/null; then
-        rm -r /var/www/dashboard/.bm_tgs.json*
-    fi
-    if compgen -G "/usr/local/etc/tgif-talkgroups*" > /dev/null; then
-        rm -r /usr/local/etc/tgif-talkgroups*
-    fi
-    if compgen -G "/etc/.GETNAMES*" > /dev/null; then
-        rm -r /etc/.GETNAMES*
-    fi
-    if compgen -G "/etc/.CALLERDETAILS*" > /dev/null; then
-        rm -r /etc/.CALLERDETAILS*
-    fi
-    if compgen -G "/etc/.TGNAMES*" > /dev/null; then
-        rm -r /etc/.TGNAMES*
-    fi
-    if compgen -G "/etc/.W0CHP-PiStar-Dash.remote_version*" > /dev/null; then
-        rm -r /etc/.W0CHP-PiStar-Dash.remote_version*
-    fi
-    if compgen -G "/usr/local/bin/README.md*" > /dev/null; then
-        rm -r /usr/local/bin/README.md*
-    fi
-    if compgen -G "/etc/tinyfilemanager-*" > /dev/null; then
-        rm -r /etc/tinyfilemanager-*
-    fi
-    if [[ -d ${W0CHP_BINS} ]] ; then # legacy - for cleanup
-        rm -rf ${W0CHP_BINS}
-    fi
-    echo -e "    ${TICK} ${DONE}\n"
-
     echo -e "${INFO} Removing packages specific to W0CHP-PiStar-Dash, which"
     echo -e "    are no longer required.\n    This will take some time..."
     if  [ -x "$(command -v jq)" ]; then
