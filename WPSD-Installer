@@ -515,7 +515,7 @@ function RestoreDashboard() {
         apt-get autoremove -y > /dev/null
         echo -e "    ${TICK} ${DONE}"
     else
-        echo -e "${TICK} Non-required packages already removed."
+        echo -e "    ${TICK} Non-required packages already removed."
     fi
 
     # re-init stock Pi-Star FW:
