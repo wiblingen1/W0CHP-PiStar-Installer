@@ -288,9 +288,19 @@ function InstallDashboard() {
         echo -e "    official Raspberry Pi OS Repository."
 	echo -e "    This will take some time..."
         apt-get install -y vnstat > /dev/null 2>&1
-	systemctl restart vnstat.service > /dev/null 2>&1
 	apt-get clean > /dev/null 2<&1
  	apt-get autoclean > /dev/null 2<&1
+	# tmpfs for vnstat
+	if ! grep -q vnstat /etc/fstab ; then
+	    systemctl stop vnstat.service > /dev/null
+	    rm -rf /var/lib/vnstat > /dev/null
+	    mkdir -p /var/lib/vnstat > /dev/null
+	    chown -R vnstat:vnstat /var/lib/vnstat > /dev/null
+	    echo "tmpfs                   /var/lib/vnstat         tmpfs   nodev,noatime,nosuid,mode=0755,size=64m         0       0"  >> /etc/fstab
+	    mount /var/lib/vnstat > /dev/null
+	    chown -R vnstat:vnstat /var/lib/vnstat > /dev/null
+	    systemctl restart vnstat.service > /dev/null
+	fi
         echo -e "    ${TICK} ${DONE}\n"
     else
         echo -e "${TICK} The required 'vnstat' package was already found! NOT intalling.\n"
