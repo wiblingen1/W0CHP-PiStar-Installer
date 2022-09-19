@@ -288,6 +288,7 @@ function InstallDashboard() {
         echo -e "    official Raspberry Pi OS Repository."
 	echo -e "    This will take some time..."
         apt-get install -y vnstat > /dev/null 2>&1
+	systemctl restart vnstat.service > /dev/null 2>&1
 	apt-get clean > /dev/null 2<&1
  	apt-get autoclean > /dev/null 2<&1
         echo -e "    ${TICK} ${DONE}\n"
