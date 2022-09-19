@@ -283,6 +283,18 @@ function InstallDashboard() {
         echo -e "${TICK} The required 'gpsd' package was already found! NOT intalling.\n"
     fi
 
+    if ! [ -x "$(command -v vnstat)" ]; then 
+        echo -e "${INFO} The 'vnstat' package was not found. Installing prerequsite, 'vnstat' from the"
+        echo -e "    official Raspberry Pi OS Repository."
+	echo -e "    This will take some time..."
+        apt-get install -y vnstat > /dev/null 2>&1
+	apt-get clean > /dev/null 2<&1
+ 	apt-get autoclean > /dev/null 2<&1
+        echo -e "    ${TICK} ${DONE}\n"
+    else
+        echo -e "${TICK} The required 'vnstat' package was already found! NOT intalling.\n"
+    fi
+
     ChangeAndCheckoutRepo "/var/www/dashboard" "$W0CHP_DASH_REPO"
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     ChangeAndCheckoutRepo "/usr/local/bin" "$W0CHP_BIN_REPO"
@@ -511,7 +523,7 @@ function RestoreDashboard() {
     echo -e "${INFO} Removing packages specific to W0CHP-PiStar-Dash, which"
     echo -e "    are no longer required.\n    This will take some time..."
     if  [ -x "$(command -v jq)" ]; then
-        apt-get purge -y jq libgps-dev gpsd > /dev/null
+        apt-get purge -y jq libgps-dev gpsd vnstat > /dev/null
         apt-get autoremove -y > /dev/null
         echo -e "    ${TICK} ${DONE}"
     else
