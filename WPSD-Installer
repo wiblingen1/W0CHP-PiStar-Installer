@@ -530,6 +530,9 @@ function RestoreDashboard() {
     # more cleanup
     sed -i '/cache modem info/d' /etc/rc.local
     sed -i '/pistar-modemcache/d' /etc/rc.local
+    systemctl stop vnstat.service
+    umount /var/lib/vnstat
+    sed -i '/vnstat/d' /etc/fstab
 
     echo -e "${INFO} Removing packages specific to W0CHP-PiStar-Dash, which"
     echo -e "    are no longer required.\n    This will take some time..."
