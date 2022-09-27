@@ -89,10 +89,6 @@ RELEASE_FILE="/etc/pistar-release"
 if [ -f ${RELEASE_FILE} ]; then
     PISTAR_VERSION=$(grep 'Version' /etc/pistar-release | cut -f 2 -d '=' | tr -d ' ')
     PISTAR_VERSION_INFO=( ${PISTAR_VERSION//./ })
-    if [[ $(grep -- '-RMB' ${RELEASE_FILE}) ]] ; then
-        echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Detected F1RMB installation. Only pristine Pi-Star installations are supported.\n    You must uninstall F1RMB first.\n"
-	exit 1
-    fi
     if [[ ${PISTAR_VERSION_INFO[0]} -ne ${SUPPORTED_MAJOR} ]] || [[ ${PISTAR_VERSION_INFO[2]} -lt ${SUPPORTED_MIN_MIN} ]]; then
         echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Only Pi-Star 4.1.6 or above is supported.\n"
         exit 1
@@ -148,7 +144,8 @@ function SaveConfigs () {
 function RestoreConfigs () {
     cp -a /tmp/etc / > /dev/null 2>/dev/null
     rm -rf /tmp/etc > /dev/null 2>/dev/null
-    sed -i '/vnstat/d' /etc/fstab
+    sed -i '/vnstat/d' /etc/fstab 2>/dev/null
+    sed -i '/-RMB//g' /etc/pistar-release 2>/dev/null
     env REMOUNT_RO="NO" /usr/local/sbin/pistar-services start > /dev/null 2<&1 &
 }
 
@@ -235,7 +232,25 @@ function InstallDashboard() {
     _rw
     sleep 1
     echo -e "    ${TICK} ${DONE}\n"
-
+    if [[ $(grep -- '-RMB' ${RELEASE_FILE}) ]] ; then
+        echo -e "${NOTE} ${COL_LIGHT_YELLOW}Note:${COL_NC} Detected F1RMB installation, which can cause conflicts.\n    Uninstalling F1RMB and relaunching the W0CHP-PiStar-Dash installation."
+	echo -e "    Please wait..."
+	curl "${CURL_OPTIONS[@]}" $W0CHP_INSTALL_SCRIPT_REPO -o /tmp/WPSD-Installer
+	chmod +x /tmp/WPSD-Installer
+	curl -Ls https://raw.githubusercontent.com/f1rmb/f1rmb-pistar/master/f1rmb-pistar | env NO_SELF_UPDATE=1 bash -s -- -ra > /dev/null 2<&1
+	echo -e "    ${TICK} F1RMB Removed; Relaunching W0CHP-PiStar-Dash insttallation in 5 seconds..."
+	sleep 5 &
+	PID=$!
+	i=1
+	sp='\|/-'
+	echo -n '      '
+	while [ -d /proc/$PID ]
+	do
+	    printf "\b${sp:i++%${#sp}:1}"
+	done
+	exec env UPDATE_SELF=0 /usr/bin/env bash "/tmp/WPSD-Installer" "$ALL_ARGS"
+	exit 0
+    fi
     echo -e "${INFO} Performing some backend maintence/preparation tasks;"
     echo -e "    which will help improve performance and security."
     echo -e "    Be patient! This will take some time..."
