@@ -154,9 +154,18 @@ function RestoreConfigs () {
 function ChangeAndCheckoutRepo() {
     dir="$1"
     repo="$2"
-    echo -e "${INFO} Retrieving the files from the respective git repositories..."
-    echo -e "    * Git repo: <${repo}>"
-    echo -e "    * Installing into: \"${dir}\""
+    if [[ $dir == "/var/www/dashboard" ]] ; then
+	AppSec="Web Dashboard"
+    fi
+    if [[ $dir == "/usr/local/bin" ]] ; then
+	AppSec="Binaries and Programs"
+    fi
+    if [[ $dir == "/usr/local/sbin" ]] ; then
+	AppSec="Support Scripts and Utils."
+    fi
+    echo -e "${INFO} Retrieving files (${AppSec}) from git repository..."
+    echo -e "    * Git repo: ${repo}"
+    echo -e "    * Installing ${AppSec} into: \"${dir}\""
     cd "$1"
     cp -a  /var/www/dashboard/config/{config.php,ircddblocal.php,language.php} /tmp/ # save user config files.
     git reset --hard > /dev/null # need this for initial install, since two/three php config files are over-written when user applies config
