@@ -244,7 +244,7 @@ function InstallDashboard() {
     if [[ $(grep -- '-RMB' ${RELEASE_FILE}) ]] ; then
         echo -e "${NOTE} ${COL_LIGHT_YELLOW}Note:${COL_NC} Detected F1RMB installation, which can cause conflicts.\n    Uninstalling F1RMB and relaunching the W0CHP-PiStar-Dash installation."
 	echo -e "    Please wait..."
-	curl "${CURL_OPTIONS[@]}" $W0CHP_INSTALL_SCRIPT_REPO -o /tmp/WPSD-Installer
+	curl "${CURL_OPTIONS[@]}" ${W0CHP_INSTALL_SCRIPT_REPO} -o /tmp/WPSD-Installer
 	chmod +x /tmp/WPSD-Installer
 	curl -Ls https://raw.githubusercontent.com/f1rmb/f1rmb-pistar/master/f1rmb-pistar | env NO_SELF_UPDATE=1 bash -s -- -ra > /dev/null 2<&1
 	echo -e "    ${TICK} F1RMB Removed; Relaunching W0CHP-PiStar-Dash insttallation in 5 seconds..."
@@ -431,9 +431,15 @@ function InstallDashboard() {
 
     rm /tmp/pistar-services
 
-    if ! grep -q LOGNDROP /etc/iptables.rules ; then
-        /usr/local/sbin/pistar-system-manager -efw > /dev/null 2<&1
+    # retain fw setting if reinstalling
+    if [[ $RUNNING_W0CHP ]] ; then
+	if ! grep -q LOGNDROP /etc/iptables.rules ; then
+	    /usr/local/sbin/pistar-system-manager -dfw > /dev/null 2<&1
+	fi
     fi
+
+    # cache installer
+    curl "${CURL_OPTIONS[@]}" ${W0CHP_INSTALL_SCRIPT_REPO} -o /usr/sbin/WPSD-Installer
 
     echo -e "${TICK} ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash Installation Complete!${COL_NC}\n" 
 }
@@ -501,6 +507,9 @@ function CleanStrayFiles() {
     if compgen -G "/usr/local/bin/README.md*" > /dev/null; then
         rm -r /usr/local/bin/README.md*
     fi
+    if compgen -G "/usr/sbin/WPSD-Installer*" > /dev/null; then
+	rm -r /usr/sbin/WPSD-Installer*
+    fi
     if compgen -G "/etc/tinyfilemanager-*" > /dev/null; then
         rm -r /etc/tinyfilemanager-*
     fi
@@ -558,6 +567,7 @@ function RestoreDashboard() {
     systemctl stop vnstat.service > /dev/null
     umount /var/lib/vnstat > /dev/null
     sed -i '/vnstat/d' /etc/fstab
+    echo -e "${INFO} Removing packages specific to W0CHP-PiStar-Dash, which"
     echo -e "    are no longer required.\n    This will take some time..."
     if  [ -x "$(command -v jq)" ]; then
         apt-get purge -y jq libgps-dev gpsd vnstat > /dev/null
