@@ -440,6 +440,7 @@ function InstallDashboard() {
 
     # cache installer
     curl "${CURL_OPTIONS[@]}" ${W0CHP_INSTALL_SCRIPT_REPO} -o /usr/sbin/WPSD-Installer
+    chmod +x /usr/sbin/WPSD-Installer
 
     echo -e "${TICK} ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash Installation Complete!${COL_NC}\n" 
 }
