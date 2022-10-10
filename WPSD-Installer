@@ -636,7 +636,6 @@ function UpdateSelf() {
     fi
     
     cat > "${SELFUPDATE_SCRIPT}" << EOF
-        fi
       	mount -o remount,rw /
     	mount -o remount,rw /boot
         if mv "${_tempFileName}" "$0"; then
