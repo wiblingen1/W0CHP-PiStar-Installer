@@ -668,6 +668,7 @@ function DisplayConfigUpdate() {
 function DisplayRepoStatus() {
     dir="$1"
     repo=$(git --work-tree=${dir} --git-dir=${dir}/.git config --get remote.origin.url)
+    echo ""
     if [ "$repo" == "$2" ]; then
         echo -e "'$1':\t uses the ${COL_LIGHT_RED}OFFICIAL Pi-Star${COL_NC} Repository."
     else
