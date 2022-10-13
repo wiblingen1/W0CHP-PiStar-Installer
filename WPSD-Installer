@@ -299,6 +299,7 @@ function InstallDashboard() {
     if ! [ -x "$(command -v gpsd)" ]; then 
         echo -e "${INFO} The 'gpsd' package was not found. Installing prerequsite, 'gpsd' and its"
         echo -e "    associated libraries from the official Raspberry Pi OS Repository."
+        echo -e "    'gpsd' replaces the legacy and deprecated MobileGPS program."
 	echo -e "    This will take some time..."
         apt-get install -y libgps-dev gpsd > /dev/null 2>&1
 	apt-get clean > /dev/null 2<&1
@@ -311,6 +312,7 @@ function InstallDashboard() {
     if ! [ -x "$(command -v vnstat)" ]; then 
         echo -e "${INFO} The 'vnstat' package was not found. Installing prerequsite, 'vnstat' from the"
         echo -e "    official Raspberry Pi OS Repository."
+        echo -e "    'vnstat' measures and logs network traffic used in the system/hardware info section."
 	echo -e "    This will take some time..."
         apt-get install -y vnstat > /dev/null 2>&1
 	apt-get clean > /dev/null 2<&1
