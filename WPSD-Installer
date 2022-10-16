@@ -678,6 +678,7 @@ function DisplayRepoStatus() {
         #echo -e "'$1':\t uses the ${COL_REG_CYAN}W0CHP-PiStar-Dash Repository${COL_NC}, on the '${BOLD}${branch}${COL_NC}' branch; Version # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}"
         echo -e "'$1':\t uses the ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash ${COL_NC}Repository; Ver. # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}"
     fi
+    echo ""
 }
 
 function DisplayStatus() {
