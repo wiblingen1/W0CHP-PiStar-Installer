@@ -429,7 +429,10 @@ function InstallDashboard() {
     chmod 0644 $DEST
 
     _rw
-    ApplyConfigs
+    #if [[ ${NO_AC} -ne 1 ]]; then 
+    #    ApplyConfigs
+    #fi
+    env REMOUNT_RO="NO" /tmp/pistar-services restart > /dev/null 2<&1 &
 
     rm /tmp/pistar-services
 
@@ -604,6 +607,9 @@ function RestoreDashboard() {
     rm -rf /etc/avahi/services/
     mv /etc/avahi/avahi-daemon.conf.dist /etc/avahi/avahi-daemon.conf > /dev/null 2<&1
     systemctl restart avahi-daemon > /dev/null 2<&1
+    #if [[ ${NO_AC} -ne 1 ]]; then
+    #    ApplyConfigs
+    #fi
     # restart WPSD services once more
     env REMOUNT_RO="NO" /tmp/pistar-services restart > /dev/null 2<&1
     if [ -f "/tmp/pistar-services" ] ; then
