@@ -81,10 +81,3 @@ sudo systemctl start  mmdvm-log-backup.timer
 
 sudo systemctl daemon-reload
 
-ls -l mmdvm-log*
-
-ls -l /etc/systemd/system/default.target.wants/mmdvm-log*
-ls -l /etc/systemd/system/shutdown.target.wants/mmdvm-log*
-ls -l /etc/systemd/system/timers.target.wants/mmdvm-log*
-ls -l /etc/systemd/system/multi-user.target.wants/mmdvm-log*
-
