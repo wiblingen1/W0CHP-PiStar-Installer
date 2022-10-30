@@ -428,6 +428,11 @@ function InstallDashboard() {
     chown root:root $DEST
     chmod 0644 $DEST
 
+    # install and run KN2TOD's systemd mmdvmhost log backup services
+    curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/Build-MMDVM-Log-Systemd-Tasks.sh -o /tmp/Build-MMDVM-Log-Systemd-Tasks.sh
+    bash /tmp/Build-MMDVM-Log-Systemd-Tasks.sh > /dev/null 2<&1
+    rm /tmp/Build-MMDVM-Log-Systemd-Tasks.sh
+
     _rw
     #if [[ ${NO_AC} -ne 1 ]]; then 
     #    ApplyConfigs
@@ -519,6 +524,16 @@ function CleanStrayFiles() {
     if compgen -G "/etc/tinyfilemanager-*" > /dev/null; then
         rm -r /etc/tinyfilemanager-*
     fi
+    #remove mmdvmhost log backup services
+    rm -rf /etc/systemd/system/default.target.wants/mmdvm-log-restore.service \
+	/etc/systemd/system/multi-user.target.wants/mmdvm-log-backup.service \
+	/etc/systemd/system/shutdown.target.wants/mmdvm-log-shutdown.service \
+	/etc/systemd/system/timers.target.wants/mmdvm-log-backup.timer \
+	/lib/systemd/system/mmdvm-log-backup.service \
+	/lib/systemd/system/mmdvm-log-backup.timer \
+	/lib/systemd/system/mmdvm-log-restore.service \
+	/lib/systemd/system/mmdvm-log-shutdown.service
+    systemctl daemon-reload > /dev/null 2<&1 
     if [[ -d ${W0CHP_BINS} ]] ; then # legacy - for cleanup
         rm -rf ${W0CHP_BINS}
     fi
