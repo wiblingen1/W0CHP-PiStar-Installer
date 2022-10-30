@@ -1,12 +1,6 @@
 #!/bin/bash
 # Add MMDVM log backup/restore services/timers to SYSTEMD
 #
-fs=$(grep "/dev/root" /proc/mounts | sed -n "s/.*\(r[ow]\).*/\1/p")
-#fs=$(sed -n "/\/dev\/root/ {s/.*\(r[ow]\).*/\1/p}" /proc/mounts)
-#rpi-rw
-if [ "$fs" == "ro" ]; then
-  sudo mount -o remount,rw / ; sudo mount -o remount,rw /boot
-fi
 
 cd /lib/systemd/system
 # ---------------------------------------------------------------------------------------------
@@ -94,7 +88,3 @@ ls -l /etc/systemd/system/shutdown.target.wants/mmdvm-log*
 ls -l /etc/systemd/system/timers.target.wants/mmdvm-log*
 ls -l /etc/systemd/system/multi-user.target.wants/mmdvm-log*
 
-#rpi-ro
-if [ "$fs" == "ro" ]; then
-  sudo mount -o remount,ro / ; sudo mount -o remount,ro /boot
-fi
