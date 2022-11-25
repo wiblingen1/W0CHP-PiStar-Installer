@@ -433,6 +433,12 @@ function InstallDashboard() {
     bash /tmp/Build-MMDVM-Log-Systemd-Tasks.sh > /dev/null 2<&1
     rm /tmp/Build-MMDVM-Log-Systemd-Tasks.sh
 
+    # install m17gw unit flile
+    if [ ! -f "/etc/systemd/system/m17gateway.service" ] ; then
+	/usr/local/sbin/m17gateway.service install > /dev/null 2<&1
+	systemctl daemon-reload > /dev/null 2<&1
+    fi
+
     _rw
     if [[ ${NO_AC} -ne 1 ]]; then 
         ApplyConfigs
@@ -547,6 +553,8 @@ function RestoreDashboard() {
     env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
     WaitForUnattendedUpgrade
     sleep 1
+    # remove m17gw unit files
+    /usr/local/sbin/m17gateway.service uninstall > /dev/null 2<&1
     # Revert MobileGPS
     systemctl disable mobilegps.timer > /dev/null 2<&1
     if [ ! -f "/etc/mobilegps" ]; then
