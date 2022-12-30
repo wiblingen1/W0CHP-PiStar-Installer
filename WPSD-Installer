@@ -152,6 +152,12 @@ function RestoreConfigs () {
 # $1 directory
 # $2 repo
 function ChangeAndCheckoutRepo() {
+    # ensure repos can be updated
+    if ! grep -q 'safe' /root/.gitconfig > /dev/null 2<&1 ; then
+	git config --global --add safe.directory /var/www/dashboard > /dev/null 2<&1
+	git config --global --add safe.directory /usr/local/bin > /dev/null 2<&1
+	git config --global --add safe.directory /usr/local/sbin > /dev/null 2<&1
+    fi
     dir="$1"
     repo="$2"
     if [[ $dir == "/var/www/dashboard" ]] ; then
