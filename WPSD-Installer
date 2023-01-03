@@ -636,6 +636,7 @@ function RestoreDashboard() {
     rm -rf /etc/avahi/services/
     mv /etc/avahi/avahi-daemon.conf.dist /etc/avahi/avahi-daemon.conf > /dev/null 2<&1
     systemctl restart avahi-daemon > /dev/null 2<&1
+    /bin/bash /usr/local/sbin/HostFilesUpdate.sh  > /dev/null 2<&1
     if [[ ${NO_AC} -ne 1 ]]; then
         ApplyConfigs
     fi
