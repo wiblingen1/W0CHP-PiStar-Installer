@@ -450,8 +450,8 @@ function InstallDashboard() {
 	echo 'User=root' >> /lib/systemd/system/nextiondriver.service
 	echo 'Type=forking' >> /lib/systemd/system/nextiondriver.service
 	echo 'WorkingDirectory=/usr/local/etc/' >> /lib/systemd/system/nextiondriver.service
-	echo 'ExecStart=/usr/local/bin/NextionDriver -c /etc/mmdvmhost -i' >> /lib/systemd/system/nextiondriver.service
-	echo 'ExecStop=/usr/bin/killall NextionDriver' >> /lib/systemd/system/nextiondriver.service
+	echo 'ExecStart=/usr/local/sbin/nextiondriver.service start' >> /lib/systemd/system/nextiondriver.service
+	echo 'ExecStop=/usr/local/sbin/nextiondriver.service stop' >> /lib/systemd/system/nextiondriver.service
 	echo '' >> /lib/systemd/system/nextiondriver.service
 	echo '[Install]' >> /lib/systemd/system/nextiondriver.service
 	echo 'WantedBy=multi-user.target' >> /lib/systemd/system/nextiondriver.service
