@@ -8,8 +8,8 @@ Before=timers.target
 User=root
 Type=forking
 WorkingDirectory=/usr/local/etc/
-echo 'ExecStart=/usr/local/bin/NextionDriver -c /etc/mmdvmhost -i' >> /lib/systemd/system/nextiondriver.service
-echo 'ExecStop=/usr/bin/killall NextionDriver' >> /lib/systemd/system/nextiondriver.service
+ExecStart=/usr/local/bin/NextionDriver -c /etc/mmdvmhost -i
+ExecStop=/usr/bin/killall NextionDriver
 
 [Install]
 WantedBy=multi-user.target
