@@ -722,13 +722,10 @@ function UpdateSelf() {
         else
            echo "ERROR: Failed!"
         fi
-       	mount -o remount,ro /
-        mount -o remount,ro /boot
 EOF
 
     echo -e "${INFO} Relaunching after update..."
     exec /usr/bin/env bash "${SELFUPDATE_SCRIPT}"
-    _ro
 }
 
 function DisplayConfigUpdate() {
@@ -867,7 +864,6 @@ while [[ $# -gt 0 ]]; do
             	_rw
             	RestoreConfigs
             	DisplayConfigUpdate
-            	_ro
 	    else
 		DisplayBanner
 	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
@@ -877,7 +873,6 @@ while [[ $# -gt 0 ]]; do
             	InstallDashboard
             	RemovePlatDet
             	DisplayConfigUpdate
-            	_ro
 	    fi
 	    shift
 	    ;;
@@ -899,7 +894,6 @@ while [[ $# -gt 0 ]]; do
             	_rw
             	RestoreConfigs
             	DisplayConfigUpdate
-            	_ro
 	    else
 		DisplayBanner
 	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
@@ -909,7 +903,6 @@ while [[ $# -gt 0 ]]; do
 	    	InstallDashboard
 	    	RemovePlatDet
 	    	DisplayConfigUpdate
-            	_ro
 	    fi
 	    shift
 	    ;;
@@ -935,7 +928,6 @@ while [[ $# -gt 0 ]]; do
 	    _rw
 	    /usr/local/sbin/pistar-motdgen
 	    echo -e "${TICK} ${COL_LIGHT_GREEN}Official Pi-Star Dashboard and files restoration complete!${COL_NC}\n"
-            _ro
 	    shift
 	    ;;
 
