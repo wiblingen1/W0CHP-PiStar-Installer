@@ -737,20 +737,19 @@ function DisplayConfigUpdate() {
 function DisplayRepoStatus() {
     dir="$1"
     repo=$(git --work-tree=${dir} --git-dir=${dir}/.git config --get remote.origin.url)
-    if [ "$repo" == "$2" ]; then
-        echo -e "'$1':\t uses the ${COL_LIGHT_RED}OFFICIAL Pi-Star${COL_NC} Repository."
+    branch=$(git --work-tree=${dir} --git-dir=${dir}/.git branch | grep '*' | cut -f2 -d ' ')
+    ver_cmd=$( git --work-tree=${dir} --git-dir=${dir}/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
+    if [[ $branch -ne "master" ]] ; then
+        echo -e "'$1':\t ${COL_REG_CYAN}W0CHP-PiStar-Dash ${COL_NC}, on the '${BOLD}${branch}${COL_NC}' branch; Version # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}"
     else
-        branch=$(git --work-tree=${dir} --git-dir=${dir}/.git branch | grep '*' | cut -f2 -d ' ')
-        ver_cmd=$( git --work-tree=${dir} --git-dir=${dir}/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
-        #echo -e "'$1':\t uses the ${COL_REG_CYAN}W0CHP-PiStar-Dash Repository${COL_NC}, on the '${BOLD}${branch}${COL_NC}' branch; Version # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}"
-        echo -e "'$1':\t uses the ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash ${COL_NC}Repository; Ver. # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}"
+        echo -e "'$1':\t ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash ${COL_NC}; Ver. # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}"
     fi
 }
 
 function DisplayStatus() {
-    DisplayRepoStatus "/var/www/dashboard" "$OFFICIAL_DASH_REPO"
-    DisplayRepoStatus "/usr/local/sbin" "$OFFICIAL_SBIN_REPO"
-    DisplayRepoStatus "/usr/local/bin" "$OFFICIAL_BIN_REPO"
+    DisplayRepoStatus "/var/www/dashboard"
+    DisplayRepoStatus "/usr/local/sbin"
+    DisplayRepoStatus "/usr/local/bin"
     echo ""
 }
 
@@ -780,8 +779,7 @@ function DisplayHelp() {
     echo "  -rd,  --restore-dashboard     :  Restore original dashboard."
     echo ""
     echo ""
-    echo "  -s,   --status                :  Display current install; original,"
-    echo "				   or W0CHP installations."
+    echo "  -s,   --status                :  Display installation status"
     echo ""
 }
 
