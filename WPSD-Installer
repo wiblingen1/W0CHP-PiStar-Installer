@@ -740,7 +740,7 @@ function DisplayRepoStatus() {
     branch=$(git --work-tree=${dir} --git-dir=${dir}/.git branch | grep '*' | cut -f2 -d ' ')
     ver_cmd=$( git --work-tree=${dir} --git-dir=${dir}/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
     if [ "${branch}" != "master" ] ; then
-        echo -e "'$1':\t ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash ${COL_NC}, on the '${BOLD}${branch}${COL_NC}' branch; Version # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}"
+        echo -e "'$1':\t ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash ${COL_NC}; on the '${BOLD}${branch}${COL_NC}' branch; Version # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}"
     else
         echo -e "'$1':\t ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash ${COL_NC}; Ver. # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}"
     fi
