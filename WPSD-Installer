@@ -114,6 +114,18 @@ function CheckPausedMode() {
     fi
 }
 
+# connectivity check
+conn_check() {
+    echo -e "${INFO} Checking for connectivity to the W0CHP Update Server (can take up to 30 seconds; please wait...)"
+    status_code=$(curl -m 30 -A "${uaStr}" --write-out %{http_code} --silent --output /dev/null "${W0CHP_DASH_REPO}/info/refs?service=git-upload-pack")
+    if [[ $status_code == 20* ]] || [[ $status_code == 30* ]] ; then
+	echo -e "${TICK} Connection established!\n"
+    else
+	echo -e "${CROSS} Cannot connect to the W0CHP Update Server. Try again later. Exiting...\n"
+	exit 1
+    fi
+}
+
 function RemovePlatDet() {
     if [ -f /usr/local/bin/platformDetect.sh ]; then # remove platformDetect.sh since we have a custom version in /usr/local/sbin
         rm -f /usr/local/bin/platformDetect.sh
@@ -842,6 +854,7 @@ while [[ $# -gt 0 ]]; do
 	"-id" | "--install-dashboard")
             clear
 	    CheckPausedMode
+	    conn_check
 	    if [[ $RUNNING_W0CHP ]] ; then
 		DisplayBanner
 	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
@@ -872,6 +885,7 @@ while [[ $# -gt 0 ]]; do
 	"-idc" | "--install-dashboard-css")
             clear
             CheckPausedMode
+	    conn_check
 	    if [[ $RUNNING_W0CHP ]] ; then
 		DisplayBanner
 	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
