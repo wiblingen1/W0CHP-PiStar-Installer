@@ -598,6 +598,14 @@ function CleanStrayFiles() {
     echo -e "    ${TICK} ${DONE}\n"
 }
 
+function BullseyeChk () {
+    lsb_release -cs | grep 'bullseye' &> /dev/null # if this is my bullseye image, there's nothing to "restore"...
+    if [ $? == 0 ]; then
+	echo -e "${NOTE} You are running the custom Bullseye-based W0CHP-PiStar-Dash disk image...there is nothing to restore!\n"
+	exit 1
+    fi
+}
+
 function RestoreDashboard() {
     curl "${CURL_OPTIONS[@]}" $PS_SERVICES_SCRIPT -o /tmp/pistar-services
     chmod +x /tmp/pistar-services
@@ -915,6 +923,7 @@ while [[ $# -gt 0 ]]; do
 
 	"-rd" | "--restore-dashboard")
             clear
+	    BullseyeChk
 	    SorryNotSorry
             CheckPausedMode
 	    echo -e "\n${INFO} Restoring the original Pi-Star dashboard and files.\n    This will take some time...\n"
