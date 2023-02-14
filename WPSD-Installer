@@ -157,7 +157,7 @@ function RestoreConfigs () {
     rm -rf /tmp/etc > /dev/null 2>/dev/null
     sed -i '/vnstat/d' /etc/fstab 2>/dev/null
     sed -i '/-RMB//g' /etc/pistar-release 2>/dev/null
-    env REMOUNT_RO="NO" /usr/local/sbin/pistar-services start > /dev/null 2<&1 &
+    /usr/local/sbin/pistar-services start > /dev/null 2<&1 &
 }
 
 # $1 directory
@@ -253,7 +253,7 @@ function InstallDashboard() {
     chmod +x /tmp/pistar-services
     echo -e ""
     echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
-    env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
+    /tmp/pistar-services fullstop > /dev/null 2<&1
     WaitForUnattendedUpgrade
     _rw
     sleep 1
@@ -495,7 +495,7 @@ function InstallDashboard() {
     if [[ ${NO_AC} -ne 1 ]]; then 
         ApplyConfigs
     fi
-    env REMOUNT_RO="NO" /tmp/pistar-services restart > /dev/null 2<&1 &
+    /tmp/pistar-services restart > /dev/null 2<&1 &
 
     rm /tmp/pistar-services
 
@@ -610,7 +610,7 @@ function RestoreDashboard() {
     curl "${CURL_OPTIONS[@]}" $PS_SERVICES_SCRIPT -o /tmp/pistar-services
     chmod +x /tmp/pistar-services
     echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
-    env REMOUNT_RO="NO" /tmp/pistar-services fullstop > /dev/null 2<&1
+    /tmp/pistar-services fullstop > /dev/null 2<&1
     WaitForUnattendedUpgrade
     sleep 1
     # remove m17gw unit files
@@ -695,7 +695,7 @@ function RestoreDashboard() {
         ApplyConfigs
     fi
     # restart WPSD services once more
-    env REMOUNT_RO="NO" /tmp/pistar-services restart > /dev/null 2<&1
+    /tmp/pistar-services restart > /dev/null 2<&1
     if [ -f "/tmp/pistar-services" ] ; then
         rm /tmp/pistar-services
     fi
