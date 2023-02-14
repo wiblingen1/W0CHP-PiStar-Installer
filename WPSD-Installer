@@ -711,13 +711,13 @@ function UpdateSelf() {
 
     if ! eval curl -Ls --output "${_tempFileName}" "${UPDATE_URI}"; then
         echo -e "${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Failed to download update for installation script!"
-        echo -e "Make sure you have 'ca-certificates' installed and that the time is set correctly"
+	echo -e "You may have disk or network issues on your end."
         exit 1
     fi
     
-    if [[ "$(head -1 ${_tempFileName})" != '#!/usr/bin/env bash' ]]; then
+    if [[ "$(tail -1 ${_tempFileName})" != '# end marker' ]]; then
         echo -e "${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Failed to download update for installation script!"
-        echo -e "Contents of file is not as expected - repo may be down"
+        echo -e "Contents of file is not as expected; you may have disk or network issues on your end."
         exit 1
     fi
     
