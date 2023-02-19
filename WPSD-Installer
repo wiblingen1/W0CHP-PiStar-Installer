@@ -172,13 +172,13 @@ function ChangeAndCheckoutRepo() {
     dir="$1"
     repo="$2"
     if [[ $dir == "/var/www/dashboard" ]] ; then
-	AppSec="Web Dashboard"
+	AppSec="Web Dashboard Software"
     fi
     if [[ $dir == "/usr/local/bin" ]] ; then
-	AppSec="Binaries and Programs"
+	AppSec="Digital Voice and Related Binaries"
     fi
     if [[ $dir == "/usr/local/sbin" ]] ; then
-	AppSec="Support Scripts and Utils."
+	AppSec="Scripts and Support Programs"
     fi
     echo -e "${INFO} Retrieving files (${AppSec}) from git repository..."
     echo -e "    * Git repo: ${repo}"
