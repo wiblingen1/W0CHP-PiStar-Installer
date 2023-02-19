@@ -756,21 +756,34 @@ function DisplayConfigUpdate() {
 # $2 original repo
 function DisplayRepoStatus() {
     dir="$1"
+    case $1 in
+	"/var/www/dashboard")
+	    TARGET="Web Dashboard Software"
+	    ;;
+	"/usr/local/sbin")
+	    TARGET="Scripts and Support Programs"
+	    ;;
+	"/usr/local/bin")
+	    TARGET="Digital Voice and Related Binaries"
+	    ;;
+    esac
+
     repo=$(git --work-tree=${dir} --git-dir=${dir}/.git config --get remote.origin.url)
     branch=$(git --work-tree=${dir} --git-dir=${dir}/.git branch | grep '*' | cut -f2 -d ' ')
     ver_cmd=$( git --work-tree=${dir} --git-dir=${dir}/.git rev-parse HEAD | tail -1 | awk '{ print substr($1,1,10) }' ) # last pipe to awk: converts long hash to 10 chars.
     if [ "${branch}" != "master" ] ; then
-        echo -e "'$1':\t ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash ${COL_NC}; on the '${BOLD}${branch}${COL_NC}' branch; Version # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}"
+        echo -e "  $TARGET:\n\tOn the '${BOLD}${branch}${COL_NC}' branch; Ver. # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}\n"
     else
-        echo -e "'$1':\t ${COL_LIGHT_CYAN}W0CHP-PiStar-Dash ${COL_NC}; Ver. # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}"
+        echo -e "  $TARGET:\n\tVer. # ${COL_REG_YELLOW}${ver_cmd}${COL_NC}\n"
     fi
 }
 
 function DisplayStatus() {
+    echo -e "${COL_LIGHT_CYAN}W0CHP-PiStar-Dash${COL_NC} Version Status"
+    echo -e "--------------------------------"
     DisplayRepoStatus "/var/www/dashboard"
     DisplayRepoStatus "/usr/local/sbin"
     DisplayRepoStatus "/usr/local/bin"
-    echo ""
 }
 
 function WarnForCrappyHW() {
@@ -787,19 +800,19 @@ function DisplayHelp() {
     echo ""
     echo -e "${INFO} ${COL_LIGHT_CYAN}W0CHP PiStar-Dash Installer Command Usage:${COL_NC}"
     echo ""
-    echo "  -h,   --help                  :  Display this help text."
+    echo "  -h,   --help                  :  Display this help text"
     echo ""
     echo ""
-    echo "  -id,  --install-dashboard     :  Install W0CHP dashboard."
+    echo "  -id,  --install-dashboard     :  Install W0CHP dashboard"
     echo ""
     echo ""
-    echo "  -idc  --install-dashboard-css :  Install W0CHP dashboard,"
-    echo "				   WITH custom stylesheet."
+    echo "  -idc  --install-dashboard-css :  Install W0CHP dashboard"
+    echo "				   WITH custom stylesheet"
     echo ""
-    echo "  -rd,  --restore-dashboard     :  Restore original dashboard."
+    echo "  -rd,  --restore-dashboard     :  Restore original dashboard"
     echo ""
     echo ""
-    echo "  -s,   --status                :  Display installation status"
+    echo "  -s,   --status                :  Display version status / info"
     echo ""
 }
 
