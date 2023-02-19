@@ -252,7 +252,7 @@ function InstallDashboard() {
     curl "${CURL_OPTIONS[@]}" $PS_SERVICES_SCRIPT -o /tmp/pistar-services
     chmod +x /tmp/pistar-services
     echo -e ""
-    echo -e "${INFO} Stopping all Pi-Star Services. Please wait..."
+    echo -e "${INFO} Stopping services. Please wait..."
     /tmp/pistar-services fullstop > /dev/null 2<&1
     WaitForUnattendedUpgrade
     _rw
@@ -415,7 +415,7 @@ function InstallDashboard() {
     /bin/bash /usr/local/sbin/HostFilesUpdate.sh  > /dev/null 2<&1
     echo -e "    ${TICK} ${DONE}\n"
 
-    echo -e "${INFO} Performing final installation tasks. Please wait..."
+    echo -e "${INFO} Performing final tasks & starting services. Please wait..."
 
     checkMMDVMhostINI=$(grep -A 15 "DMR Network" /etc/mmdvmhost | grep -v "DMR Network" | grep -v '^\d*$' | grep "RemoteAddress=127.0.0.1")
     if [[ ! ${checkMMDVMhostINI} ]] ; then
