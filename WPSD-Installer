@@ -354,7 +354,7 @@ function InstallDashboard() {
     ChangeAndCheckoutRepo "/usr/local/sbin" "$W0CHP_SBIN_REPO"
     ChangeAndCheckoutRepo "/usr/local/bin" "$W0CHP_BIN_REPO"
  
-    chown -R www-data:www-data /var/www/dashboard
+    chown -R www-data:www-data /var/www/dashboard > /dev/null 2<&1
 
     # Update pertinent versions in /etc/pistar-release
     # add HW cache to rc.local
@@ -423,8 +423,8 @@ function InstallDashboard() {
     fi
 
     # set log perms for newer bins...
-    chown -R mmdvm:mmdvm /var/log/pi-star
-    chmod 775 /var/log/pi-star
+    chown -R mmdvm:mmdvm /var/log/pi-star > /dev/null 2<&1
+    chmod 775 /var/log/pi-star > /dev/null 2<&1
 
     /usr/local/sbin/pistar-motdgen
 
