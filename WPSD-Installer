@@ -100,6 +100,16 @@ else
     exit 1
 fi
 
+# We are going to bail if the user has that unofficial 'DMRGateway-4' shit by
+# VE3RD installed.  We use official upsstrem G4KLX's DMRGateway only, and if we
+# overwrite the VE3RD version, the user will likely bitch and moan...
+/usr/local/bin/DMRGateway -v | grep -- '-4RD' &> /dev/null 
+if [ $? == 0 ]; then
+    echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} You seem to be running the unofficial 'DMRGateway-4'. Only official upstream versions of DMRGateway are supported."
+    echo -e "    If you'd like to install W0CHP-PiStar-Dash, you will neeed to remove the DMRGateway-4 binary FIRST, but whatever functionlity it provides will be lost.\n"
+    exit 1
+fi
+
 # check if already running W0CHP and set result in var.
 if grep W0CHP /var/www/dashboard/config/version.php > /dev/null 2>/dev/null ; then
     RUNNING_W0CHP=1
@@ -116,10 +126,10 @@ function CheckPausedMode() {
 
 # connectivity check
 conn_check() {
-    echo -e "${INFO} Checking for connectivity to the W0CHP Update Server (can take up to 30 seconds; please wait...)"
+    echo -e "\n${INFO} Checking for connectivity to the W0CHP Update Server (can take up to 30 seconds; please wait...)"
     status_code=$(curl -m 30 -A "${uaStr}" --write-out %{http_code} --silent --output /dev/null "${W0CHP_DASH_REPO}/info/refs?service=git-upload-pack")
     if [[ $status_code == 20* ]] || [[ $status_code == 30* ]] ; then
-	echo -e "${TICK} Connection established!\n"
+	echo -e "${TICK} Connection established!"
     else
 	echo -e "${CROSS} Cannot connect to the W0CHP Update Server. Try again later. Exiting...\n"
 	exit 1
@@ -453,38 +463,47 @@ function InstallDashboard() {
     rm /tmp/Build-MMDVM-Log-Systemd-Tasks.sh
 
     # Setup systemd unit files for Nextion Driver
-    if  [ ! -f "/etc/systemd/system/mmdvmhost.service.requires/nextiondriver.service" ] ; then
-    	curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/nextiondriver.service -o /lib/systemd/system/nextiondriver.service
-    	# Enable the NextionDriver service
-    	systemctl daemon-reload > /dev/null 2<&1
-    	systemctl stop nextiondriver.service > /dev/null 2<&1
-    	/usr/bin/killall NextionDriver > /dev/null 2<&1
-    	systemctl enable nextiondriver.service > /dev/null 2<&1
-    	systemctl restart nextiondriver.service > /dev/null 2<&1
-    	systemctl restart mmdvmhost.service > /dev/null 2<&1
-    fi
-    if [ -f '/etc/systemd/system/mmdvmhost.service.requires/nextiondriver.service' ] ; then
-    	if ! grep -qo 'killall' /lib/systemd/system/nextiondriver.service ; then
-            curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/nextiondriver.service -o /lib/systemd/system/nextiondriver.service
-            systemctl daemon-reload > /dev/null 2<&1
-            systemctl stop nextiondriver.service > /dev/null 2<&1
-            /usr/bin/killall NextionDriver > /dev/null 2<&1
-            systemctl enable nextiondriver.service > /dev/null 2<&1
-            systemctl restart nextiondriver.service > /dev/null 2<&1
-            systemctl restart mmdvmhost.service > /dev/null 2<&1
-	fi
-    fi
-    # now, disable nextion driver stuff if it's not config'd in mmdvmhost...
-    if [ "`sed -nr "/^\[General\]/,/^\[/{ :l /^\s*[^#].*/ p; n; /^\[/ q; b l; }" /etc/mmdvmhost | grep "Display" | cut -d= -f 2`" != "Nextion" ]; then
-    	if grep -qo 'nextiondriver' /lib/systemd/system/mmdvmhost.service ; then
-            sed -i '/nextiondriver/d' /lib/systemd/system/mmdvmhost.service
-            systemctl daemon-reload > /dev/null 2<&1
+    # Updated 2/23/2023 - W0CHP:
+    # TGIFspots contain really weird hacks/scripts, etc.[1] for their Nextion
+    # screens, and it all collides with WPSD and our native Nextion driver
+    # support.  So lets ignore TGIFspots altogether.
+    # [1] <https://github.com/EA7KDO/Scripts>
+    if [ -f '/etc/cron.daily/getstripped' ] || [ -d '/usr/local/etc/Nextion_Support/' ] || [ -d '/Nextion' ] || grep -q 'SendUserDataMask=0b00011110' /etc/mmdvmhost ; then # these are hacks that seem to exist on TGIFspots.
+    	echo "blah" > /dev/null
+    else # yay no tgifspot hacks!
+    	if  [ ! -f "/etc/systemd/system/mmdvmhost.service.requires/nextiondriver.service" ] ; then
+    	    curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/nextiondriver.service -o /lib/systemd/system/nextiondriver.service
+    	    # Enable the NextionDriver service
+    	    systemctl daemon-reload > /dev/null 2<&1
+    	    systemctl stop nextiondriver.service > /dev/null 2<&1
+    	    /usr/bin/killall NextionDriver > /dev/null 2<&1
+    	    systemctl enable nextiondriver.service > /dev/null 2<&1
+    	    systemctl restart nextiondriver.service > /dev/null 2<&1
+    	    systemctl restart mmdvmhost.service > /dev/null 2<&1
     	fi
-    	systemctl stop nextiondriver.service > /dev/null 2<&1
-    	/usr/bin/killall NextionDriver > /dev/null 2<&1
-    	systemctl disable nextiondriver.service > /dev/null 2<&1
-    	systemctl mask nextiondriver.service > /dev/null 2<&1
-    	systemctl daemon-reload > /dev/null 2<&1
+    	if [ -f '/etc/systemd/system/mmdvmhost.service.requires/nextiondriver.service' ] ; then
+    	    if ! grep -qo 'killall' /lib/systemd/system/nextiondriver.service ; then
+            	curl "${CURL_OPTIONS[@]}" $SUPPORTING_FILES_REPO/nextiondriver.service -o /lib/systemd/system/nextiondriver.service
+            	systemctl daemon-reload > /dev/null 2<&1
+            	systemctl stop nextiondriver.service > /dev/null 2<&1
+            	/usr/bin/killall NextionDriver > /dev/null 2<&1
+            	systemctl enable nextiondriver.service > /dev/null 2<&1
+            	systemctl restart nextiondriver.service > /dev/null 2<&1
+            	systemctl restart mmdvmhost.service > /dev/null 2<&1
+	    fi
+    	fi
+    	# now, disable nextion driver stuff if it's not config'd in mmdvmhost...
+    	if [ "`sed -nr "/^\[General\]/,/^\[/{ :l /^\s*[^#].*/ p; n; /^\[/ q; b l; }" /etc/mmdvmhost | grep "Display" | cut -d= -f 2`" != "Nextion" ]; then
+    	    if grep -qo 'nextiondriver' /lib/systemd/system/mmdvmhost.service ; then
+            	sed -i '/nextiondriver/d' /lib/systemd/system/mmdvmhost.service
+            	systemctl daemon-reload > /dev/null 2<&1
+    	    fi
+    	    systemctl stop nextiondriver.service > /dev/null 2<&1
+    	    /usr/bin/killall NextionDriver > /dev/null 2<&1
+    	    systemctl disable nextiondriver.service > /dev/null 2<&1
+    	    systemctl mask nextiondriver.service > /dev/null 2<&1
+    	    systemctl daemon-reload > /dev/null 2<&1
+    	fi
     fi
 
     # install m17gw unit flile
@@ -605,7 +624,7 @@ function CleanStrayFiles() {
 function BullseyeChk () {
     lsb_release -cs | grep 'bullseye' &> /dev/null # if this is my bullseye image, there's nothing to "restore"...
     if [ $? == 0 ]; then
-	echo -e "${NOTE} You are running the custom Bullseye-based W0CHP-PiStar-Dash disk image...there is nothing to restore!\n"
+	echo -e "\n${NOTE} You are running the custom Bullseye-based W0CHP-PiStar-Dash disk image...there is nothing to restore!\n"
 	exit 1
     fi
 }
@@ -657,14 +676,16 @@ function RestoreDashboard() {
     # more cleanup
     sed -i '/cache modem info/d' /etc/rc.local
     sed -i '/pistar-modemcache/d' /etc/rc.local
+    sed -i '/pistar-hwcache/d' /etc/rc.local
     systemctl stop vnstat.service > /dev/null
-    umount /var/lib/vnstat > /dev/null
-    sed -i '/vnstat/d' /etc/fstab
     echo -e "${INFO} Removing packages specific to W0CHP-PiStar-Dash, which"
     echo -e "    are no longer required.\n    This will take some time..."
     if  [ -x "$(command -v jq)" ]; then
         apt-get purge -y jq libgps-dev gpsd vnstat > /dev/null
         apt-get autoremove -y > /dev/null
+    	umount /var/lib/vnstat > /dev/null
+	rm -rf /var/lib/vnstat > /dev/null
+    	sed -i '/vnstat/d' /etc/fstab
         echo -e "    ${TICK} ${DONE}"
     else
         echo -e "    ${TICK} Non-required packages already removed."
@@ -817,7 +838,7 @@ function DisplayHelp() {
     echo "  -rd,  --restore-dashboard     :  Restore original dashboard"
     echo ""
     echo ""
-    echo "  -s,   --status                :  Display version status / info"
+    echo "  -s,   --status                :  Display version status/info"
     echo ""
 }
 
@@ -880,9 +901,9 @@ while [[ $# -gt 0 ]]; do
 	"-id" | "--install-dashboard")
             clear
 	    CheckPausedMode
-	    conn_check
 	    if [[ $RUNNING_W0CHP ]] ; then
 		DisplayBanner
+	    	conn_check
 	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
 	    	echo -e "    Re-Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
             	WarnForCrappyHW
@@ -897,6 +918,7 @@ while [[ $# -gt 0 ]]; do
             	DisplayConfigUpdate
 	    else
 		DisplayBanner
+	    	conn_check
 	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
            	WarnForCrappyHW
             	_rw
@@ -912,9 +934,9 @@ while [[ $# -gt 0 ]]; do
 	"-idc" | "--install-dashboard-css")
             clear
             CheckPausedMode
-	    conn_check
 	    if [[ $RUNNING_W0CHP ]] ; then
 		DisplayBanner
+	    	conn_check
 	    	echo -e "\n${INFO} W0CHP-PiStar-Dash software installation detected...AWESOME! ${COL_LIGHT_GREEN}:-)${COL_NC}"
 	    	echo -e "    Re-Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
 	     	WarnForCrappyHW
@@ -929,6 +951,7 @@ while [[ $# -gt 0 ]]; do
             	DisplayConfigUpdate
 	    else
 		DisplayBanner
+	    	conn_check
 	    	echo -e "\n${INFO} Installing the W0CHP-PiStar-Dash software.\n    This will take some time..."
 	   	WarnForCrappyHW
             	_rw
