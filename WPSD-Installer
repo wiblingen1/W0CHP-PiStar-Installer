@@ -40,12 +40,11 @@ UPDATE_SELF=${UPDATE_SELF:-1}
 UPDATE_URI="${W0CHP_INSTALL_SCRIPT_REPO}"
 ROOT_PATH=${ROOT_PATH:-"/"}
 WORK_PATH=${WORK_PATH:-"${ROOT_PATH}/root"}
-SELFUPDATE_SCRIPT="${WORK_PATH}/.updateScript-W0CHP-pistar.sh"
+SELFUPDATE_SCRIPT="${WORK_PATH}/.updateScript-WPSD.sh"
 SUPPORTED_MAJOR="4"
 SUPPORTED_MIN_MIN="6"
 ALL_ARGS="$@"
 installedDashBranch=$(git --work-tree=/var/www/dashboard --git-dir=/var/www/dashboard/.git branch | grep '*' | cut -f2 -d ' ')
-W0CHP_BINS="/usr/local/.W0CHP_bin" # legacy...for cleanup
 
 if [[ ${SUPP_COL} -eq 0 ]]; then
     COL_NC='\e[0m' # No Color
@@ -615,9 +614,6 @@ function CleanStrayFiles() {
 	/lib/systemd/system/mmdvm-log-restore.service \
 	/lib/systemd/system/mmdvm-log-shutdown.service
     systemctl daemon-reload > /dev/null 2<&1 
-    if [[ -d ${W0CHP_BINS} ]] ; then # legacy - for cleanup
-        rm -rf ${W0CHP_BINS}
-    fi
     echo -e "    ${TICK} ${DONE}\n"
 }
 
@@ -732,6 +728,7 @@ function RestoreDashboard() {
 function UpdateSelf() {
     _rw
     echo -e "${INFO} Performing self-update..."
+    sleep 1
     local _tempFileName="$0.tmp"
 
     if ! eval curl -Ls --output "${_tempFileName}" "${UPDATE_URI}"; then
@@ -759,11 +756,12 @@ function UpdateSelf() {
            rm -- "\$0"
            exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS"
         else
-           echo "ERROR: Failed!"
+           echo "ERROR: Self-Update & Execution Failed!"
         fi
 EOF
 
-    echo -e "${INFO} Relaunching after update..."
+    echo -e "${TICK} Self-Update Successful; Relaunching..."
+    sleep 1
     exec /usr/bin/env bash "${SELFUPDATE_SCRIPT}"
 }
 
