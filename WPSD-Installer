@@ -91,9 +91,10 @@ if [ -f ${RELEASE_FILE} ]; then
         echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} Only Pi-Star 4.1.6 or above is supported.\n"
         exit 1
     fi
-    if [[ ${UPDATE_SELF} -eq 0 ]]; then
-        echo -e "\n${INFO} Detected Pi-Star version: $PISTAR_VERSION (major: ${PISTAR_VERSION_INFO[0]})"
-    fi
+    # not sure why the feedback below is necessary (echos after a successful self-update)
+    #if [[ ${UPDATE_SELF} -eq 0 ]]; then
+    #    echo -e "\n${INFO} Detected Pi-Star version: $PISTAR_VERSION (major: ${PISTAR_VERSION_INFO[0]})"
+    #fi
 else
     echo -e "\n${CROSS} ${COL_BRIGHT_RED}ERROR:${COL_NC} You're not running a Pi-Star.\n "
     exit 1
