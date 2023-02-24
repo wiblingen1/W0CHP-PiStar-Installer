@@ -616,7 +616,7 @@ function CleanStrayFiles() {
 	/lib/systemd/system/mmdvm-log-restore.service \
 	/lib/systemd/system/mmdvm-log-shutdown.service
     systemctl daemon-reload > /dev/null 2<&1 
-    if [-d '/home/pi-star/.backup-mmdvmhost-logs' ]; then
+    if [ -d '/home/pi-star/.backup-mmdvmhost-logs' ]; then
 	rm -rf /home/pi-star/.backup-mmdvmhost-logs
     fi
 
