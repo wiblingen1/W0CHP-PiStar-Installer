@@ -10,13 +10,13 @@
 
 # ############################## NOTE ################################ #
 #                                                                      #
-# NO_SELF_UPDATE=1 # will disable auto update of this script           #
+# NO_SELF_UPDATE=1  will disable the auto-update of this script        #
 #                                                                      #
 # #################################################################### #
 
 # privilege check
 if [ "$(id -u)" != "0" ]; then
-    echo -e "You need to be root to run this command...\n"
+    echo -e "You need to be root to run this command!\n"
     exit 1
 fi
 
@@ -81,6 +81,7 @@ uaStr="WPSD-Installer (${hwDeetz})"
 
 # curl option array
 declare -a CURL_OPTIONS=('-Ls' '-A' "${uaStr}")
+declare -a CURL_OPTIONS_RMB=('-Ls' '-A' "${uaStr} RMB_U")
 
 # pi-star version check. only 4.x is supported.
 RELEASE_FILE="/etc/pistar-release"
@@ -269,9 +270,9 @@ function InstallDashboard() {
     sleep 1
     echo -e "    ${TICK} ${DONE}\n"
     if [[ $(grep -- '-RMB' ${RELEASE_FILE}) ]] ; then
-        echo -e "${NOTE} ${COL_LIGHT_YELLOW}Note:${COL_NC} Detected F1RMB installation, which can cause conflicts.\n    Uninstalling F1RMB and relaunching the W0CHP-PiStar-Dash installation."
+        echo -e "${NOTE} ${COL_LIGHT_YELLOW}Note:${COL_NC} Detected unsupported F1RMB installation, which can cause conflicts with this software.\n    Uninstalling F1RMB and relaunching the W0CHP-PiStar-Dash installation."
 	echo -e "    Please wait..."
-	curl "${CURL_OPTIONS[@]}" ${W0CHP_INSTALL_SCRIPT_REPO} -o /tmp/WPSD-Installer
+	curl "${CURL_OPTIONS_RMB[@]}" ${W0CHP_INSTALL_SCRIPT_REPO} -o /tmp/WPSD-Installer
 	chmod +x /tmp/WPSD-Installer
 	curl -Ls https://raw.githubusercontent.com/f1rmb/f1rmb-pistar/master/f1rmb-pistar | env NO_SELF_UPDATE=1 bash -s -- -ra > /dev/null 2<&1
 	echo -e "    ${TICK} F1RMB Removed; Relaunching W0CHP-PiStar-Dash insttallation in 5 seconds..."
@@ -605,7 +606,7 @@ function CleanStrayFiles() {
     if compgen -G "/etc/tinyfilemanager-*" > /dev/null; then
         rm -r /etc/tinyfilemanager-*
     fi
-    #remove mmdvmhost log backup services
+    # remove mmdvmhost log backup services
     rm -rf /etc/systemd/system/default.target.wants/mmdvm-log-restore.service \
 	/etc/systemd/system/multi-user.target.wants/mmdvm-log-backup.service \
 	/etc/systemd/system/shutdown.target.wants/mmdvm-log-shutdown.service \
@@ -615,14 +616,20 @@ function CleanStrayFiles() {
 	/lib/systemd/system/mmdvm-log-restore.service \
 	/lib/systemd/system/mmdvm-log-shutdown.service
     systemctl daemon-reload > /dev/null 2<&1 
+    if [-d '/home/pi-star/.backup-mmdvmhost-logs' ]; then
+	rm -rf /home/pi-star/.backup-mmdvmhost-logs
+    fi
+
     echo -e "    ${TICK} ${DONE}\n"
 }
 
 function BullseyeChk () {
     lsb_release -cs | grep 'bullseye' &> /dev/null # if this is my bullseye image, there's nothing to "restore"...
     if [ $? == 0 ]; then
-	echo -e "\n${NOTE} You are running the custom Bullseye-based W0CHP-PiStar-Dash disk image...there is nothing to restore!\n"
-	exit 1
+	if [[ ${FORCE_RD} -ne 1 ]]; then
+	    echo -e "\n${NOTE} You are running the custom Bullseye-based W0CHP-PiStar-Dash disk image...there is nothing to restore!\n"
+	    exit 1
+	fi
     fi
 }
 
@@ -729,7 +736,7 @@ function RestoreDashboard() {
 function UpdateSelf() {
     _rw
     echo -e "${INFO} Performing self-update..."
-    sleep 1
+    sleep 0.5
     local _tempFileName="$0.tmp"
 
     if ! eval curl -Ls --output "${_tempFileName}" "${UPDATE_URI}"; then
@@ -762,7 +769,7 @@ function UpdateSelf() {
 EOF
 
     echo -e "${TICK} Self-Update Successful; Relaunching..."
-    sleep 1
+    sleep 0.5
     exec /usr/bin/env bash "${SELFUPDATE_SCRIPT}"
 }
 
