@@ -736,6 +736,7 @@ function RestoreDashboard() {
 function UpdateSelf() {
     _rw
     echo -e "${INFO} Performing self-update..."
+    conn_check
     sleep 0.5
     local _tempFileName="$0.tmp"
 
