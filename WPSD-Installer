@@ -128,7 +128,7 @@ function CheckPausedMode() {
 # connectivity check
 conn_check() {
     echo -e "\n${INFO} Checking for connectivity to the W0CHP Update Server (can take up to 30 seconds; please wait...)"
-    status_code=$(curl -m 30 -A "${uaStr}" --write-out %{http_code} --silent --output /dev/null "${W0CHP_DASH_REPO}/info/refs?service=git-upload-pack")
+    status_code=$(curl -I -m 30 -A "ConnCheck ${uaStr}" --write-out %{http_code} --silent --output /dev/null "${W0CHP_DASH_REPO}")
     if [[ $status_code == 20* ]] || [[ $status_code == 30* ]] ; then
 	echo -e "${TICK} Connection established!"
     else
