@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-#  +-------------------------------------------------------------------+
-#  | W0CHP-PiStar-Dash Installer Script                                |
-#  |   by Chip Cuccio (W0CHP)                                          |
-#  |   <https://w0chp.net/w0chp-pistar-dash/>                          |
-#  | This progam is distributed under the GNU GPL;                     |
-#  |   See <http://www.gnu.org/licenses/gpl.html> for lic. info        |
-#  +-------------------------------------------------------------------+
+#  +-------------------------------------------------------------------------------------------+
+#  | W0CHP-PiStar-Dash Installer Script                                                        |
+#  |   by Chip Cuccio (W0CHP)                                                                  |
+#  |   <https://w0chp.net/w0chp-pistar-dash/>                                                  |
+#  | This progam is distributed under the GNU GPL;                                             |
+#  |   https://repo.w0chp.net/WPSD-Dev/W0CHP-PiStar-Installer/src/branch/master/LICENSE        |
+#  +-------------------------------------------------------------------------------------------+
 
 # ############################## NOTE ################################ #
 #                                                                      #
-# NO_SELF_UPDATE=1  will disable the auto-update of this script        #
+# NO_SELF_UPDATE=1 will disable the auto-update of this script         #
 #                                                                      #
 # #################################################################### #
 
@@ -735,7 +735,7 @@ function RestoreDashboard() {
 
 function UpdateSelf() {
     _rw
-    echo -e "${INFO} Performing self-update..."
+    echo -e "\n${INFO} Performing self-update..."
     conn_check
     sleep 0.5
     local _tempFileName="$0.tmp"
