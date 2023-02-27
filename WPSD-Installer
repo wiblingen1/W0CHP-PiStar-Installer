@@ -762,10 +762,11 @@ function UpdateSelf() {
       	mount -o remount,rw /
     	mount -o remount,rw /boot
         if mv "${_tempFileName}" "$0"; then
-           rm -- "\$0"
-           exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS"
+            rm -- "\$0"
+            systemctl restart cron.service > /dev/null 2>/dev/null &
+            exec env UPDATE_SELF=0 /usr/bin/env bash "$0" "$ALL_ARGS"
         else
-           echo "ERROR: Self-Update & Execution Failed!"
+            echo "ERROR: Self-Update & Execution Failed!"
         fi
 EOF
 
