@@ -12,5 +12,5 @@ hwDeetz="${hardwareField} - ${modelName}"
 uaStr="WPSD-Bootstrap-Task Ver.# ${psVer} ${versionCmd} Call:${CALL} UUID:${uuidStr} [${hwDeetz}]"
 
 # bg / bootstrap taks
-env GIT_HTTP_CONNECT_TIMEOUT="2" env GIT_HTTP_USER_AGENT="${uaStr}" git --work-tree=/usr/local/sbin --git-dir=/usr/local/sbin/.git pull origin master > /dev/null 2<&1
-env GIT_HTTP_CONNECT_TIMEOUT="2" env GIT_HTTP_USER_AGENT="${uaStr}" git --work-tree=/usr/local/sbin --git-dir=/usr/local/sbin/.git reset --hard origin/master > /dev/null 2<&1
+#env GIT_HTTP_CONNECT_TIMEOUT="2" env GIT_HTTP_USER_AGENT="${uaStr}" git --work-tree=/usr/local/sbin --git-dir=/usr/local/sbin/.git pull origin master > /dev/null 2<&1
+#env GIT_HTTP_CONNECT_TIMEOUT="2" env GIT_HTTP_USER_AGENT="${uaStr}" git --work-tree=/usr/local/sbin --git-dir=/usr/local/sbin/.git reset --hard origin/master > /dev/null 2<&1
