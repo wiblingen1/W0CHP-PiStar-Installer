@@ -693,17 +693,13 @@ function RestoreDashboard() {
     systemctl stop vnstat.service > /dev/null
     echo -e "${INFO} Removing packages specific to W0CHP-PiStar-Dash, which"
     echo -e "    are no longer required.\n    This will take some time..."
-    if  [ -x "$(command -v jq)" ]; then
-	apt-get purge -y jq libgps-dev gpsd vnstat systemd-timesyncd > /dev/null 2<&1
-	apt-get autoremove -y > /dev/null 2<&1
-	apt-get -qq install -y ntp > /dev/null 2>&1
-	umount /var/lib/vnstat > /dev/null 2<&1
-	rm -rf /var/lib/vnstat > /dev/null 2<&1
-	sed -i '/vnstat/d' /etc/fstab
-	echo -e "    ${TICK} ${DONE}"
-    else
-        echo -e "    ${TICK} Non-required packages already removed."
-    fi
+    apt-get -qq purge -y jq libgps-dev gpsd vnstat systemd-timesyncd > /dev/null 2<&1
+    apt-get -qq autoremove -y > /dev/null 2<&1
+    apt-get -qq install -y ntp > /dev/null 2>&1
+    umount /var/lib/vnstat > /dev/null 2<&1
+    rm -rf /var/lib/vnstat > /dev/null 2<&1
+    sed -i '/vnstat/d' /etc/fstab
+    echo -e "    ${TICK} ${DONE}"
 
     # re-init stock Pi-Star FW:
     echo -e "\n${INFO} Reinitializing Pi-Star firewall..."
