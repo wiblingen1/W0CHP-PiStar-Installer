@@ -342,6 +342,7 @@ function InstallDashboard() {
         echo -e "    official Raspberry Pi OS Repository."
         echo -e "    'vnstat' measures and logs network traffic used in the system/hardware info section."
 	echo -e "    This will take some time..."
+	systemctl unmask vnstat.service > /dev/null 2>&1
         apt-get install -y vnstat > /dev/null 2>&1
 	apt-get clean > /dev/null 2<&1
  	apt-get autoclean > /dev/null 2<&1
@@ -363,7 +364,7 @@ function InstallDashboard() {
 
     # swap ntpd for systemd-timesyncd
     if [ ! -f "/lib/systemd/system/systemd-timesyncd.service" ] ; then
-	echo "${INFO} Updating time synchronization service; please wait..."
+	echo -e "${INFO} Updating time synchronization service; please wait..."
 	apt-get -qq remove -y --purge ntp > /dev/null 2>&1
 	apt-get -qq autoremove -y > /dev/null 2>&1
 	apt-get -qq install -y systemd-timesyncd > /dev/null 2>&1
