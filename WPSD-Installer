@@ -645,7 +645,7 @@ function BullseyeChk () {
 function RestoreDashboard() {
     curl "${CURL_OPTIONS[@]}" $PS_SERVICES_SCRIPT -o /tmp/pistar-services
     chmod +x /tmp/pistar-services
-    echo -e "${INFO} Stopping  Services. Please wait..."
+    echo -e "${INFO} Stopping services. Please wait..."
     /tmp/pistar-services fullstop > /dev/null 2<&1
     WaitForUnattendedUpgrade
     sleep 1
