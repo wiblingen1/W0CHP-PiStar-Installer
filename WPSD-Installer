@@ -887,27 +887,6 @@ ${COL_REG_CYAN}
                              PiStar-Dash${COL_NC}"
 }
 
-function SorryNotSorry() {
-echo -e ${COL_BRIGHT_RED}"
-      ▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄
-     █░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄
-    █░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█
-   █░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█
- ▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█
-█░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█
-█░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█
- █░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█
-  █░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█
-   █░░░░██░░▀█▄▄▄█▄▄█▄████░█
-    █░░░░▀▀▄░█░░░█░█▀██████░█
-     ▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█
-       ▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█
-          ▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█
-              ▀▄▄▄▄▄░░░░░░░░█
-
-Sorry, Not Sorry to See You Go!${COL_NC}\n"
-}
-
 ## Parse command line
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -982,7 +961,6 @@ while [[ $# -gt 0 ]]; do
 	"-rd" | "--restore-dashboard")
             clear
 	    BullseyeChk
-	    SorryNotSorry
             CheckPausedMode
 	    echo -e "\n${INFO} Restoring the original Pi-Star dashboard and files.\n    This will take some time...\n"
 	    _rw
