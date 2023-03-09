@@ -715,8 +715,10 @@ function RestoreDashboard() {
     echo -e "${INFO} Reverting all Original Pi-Star Services."
     echo -e "    Be patient! This will take some time..."
     # Enable unattended-upgrades
-    systemctl unmask unattended-upgrades > /dev/null 2<&1
-    LC_ALL=C systemctl enable unattended-upgrades > /dev/null 2<&1
+    if  systemctl status unattended-upgrades.service | grep masked > /dev/null 2<&1 ; then
+	systemctl unmask unattended-upgrades > /dev/null 2<&1
+	LC_ALL=C systemctl enable unattended-upgrades > /dev/null 2<&1
+    fi
     # Enable SAMBA
     systemctl unmask smbd > /dev/null 2<&1
     systemctl unmask nmbd > /dev/null 2<&1
