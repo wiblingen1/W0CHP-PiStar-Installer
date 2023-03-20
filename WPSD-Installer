@@ -5,7 +5,7 @@
 #  |   by Chip Cuccio (W0CHP)                                                                  |
 #  |   <https://w0chp.net/w0chp-pistar-dash/>                                                  |
 #  | This progam is distributed under the GNU GPL;                                             |
-#  |   https://raw.githubusercontent.com/ytlzq0228/W0CHP-PiStar-Installer/src/branch/master/LICENSE        |
+#  |   https://github.com/ytlzq0228/W0CHP-PiStar-Installer/src/branch/master/LICENSE        |
 #  +-------------------------------------------------------------------------------------------+
 
 # ############################## NOTE ################################ #
@@ -21,13 +21,13 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # common vars
-W0CHP_INSTALL_SCRIPT_REPO="https://raw.githubusercontent.com/ytlzq0228/W0CHP-PiStar-Installer/raw/branch/master/WPSD-Installer"
-W0CHP_DASH_REPO="https://raw.githubusercontent.com/ytlzq0228/W0CHP-PiStar-Dash.git"
-W0CHP_SBIN_REPO="https://raw.githubusercontent.com/ytlzq0228/W0CHP-PiStar-sbin.git"
-W0CHP_BIN_REPO="https://raw.githubusercontent.com/ytlzq0228/W0CHP-PiStar-bin.git"
-SUPPORTING_FILES_REPO="https://raw.githubusercontent.com/ytlzq0228/W0CHP-PiStar-Installer/raw/branch/master/supporting-files"
-PS_SERVICES_SCRIPT="https://raw.githubusercontent.com/ytlzq0228/W0CHP-PiStar-sbin/raw/branch/master/pistar-services"
-WPSD_MAINT_SCRIPT="https://raw.githubusercontent.com/ytlzq0228/W0CHP-PiStar-sbin/raw/branch/master/wpsd-backend-maint"
+W0CHP_INSTALL_SCRIPT_REPO="https://raw.githubusercontent.com/ytlzq0228/W0CHP-PiStar-Installer/master/WPSD-Installer"
+W0CHP_DASH_REPO="https://github.com/ytlzq0228/W0CHP-PiStar-Dash.git"
+W0CHP_SBIN_REPO="https://github.com/ytlzq0228/W0CHP-PiStar-sbin.git"
+W0CHP_BIN_REPO="https://github.com/ytlzq0228/W0CHP-PiStar-bin.git"
+SUPPORTING_FILES_REPO="https://github.com/ytlzq0228/W0CHP-PiStar-Installer/tree/master/supporting-files"
+PS_SERVICES_SCRIPT="https://raw.githubusercontent.com/ytlzq0228/W0CHP-PiStar-sbin/master/pistar-services"
+WPSD_MAINT_SCRIPT="https://raw.githubusercontent.com/ytlzq0228/W0CHP-PiStar-sbin/master/wpsd-backend-maint"
 OFFICIAL_DASH_REPO="https://github.com/AndyTaylorTweet/Pi-Star_DV_Dash.git"
 OFFICIAL_SBIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_Binaries_sbin.git"
 OFFICIAL_BIN_REPO="https://github.com/AndyTaylorTweet/Pi-Star_v4_Binaries_Bin.git"
